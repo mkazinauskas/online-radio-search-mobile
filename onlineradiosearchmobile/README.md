@@ -1,6 +1,6 @@
-# radio
+# onlineradiosearchmobile
 
-onlineradiosearch.com mobile application
+onlineradiosearch.com mobile app
 
 ## Getting Started
 

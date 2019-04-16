@@ -1,4 +1,4 @@
-package modzo.com.radio;
+package modzo.com.onlineradiosearchmobile;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
