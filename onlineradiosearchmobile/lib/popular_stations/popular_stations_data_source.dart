@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class PopularStationsDataSource {
-  final _url =
+  final String _url =
       'https://modestukasai.github.io/onlineradiosearch_data/popular-stations.json';
 
   void read(onPopularStationsDownloaded) {

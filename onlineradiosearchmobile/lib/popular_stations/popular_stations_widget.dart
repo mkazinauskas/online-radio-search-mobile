@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/player/player_widget.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
 
 class PopularStationsWidget extends StatefulWidget {
+  final dynamic stationSelectedCallback;
+
+  PopularStationsWidget(this.stationSelectedCallback);
+
   @override
   State<StatefulWidget> createState() {
-    return PopularStationsWidgetState();
+    return PopularStationsWidgetState(stationSelectedCallback);
   }
 }
 
 class PopularStationsWidgetState extends State<PopularStationsWidget> {
   var _stations = List<Station>();
+  final stationSelectedCallback;
 
-  PopularStationsWidgetState() {
+  PopularStationsWidgetState(this.stationSelectedCallback) {
     PopularStationsDataSource().read(_onPopularStationsDownloaded);
   }
 
@@ -24,14 +28,12 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: items(),
-    );
+    return items();
   }
 
   Widget items() {
     return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10.0),
         itemBuilder: (context, i) {
           if (_stations.length == 0 && i == 0) {
             return _loading();
@@ -55,7 +57,7 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
     return ListTile(
       onTap: () {
         debugPrint("Index: ${station.url}");
-        PlayerWidget(station.url);
+        stationSelectedCallback(station);
       },
       title: Text(station.title, style: TextStyle(fontSize: 18.0)),
     );
