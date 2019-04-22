@@ -11,6 +11,16 @@ class PopularStationsWidget extends StatefulWidget {
 class PopularStationsWidgetState extends State<PopularStationsWidget> {
   var _stations = List<Station>();
 
+  PopularStationsWidgetState() {
+    PopularStationsDataSource().read(_onPopularStationsDownloaded);
+  }
+
+  void _onPopularStationsDownloaded(List<Station> stations) {
+    setState(() {
+      _stations = stations;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +56,7 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
         debugPrint("Index: ${station.url}");
       },
       title:
-          Text(station.title.toLowerCase(), style: TextStyle(fontSize: 18.0)),
+      Text(station.title, style: TextStyle(fontSize: 18.0)),
     );
   }
 }

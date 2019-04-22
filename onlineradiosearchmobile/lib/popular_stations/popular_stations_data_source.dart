@@ -1,20 +1,24 @@
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class LatestStations {
+class PopularStationsDataSource {
   final _url =
       'https://modestukasai.github.io/onlineradiosearch_data/popular-stations.json';
 
-  Future<List<Station>> read() async {
-    final response = await http.get(_url);
-
-    return compute(parseStations, response.body);
+  void read(onPopularStationsDownloaded) {
+    http
+        .get(_url)
+        .then((responseBody) => _parseStations(responseBody.body))
+        .then((stations) => onPopularStationsDownloaded(stations))
+        .catchError((error) => {debugPrint("Error" + error)})
+        .whenComplete(() {
+      debugPrint("Done");
+    });
   }
 
-  List<Station> parseStations(String responseBody) {
+  List<Station> _parseStations(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
     return parsed.map<Station>((json) => Station.fromJson(json)).toList();
