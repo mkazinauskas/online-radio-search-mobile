@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/player/player_widget.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
 
 class PopularStationsWidget extends StatefulWidget {
@@ -54,9 +55,9 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
     return ListTile(
       onTap: () {
         debugPrint("Index: ${station.url}");
+        PlayerWidget(station.url);
       },
-      title:
-      Text(station.title, style: TextStyle(fontSize: 18.0)),
+      title: Text(station.title, style: TextStyle(fontSize: 18.0)),
     );
   }
 }
