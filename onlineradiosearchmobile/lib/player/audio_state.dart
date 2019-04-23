@@ -12,7 +12,7 @@ class AudioState {
   }
 
   void play(){
-    _audioPlayer.play(_station.url);
+    _audioPlayer.play(_station.url, isLocal: true);
   }
 
   void stop(){
