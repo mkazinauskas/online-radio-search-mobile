@@ -20,24 +20,25 @@ class MainWidgetState extends State<MainWidget> {
     return new WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-            appBar: AppBar(
-              title: Text('Radio'),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      showSearch(context: context, delegate: DataSearch());
-                    })
-              ],
+          appBar: AppBar(
+            title: Text('Popular stations'),
+//            actions: <Widget>[
+//              IconButton(
+//                  icon: Icon(Icons.search),
+//                  onPressed: () {
+//                    showSearch(context: context, delegate: DataSearch());
+//                  })
+//            ],
+          ),
+          body: Column(
+              children: <Widget>[
+            Expanded(
+              child: PopularStationsWidget(_stationSelectedCallback),
             ),
-            body: Column(
-                children: <Widget>[
-              Expanded(
-                child: PopularStationsWidget(_stationSelectedCallback),
-              ),
-              (_audioState.hasStation()) ? PlayerWidget(_audioState) : null
-            ].where((widget) => widget != null).toList()),
-            drawer: Drawer()));
+            (_audioState.hasStation()) ? PlayerWidget(_audioState) : null
+          ].where((widget) => widget != null).toList()),
+//            drawer: Drawer()
+        ));
   }
 
   void _stationSelectedCallback(Station newStation) {
