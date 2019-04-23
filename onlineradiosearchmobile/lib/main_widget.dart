@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/list.dart';
 import 'package:onlineradiosearchmobile/player/audio_state.dart';
 import 'package:onlineradiosearchmobile/player/player_widget.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
@@ -21,6 +20,7 @@ class MainWidgetState extends State<MainWidget> {
         onWillPop: _onWillPop,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: Colors.black54,
             title: Text('Popular stations'),
 //            actions: <Widget>[
 //              IconButton(

@@ -20,7 +20,8 @@ class PlayerWidgetState extends State<PlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Card(
+//      shape: OutlineInputBorder(),
+      color: Colors.black12,
       child: Container(
         child: Column(
           children: <Widget>[
@@ -28,17 +29,21 @@ class PlayerWidgetState extends State<PlayerWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                    child: IconButton(
-                        onPressed: () {
-                          (_audioState.isPlaying()) ? _stop() : _play();
-                        },
-                        tooltip: 'Increase volume by 10',
-                        icon: (_audioState.isPlaying()
-                            ? Icon(Icons.pause, size: 30.0)
-                            : Icon(Icons.play_arrow, size: 30.0)),
+                    padding: EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        (_audioState.isPlaying()) ? _stop() : _play();
+                      },
+                      child: (_audioState.isPlaying()
+                          ? Icon(Icons.pause, size: 30.0)
+                          : Icon(Icons.play_arrow, size: 30.0)),
+                    )),
 //                        padding: EdgeInsets.all(5.0),
-                        color: Colors.black)),
-                Expanded(child: Text(_audioState.title(), textAlign: TextAlign.center)),
+                Expanded(
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(0, 10.0, 10.0, 10.0),
+                        child: Text(_audioState.title(),
+                            textAlign: TextAlign.left))),
 //                Container(
 //                    child: IconButton(
 //                        onPressed: () {},
@@ -50,7 +55,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
           ],
         ),
       ),
-    ));
+    );
   }
 
   void _stop() {
