@@ -37,6 +37,23 @@ class MainWidgetState extends State<MainWidget> {
             ),
             (_audioState.hasStation()) ? PlayerWidget(_audioState) : null
           ].where((widget) => widget != null).toList()),
+//          bottomNavigationBar: BottomNavigationBar(
+//              currentIndex: 0,
+//              fixedColor: Colors.deepPurple,
+//              items: <BottomNavigationBarItem>[
+//                BottomNavigationBarItem(
+//                  title: Text('Main'),
+//                  icon: Icon(Icons.home),
+//                ),
+//                BottomNavigationBarItem(
+//                  title: Text('Search'),
+//                  icon: Icon(Icons.search),
+//                ),
+//                BottomNavigationBarItem(
+//                  title: Text('Favourites'),
+//                  icon: Icon(Icons.favorite),
+//                )
+//              ]),
 //            drawer: Drawer()
         ));
   }
