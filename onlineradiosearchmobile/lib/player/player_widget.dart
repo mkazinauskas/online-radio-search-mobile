@@ -1,14 +1,13 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/player/audio_state.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
 
 class PlayerWidget extends StatelessWidget {
-  final Station _station;
-  final AudioPlayer _audioPlayer;
 
-  PlayerWidget(this._audioPlayer, this._station){
-    _reset();
-  }
+  final AudioState _audioState;
+
+  PlayerWidget(this._audioState);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class PlayerWidget extends StatelessWidget {
           children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               Container(
-                  padding: EdgeInsets.all(10.0), child: Text(_station.title))
+                  padding: EdgeInsets.all(10.0), child: Text(_audioState.title()))
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -27,7 +26,7 @@ class PlayerWidget extends StatelessWidget {
                 Container(
                     padding: EdgeInsets.all(5.0),
                     child: OutlineButton(
-                        onPressed: _playSong,
+                        onPressed: _audioState.play,
                         padding: EdgeInsets.all(15.0),
                         shape: CircleBorder(),
                         child: Icon(Icons.play_arrow, size: 40.0),
@@ -35,7 +34,7 @@ class PlayerWidget extends StatelessWidget {
                 Container(
                     padding: EdgeInsets.all(5.0),
                     child: OutlineButton(
-                        onPressed: _stopSong,
+                        onPressed: _audioState.stop,
                        padding: EdgeInsets.all(15.0),
                         shape: CircleBorder(),
                         child: Icon(Icons.stop, size: 40.0), color: Colors.teal)),
@@ -45,18 +44,5 @@ class PlayerWidget extends StatelessWidget {
         ),
       ),
     ));
-  }
-
-  void _playSong() {
-    this._audioPlayer.play(this._station.url);
-  }
-
-  void _stopSong() {
-    this._audioPlayer.stop();
-  }
-
-  void _reset() {
-    this._stopSong();
-    this._playSong();
   }
 }
