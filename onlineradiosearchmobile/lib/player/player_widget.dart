@@ -15,7 +15,11 @@ class PlayerWidget extends StatefulWidget {
 class PlayerWidgetState extends State<PlayerWidget> {
   final AudioState _audioState;
 
-  PlayerWidgetState(this._audioState);
+  String _duration = 'Unknown';
+
+  PlayerWidgetState(this._audioState) {
+    _audioState.setDurationListener(this._durationChanged);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +44,16 @@ class PlayerWidgetState extends State<PlayerWidget> {
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.fromLTRB(0, 10.0, 10.0, 10.0),
-                        child: Text(_audioState.title(),
-                            textAlign: TextAlign.left))),
+                        child: Row(
+                          children: <Widget>[
+                            Text(_audioState.title(),
+                                textAlign: TextAlign.left),
+                            Expanded(
+                              child:
+                                  Text(_duration, textAlign: TextAlign.right),
+                            ),
+                          ],
+                        )))
               ],
             )
           ],
@@ -59,6 +71,17 @@ class PlayerWidgetState extends State<PlayerWidget> {
   void _play() {
     setState(() {
       _audioState.play();
+    });
+  }
+
+  void _durationChanged(Duration duration) {
+    setState(() {
+      int totalTimeInSeconds = duration.inSeconds;
+      String hours = (totalTimeInSeconds ~/ 3600).toString().padLeft(2, '0');
+      String minutes = (totalTimeInSeconds ~/ 60).toString().padLeft(2, '0');
+      String seconds = (totalTimeInSeconds % 60).toString().padLeft(2, '0');
+
+      _duration = "${hours}:${minutes}:${seconds}";
     });
   }
 }

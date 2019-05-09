@@ -5,6 +5,7 @@ class AudioState {
   final AudioPlayer _audioPlayer = new AudioPlayer();
   Station _station;
   bool _isPlaying;
+  dynamic _durationListener;
 
   AudioState() {
     _audioPlayer.onPlayerStateChanged.listen((s) {
@@ -12,12 +13,19 @@ class AudioState {
         play();
       }
     });
+    _audioPlayer.onAudioPositionChanged.listen((duration) {
+      _durationListener(duration);
+    });
   }
 
   void setStation(Station station) {
     stop();
     _station = station;
     play();
+  }
+
+  void setDurationListener(dynamic durationListener){
+    this._durationListener = durationListener;
   }
 
   void play() {
