@@ -20,7 +20,6 @@ class PlayerWidgetState extends State<PlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-//      shape: OutlineInputBorder(),
       color: Colors.black12,
       child: Container(
         child: Column(
@@ -38,18 +37,11 @@ class PlayerWidgetState extends State<PlayerWidget> {
                           ? Icon(Icons.pause, size: 30.0)
                           : Icon(Icons.play_arrow, size: 30.0)),
                     )),
-//                        padding: EdgeInsets.all(5.0),
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.fromLTRB(0, 10.0, 10.0, 10.0),
                         child: Text(_audioState.title(),
                             textAlign: TextAlign.left))),
-//                Container(
-//                    child: IconButton(
-//                        onPressed: () {},
-//                        icon: Icon(Icons.favorite),
-////                        padding: EdgeInsets.all(5.0),
-//                        color: Colors.black))
               ],
             )
           ],
