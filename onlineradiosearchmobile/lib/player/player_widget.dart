@@ -15,7 +15,7 @@ class PlayerWidget extends StatefulWidget {
 class PlayerWidgetState extends State<PlayerWidget> {
   final AudioState _audioState;
 
-  String _duration = 'Unknown';
+  String _duration = 'Loading...';
 
   PlayerWidgetState(this._audioState) {
     _audioState.setDurationListener(this._durationChanged);
@@ -65,18 +65,24 @@ class PlayerWidgetState extends State<PlayerWidget> {
   void _stop() {
     setState(() {
       _audioState.stop();
+      _duration = '';
     });
   }
 
   void _play() {
     setState(() {
       _audioState.play();
+      _duration = 'Loading...';
     });
   }
 
   void _durationChanged(Duration duration) {
     setState(() {
       int totalTimeInSeconds = duration.inSeconds;
+      if (totalTimeInSeconds == 0) {
+        _duration = 'Loading...';
+        return;
+      }
       String hours = (totalTimeInSeconds ~/ 3600).toString().padLeft(2, '0');
       String minutes = (totalTimeInSeconds ~/ 60).toString().padLeft(2, '0');
       String seconds = (totalTimeInSeconds % 60).toString().padLeft(2, '0');

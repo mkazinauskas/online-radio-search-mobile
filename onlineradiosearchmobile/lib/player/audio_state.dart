@@ -13,18 +13,23 @@ class AudioState {
         play();
       }
     });
-    _audioPlayer.onAudioPositionChanged.listen((duration) {
-      _durationListener(duration);
-    });
+    _audioPlayer.onAudioPositionChanged.listen(updateDurationOnListeners);
   }
 
   void setStation(Station station) {
     stop();
+    updateDurationOnListeners(Duration());
     _station = station;
     play();
   }
 
-  void setDurationListener(dynamic durationListener){
+  void updateDurationOnListeners(Duration duration) {
+    if (_durationListener != null) {
+      _durationListener(duration);
+    }
+  }
+
+  void setDurationListener(dynamic durationListener) {
     this._durationListener = durationListener;
   }
 
