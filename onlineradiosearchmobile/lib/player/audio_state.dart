@@ -6,31 +6,39 @@ class AudioState {
   Station _station;
   bool _isPlaying;
 
-  void setStation(Station station){
+  AudioState() {
+    _audioPlayer.onPlayerStateChanged.listen((s) {
+      if (s == AudioPlayerState.COMPLETED) {
+        play();
+      }
+    });
+  }
+
+  void setStation(Station station) {
     stop();
     _station = station;
     play();
   }
 
-  void play(){
+  void play() {
     _audioPlayer.play(_station.url, isLocal: true);
     _isPlaying = true;
   }
 
-  void stop(){
+  void stop() {
     _audioPlayer.stop();
     _isPlaying = false;
   }
 
-  String title(){
+  String title() {
     return _station.title;
   }
 
-  bool hasStation(){
+  bool hasStation() {
     return _station != null;
   }
 
-  bool isPlaying(){
+  bool isPlaying() {
     return _isPlaying;
   }
 }
