@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayer/audioplayer.dart';
+import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
+import 'package:provider/provider.dart';
 
 MediaControl playControl = MediaControl(
   androidIcon: 'drawable/ic_action_play_arrow',
@@ -20,16 +22,21 @@ MediaControl stopControl = MediaControl(
 );
 
 class RadioPlayer {
-
+//  final RadioPlayerData _radioPlayerData;
   static const streamUri = 'http://5.20.223.18/relaxfm128.mp3';
+
   AudioPlayer _audioPlayer = new AudioPlayer();
   Completer _completer = Completer();
   int _position;
 
+  RadioPlayer(){
+  }
+//  RadioPlayer(this._radioPlayerData);
+
   Future<void> run() async {
     MediaItem mediaItem = MediaItem(
         id: 'audio_1',
-        album: 'Best radio',
+        album: 'album',
         title: 'Sample Title',
         artist: 'Sample Artist');
 

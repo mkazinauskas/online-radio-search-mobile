@@ -1,9 +1,10 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/radio_player.dart';
+import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
+import 'package:provider/provider.dart';
 
 class PlayerWidget extends StatefulWidget {
-
   PlayerWidget();
 
   @override
@@ -12,12 +13,9 @@ class PlayerWidget extends StatefulWidget {
   }
 }
 
-class PlayerWidgetState extends State<PlayerWidget> with WidgetsBindingObserver {
-
-  String _duration = 'Loading...';
-
-  PlayerWidgetState() {
-  }
+class PlayerWidgetState extends State<PlayerWidget>
+    with WidgetsBindingObserver {
+  PlayerWidgetState() {}
 
   @override
   void initState() {
@@ -32,8 +30,6 @@ class PlayerWidgetState extends State<PlayerWidget> with WidgetsBindingObserver 
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
-
 
   void connect() async {
     await AudioService.connect();
@@ -67,27 +63,40 @@ class PlayerWidgetState extends State<PlayerWidget> with WidgetsBindingObserver 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        _play(_backgroundAudioPlayerTask);
-//                        (false) ? _stop() : _play();
-                      },
-                      child: (false
-                          ? Icon(Icons.pause, size: 30.0)
-                          : Icon(Icons.play_arrow, size: 30.0)),
-                    )),
+                StreamBuilder(
+                  stream: AudioService.playbackStateStream,
+                  builder: (context, snapshot) {
+                    PlaybackState data = snapshot?.data;
+                    BasicPlaybackState playerBasicState = data.basicState;
+
+                    if ([
+                      BasicPlaybackState.connecting,
+                      BasicPlaybackState.playing
+                    ].contains(playerBasicState)) {
+                      return _pauseButton();
+                    } else {
+                      return _playButton();
+                    }
+                  },
+                ),
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.fromLTRB(0, 10.0, 10.0, 10.0),
                         child: Row(
                           children: <Widget>[
-                            Text('Test',
-                                textAlign: TextAlign.left),
+                            Consumer<RadioPlayerModel>(
+                              builder: (context, model, child) {
+                                return Text(model.getTitle(),
+                                    textAlign: TextAlign.left);
+                              },
+                            ),
                             Expanded(
-                              child:
-                                  Text(_duration, textAlign: TextAlign.right),
+                              child: Consumer<RadioPlayerModel>(
+                                builder: (context, model, child) {
+                                  return Text(model.getDuration(),
+                                      textAlign: TextAlign.right);
+                                },
+                              ),
                             ),
                           ],
                         )))
@@ -99,35 +108,52 @@ class PlayerWidgetState extends State<PlayerWidget> with WidgetsBindingObserver 
     );
   }
 
-  void _stop() {
-    setState(() {
-      _duration = '';
-    });
+  Widget _pauseButton() {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child:
+          GestureDetector(onTap: _pause, child: Icon(Icons.pause, size: 30.0)),
+    );
   }
 
-  void _play(Function function) {
-    AudioService.start(
-      backgroundTask: function,
-      resumeOnClick: true,
-      androidNotificationChannelName: 'Audio Service Demo',
-      notificationColor: 0xFF2196f3,
-      androidNotificationIcon: 'mipmap/ic_launcher',
+  Widget _playButton() {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: GestureDetector(
+          onTap: _play, child: Icon(Icons.play_arrow, size: 30.0)),
     );
+  }
+
+  void _pause() {
+    AudioService.pause();
+  }
+
+  void _play() {
+    if (AudioService.playbackState?.basicState == BasicPlaybackState.none ||
+        AudioService.playbackState?.basicState == BasicPlaybackState.stopped) {
+      AudioService.start(
+        backgroundTask: _backgroundAudioPlayerTask,
+        resumeOnClick: true,
+        androidNotificationChannelName: 'Audio Service Demo',
+        notificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+      );
+    }
     AudioService.play();
   }
 
   void _durationChanged(Duration duration) {
     setState(() {
-      int totalTimeInSeconds = duration.inSeconds;
-      if (totalTimeInSeconds == 0) {
-        _duration = 'Loading...';
-        return;
-      }
-      String hours = (totalTimeInSeconds ~/ 3600).toString().padLeft(2, '0');
-      String minutes = (totalTimeInSeconds ~/ 60).toString().padLeft(2, '0');
-      String seconds = (totalTimeInSeconds % 60).toString().padLeft(2, '0');
-
-      _duration = "${hours}:${minutes}:${seconds}";
+//      int totalTimeInSeconds = duration.inSeconds;
+//      if (totalTimeInSeconds == 0) {
+//        _duration = 'Loading...';
+//        return;
+//      }
+//      String hours = (totalTimeInSeconds ~/ 3600).toString().padLeft(2, '0');
+//      String minutes = (totalTimeInSeconds ~/ 60).toString().padLeft(2, '0');
+//      String seconds = (totalTimeInSeconds % 60).toString().padLeft(2, '0');
+//
+//      _duration = "${hours}:${minutes}:${seconds}";
     });
   }
 }

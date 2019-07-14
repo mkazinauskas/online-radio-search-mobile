@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/player_widget.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_widget.dart';
 
 class MainWidget extends StatefulWidget {
@@ -30,7 +29,7 @@ class MainWidgetState extends State<MainWidget> {
           body: Column(
               children: <Widget>[
             Expanded(
-              child: PopularStationsWidget(_stationSelectedCallback),
+              child: PopularStationsWidget(),
             ),
             PlayerWidget()
           ].where((widget) => widget != null).toList()),
@@ -55,32 +54,26 @@ class MainWidgetState extends State<MainWidget> {
         ));
   }
 
-  void _stationSelectedCallback(Station newStation) {
-    setState(() {
-//      _audioState.setStation(newStation);
-    });
-  }
-
   Future<bool> _onWillPop() {
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-                title: new Text('Are you sure?'),
-                content: new Text('Do you want to exit an App'),
-                actions: <Widget>[
-                  new FlatButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: new Text('No'),
-                  ),
-                  new FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-//                      _audioState.stop();
-                    },
-                    child: new Text('Yes'),
-                  ),
-                ],
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
               ),
+              new FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+//                      _audioState.stop();
+                },
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
         ) ??
         false;
   }

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
+import 'package:provider/provider.dart';
 
 class PopularStationsWidget extends StatefulWidget {
-  final dynamic stationSelectedCallback;
 
-  PopularStationsWidget(this.stationSelectedCallback);
+  PopularStationsWidget();
 
   @override
   State<StatefulWidget> createState() {
-    return PopularStationsWidgetState(stationSelectedCallback);
+    return PopularStationsWidgetState();
   }
 }
 
 class PopularStationsWidgetState extends State<PopularStationsWidget> {
   var _stations = List<Station>();
-  final stationSelectedCallback;
 
-  PopularStationsWidgetState(this.stationSelectedCallback) {
+  PopularStationsWidgetState() {
     PopularStationsDataSource().read(_onPopularStationsDownloaded);
   }
 
@@ -57,7 +57,9 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
     return ListTile(
       onTap: () {
         debugPrint("Index: ${station.url}");
-        stationSelectedCallback(station);
+        var radioModel = Provider.of<RadioPlayerModel>(context, listen: false);
+        radioModel.setUrl(station.url);
+        radioModel.setTitle(station.title);
       },
       title: Text(station.title, style: TextStyle(fontSize: 18.0)),
     );
