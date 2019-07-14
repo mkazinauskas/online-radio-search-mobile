@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayer/audioplayer.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
 
 MediaControl playControl = MediaControl(
   androidIcon: 'drawable/ic_action_play_arrow',
@@ -21,16 +20,15 @@ MediaControl stopControl = MediaControl(
 );
 
 class RadioPlayer {
+  static const streamUri = 'http://5.20.223.18/relaxfm128.mp3';
   AudioPlayer _audioPlayer = new AudioPlayer();
   Completer _completer = Completer();
-  Station _station;
-
-  RadioPlayer();
+  int _position;
 
   Future<void> run() async {
     MediaItem mediaItem = MediaItem(
         id: 'audio_1',
-        album: 'Sample Album',
+        album: 'Best radio',
         title: 'Sample Title',
         artist: 'Sample Artist');
 
@@ -41,9 +39,29 @@ class RadioPlayer {
         .listen((state) {
       stop();
     });
+    var audioPositionSubscription =
+        _audioPlayer.onAudioPositionChanged.listen((when) {
+      final connected = _position == null;
+      _position = when.inMilliseconds;
+      if (connected) {
+        // After a delay, we finally start receiving audio positions
+        // from the AudioPlayer plugin, so we can set the state to
+        // playing.
+        _setPlayingState();
+      }
+    });
     play();
     await _completer.future;
     playerStateSubscription.cancel();
+    audioPositionSubscription.cancel();
+  }
+
+  void _setPlayingState() {
+    AudioServiceBackground.setState(
+      controls: [pauseControl, stopControl],
+      basicState: BasicPlaybackState.playing,
+      position: _position,
+    );
   }
 
   void playPause() {
@@ -54,11 +72,18 @@ class RadioPlayer {
   }
 
   void play() {
-    _audioPlayer.play(_station.url);
-    AudioServiceBackground.setState(
-      controls: [pauseControl, stopControl],
-      basicState: BasicPlaybackState.playing,
-    );
+    _audioPlayer.play(streamUri);
+    if (_position == null) {
+      // There may be a delay while the AudioPlayer plugin connects.
+      AudioServiceBackground.setState(
+        controls: [stopControl],
+        basicState: BasicPlaybackState.connecting,
+        position: 0,
+      );
+    } else {
+      // We've already connected, so no delay.
+      _setPlayingState();
+    }
   }
 
   void pause() {
@@ -66,6 +91,7 @@ class RadioPlayer {
     AudioServiceBackground.setState(
       controls: [playControl, stopControl],
       basicState: BasicPlaybackState.paused,
+      position: _position,
     );
   }
 
@@ -76,17 +102,5 @@ class RadioPlayer {
       basicState: BasicPlaybackState.stopped,
     );
     _completer.complete();
-  }
-
-  void setStation(Station station){
-    this._station = station;
-  }
-
-  bool hasStation(){
-    return _station != null;
-  }
-
-  Station station(){
-    return _station;
   }
 }
