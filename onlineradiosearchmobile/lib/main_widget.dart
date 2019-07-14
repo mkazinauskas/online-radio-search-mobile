@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/player/audio_state.dart';
 import 'package:onlineradiosearchmobile/player/player_widget.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_data_source.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_widget.dart';
@@ -12,8 +11,6 @@ class MainWidget extends StatefulWidget {
 }
 
 class MainWidgetState extends State<MainWidget> {
-  final AudioState _audioState = new AudioState();
-
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -35,7 +32,7 @@ class MainWidgetState extends State<MainWidget> {
             Expanded(
               child: PopularStationsWidget(_stationSelectedCallback),
             ),
-            (_audioState.hasStation()) ? PlayerWidget(_audioState) : null
+            PlayerWidget()
           ].where((widget) => widget != null).toList()),
 //          bottomNavigationBar: BottomNavigationBar(
 //              currentIndex: 0,
@@ -60,7 +57,7 @@ class MainWidgetState extends State<MainWidget> {
 
   void _stationSelectedCallback(Station newStation) {
     setState(() {
-      _audioState.setStation(newStation);
+//      _audioState.setStation(newStation);
     });
   }
 
@@ -78,7 +75,7 @@ class MainWidgetState extends State<MainWidget> {
                   new FlatButton(
                     onPressed: () {
                       Navigator.of(context).pop(true);
-                      _audioState.stop();
+//                      _audioState.stop();
                     },
                     child: new Text('Yes'),
                   ),

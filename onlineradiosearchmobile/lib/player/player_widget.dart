@@ -1,24 +1,60 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/player/audio_state.dart';
+import 'package:onlineradiosearchmobile/player/radio_player.dart';
 
 class PlayerWidget extends StatefulWidget {
-  final _audioState;
 
-  PlayerWidget(this._audioState);
+  PlayerWidget();
 
   @override
   State<StatefulWidget> createState() {
-    return PlayerWidgetState(_audioState);
+    return PlayerWidgetState();
   }
 }
 
-class PlayerWidgetState extends State<PlayerWidget> {
-  final AudioState _audioState;
+class PlayerWidgetState extends State<PlayerWidget> with WidgetsBindingObserver {
 
   String _duration = 'Loading...';
 
-  PlayerWidgetState(this._audioState) {
-    _audioState.setDurationListener(this._durationChanged);
+  PlayerWidgetState() {
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    connect();
+  }
+
+  @override
+  void dispose() {
+    disconnect();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+
+
+  void connect() async {
+    await AudioService.connect();
+  }
+
+  void disconnect() {
+    AudioService.disconnect();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        connect();
+        break;
+      case AppLifecycleState.paused:
+        disconnect();
+        break;
+      default:
+        break;
+    }
   }
 
   @override
@@ -35,9 +71,10 @@ class PlayerWidgetState extends State<PlayerWidget> {
                     padding: EdgeInsets.all(10.0),
                     child: GestureDetector(
                       onTap: () {
-                        (_audioState.isPlaying()) ? _stop() : _play();
+                        _play(_backgroundAudioPlayerTask);
+//                        (false) ? _stop() : _play();
                       },
-                      child: (_audioState.isPlaying()
+                      child: (false
                           ? Icon(Icons.pause, size: 30.0)
                           : Icon(Icons.play_arrow, size: 30.0)),
                     )),
@@ -46,7 +83,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
                         padding: EdgeInsets.fromLTRB(0, 10.0, 10.0, 10.0),
                         child: Row(
                           children: <Widget>[
-                            Text(_audioState.title(),
+                            Text('Test',
                                 textAlign: TextAlign.left),
                             Expanded(
                               child:
@@ -64,16 +101,19 @@ class PlayerWidgetState extends State<PlayerWidget> {
 
   void _stop() {
     setState(() {
-      _audioState.stop();
       _duration = '';
     });
   }
 
-  void _play() {
-    setState(() {
-      _audioState.play();
-      _duration = 'Loading...';
-    });
+  void _play(Function function) {
+    AudioService.start(
+      backgroundTask: function,
+      resumeOnClick: true,
+      androidNotificationChannelName: 'Audio Service Demo',
+      notificationColor: 0xFF2196f3,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+    );
+    AudioService.play();
   }
 
   void _durationChanged(Duration duration) {
@@ -90,4 +130,15 @@ class PlayerWidgetState extends State<PlayerWidget> {
       _duration = "${hours}:${minutes}:${seconds}";
     });
   }
+}
+
+void _backgroundAudioPlayerTask() async {
+  RadioPlayer player = RadioPlayer();
+  AudioServiceBackground.run(
+    onStart: player.run,
+    onPlay: player.play,
+    onPause: player.pause,
+    onStop: player.stop,
+    onClick: (MediaButton button) => player.playPause(),
+  );
 }

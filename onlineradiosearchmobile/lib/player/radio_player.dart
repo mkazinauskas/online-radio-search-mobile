@@ -20,6 +20,7 @@ MediaControl stopControl = MediaControl(
 );
 
 class RadioPlayer {
+
   static const streamUri = 'http://5.20.223.18/relaxfm128.mp3';
   AudioPlayer _audioPlayer = new AudioPlayer();
   Completer _completer = Completer();
