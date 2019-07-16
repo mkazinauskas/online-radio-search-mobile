@@ -33,10 +33,6 @@ class RadioPlayer {
   Completer _completer = Completer();
   int _position;
 
-  RadioPlayer(){
-  }
-//  RadioPlayer(this._radioPlayerData);
-
   Future<void> run() async {
 //    MediaItem mediaItem = MediaItem(
 //        id: 'audio_1',
@@ -62,7 +58,7 @@ class RadioPlayer {
         _setPlayingState();
       }
     });
-    play();
+//    play();
     await _completer.future;
     playerStateSubscription.cancel();
     audioPositionSubscription.cancel();
@@ -124,6 +120,8 @@ class RadioPlayer {
         artist: model.getTitle());
 
     AudioServiceBackground.setMediaItem(mediaItem);
+    _audioPlayer.stop();
+    _audioPlayer.play(model.getUrl());
   }
 
   void onCustomAction(String actionName, String data) {

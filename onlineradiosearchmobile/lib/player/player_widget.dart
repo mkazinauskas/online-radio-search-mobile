@@ -172,9 +172,7 @@ void _backgroundAudioPlayerTask() async {
     onStop: player.stop,
     onClick: (MediaButton button) => player.playPause(),
     onCustomAction: (String actionName, dynamic data) {
-      if (actionName != null) {
         player.onCustomAction(actionName, data);
-      }
     },
   );
 }
