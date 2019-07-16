@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:provider/provider.dart';
 
 MediaControl playControl = MediaControl(
   androidIcon: 'drawable/ic_action_play_arrow',
@@ -21,7 +20,12 @@ MediaControl stopControl = MediaControl(
   action: MediaAction.stop,
 );
 
+enum RadioPlayerActions{
+  changeStation
+}
+
 class RadioPlayer {
+
 //  final RadioPlayerData _radioPlayerData;
   static const streamUri = 'http://5.20.223.18/relaxfm128.mp3';
 
@@ -34,13 +38,13 @@ class RadioPlayer {
 //  RadioPlayer(this._radioPlayerData);
 
   Future<void> run() async {
-    MediaItem mediaItem = MediaItem(
-        id: 'audio_1',
-        album: 'album',
-        title: 'Sample Title',
-        artist: 'Sample Artist');
-
-    AudioServiceBackground.setMediaItem(mediaItem);
+//    MediaItem mediaItem = MediaItem(
+//        id: 'audio_1',
+//        album: 'album',
+//        title: 'Sample Title',
+//        artist: 'Sample Artist');
+//
+//    AudioServiceBackground.setMediaItem(mediaItem);
 
     var playerStateSubscription = _audioPlayer.onPlayerStateChanged
         .where((state) => state == AudioPlayerState.COMPLETED)
@@ -110,5 +114,23 @@ class RadioPlayer {
       basicState: BasicPlaybackState.stopped,
     );
     _completer.complete();
+  }
+
+  void _changeStation(RadioPlayerModel model){
+    MediaItem mediaItem = MediaItem(
+        id: 'audio_1',
+        album: 'album',
+        title: model.getTitle(),
+        artist: model.getTitle());
+
+    AudioServiceBackground.setMediaItem(mediaItem);
+  }
+
+  void onCustomAction(String actionName, String data) {
+      if(actionName == RadioPlayerActions.changeStation.toString()){
+        _changeStation(RadioPlayerModel.fromData(data));
+        return;
+      }
+      throw new Exception(actionName + ' was not found.');
   }
 }

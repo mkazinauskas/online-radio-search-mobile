@@ -139,6 +139,11 @@ class PlayerWidgetState extends State<PlayerWidget>
         androidNotificationIcon: 'mipmap/ic_launcher',
       );
     }
+    RadioPlayerModel model =
+        Provider.of<RadioPlayerModel>(context, listen: false);
+    AudioService.customAction(
+        RadioPlayerActions.changeStation.toString(), model.toJson());
+
     AudioService.play();
   }
 
@@ -166,5 +171,10 @@ void _backgroundAudioPlayerTask() async {
     onPause: player.pause,
     onStop: player.stop,
     onClick: (MediaButton button) => player.playPause(),
+    onCustomAction: (String actionName, dynamic data) {
+      if (actionName != null) {
+        player.onCustomAction(actionName, data);
+      }
+    },
   );
 }
