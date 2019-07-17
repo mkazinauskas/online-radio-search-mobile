@@ -15,8 +15,6 @@ class PlayerWidget extends StatefulWidget {
 
 class PlayerWidgetState extends State<PlayerWidget>
     with WidgetsBindingObserver {
-  PlayerWidgetState() {}
-
   @override
   void initState() {
     super.initState();
@@ -66,8 +64,8 @@ class PlayerWidgetState extends State<PlayerWidget>
                 StreamBuilder(
                   stream: AudioService.playbackStateStream,
                   builder: (context, snapshot) {
-                    PlaybackState data = snapshot?.data;
-                    BasicPlaybackState playerBasicState = data.basicState;
+                    BasicPlaybackState playerBasicState =
+                        snapshot?.data?.basicState;
 
                     if ([
                       BasicPlaybackState.connecting,
@@ -86,6 +84,7 @@ class PlayerWidgetState extends State<PlayerWidget>
                           children: <Widget>[
                             Consumer<RadioPlayerModel>(
                               builder: (context, model, child) {
+                                doStuff(model);
                                 return Text(model.getTitle(),
                                     textAlign: TextAlign.left);
                               },
@@ -129,22 +128,9 @@ class PlayerWidgetState extends State<PlayerWidget>
   }
 
   void _play() {
-    if (AudioService.playbackState?.basicState == BasicPlaybackState.none ||
-        AudioService.playbackState?.basicState == BasicPlaybackState.stopped) {
-      AudioService.start(
-        backgroundTask: _backgroundAudioPlayerTask,
-        resumeOnClick: true,
-        androidNotificationChannelName: 'Audio Service Demo',
-        notificationColor: 0xFF2196f3,
-        androidNotificationIcon: 'mipmap/ic_launcher',
-      );
-    }
-    RadioPlayerModel model =
-        Provider.of<RadioPlayerModel>(context, listen: false);
-    AudioService.customAction(
-        RadioPlayerActions.changeStation.toString(), model.toJson());
-
-    AudioService.play();
+    var model = Provider.of<RadioPlayerModel>(context);
+    doStuff(model);
+//    AudioService.play();
   }
 
   void _durationChanged(Duration duration) {
@@ -161,6 +147,25 @@ class PlayerWidgetState extends State<PlayerWidget>
 //      _duration = "${hours}:${minutes}:${seconds}";
     });
   }
+
+  void doStuff(RadioPlayerModel model) async {
+    if (model.getUrl() == '') {
+      return;
+    }
+    if (await AudioService.running != true) {
+      await AudioService.start(
+        backgroundTask: _backgroundAudioPlayerTask,
+        resumeOnClick: true,
+        androidNotificationChannelName: 'Online Radio Player',
+        notificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+      );
+    }
+    AudioService.running.whenComplete(() {
+      AudioService.customAction(
+          RadioPlayerActions.changeStation.toString(), model.toJson());
+    });
+  }
 }
 
 void _backgroundAudioPlayerTask() async {
@@ -172,7 +177,7 @@ void _backgroundAudioPlayerTask() async {
     onStop: player.stop,
     onClick: (MediaButton button) => player.playPause(),
     onCustomAction: (String actionName, dynamic data) {
-        player.onCustomAction(actionName, data);
+      player.onCustomAction(actionName, data);
     },
   );
 }

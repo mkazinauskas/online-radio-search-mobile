@@ -20,17 +20,16 @@ MediaControl stopControl = MediaControl(
   action: MediaAction.stop,
 );
 
-enum RadioPlayerActions{
-  changeStation
-}
+enum RadioPlayerActions { changeStation }
 
 class RadioPlayer {
 
-//  final RadioPlayerData _radioPlayerData;
-  static const streamUri = 'http://5.20.223.18/relaxfm128.mp3';
+  RadioPlayerModel _radioPlayerData;
 
   AudioPlayer _audioPlayer = new AudioPlayer();
+
   Completer _completer = Completer();
+
   int _position;
 
   Future<void> run() async {
@@ -60,6 +59,7 @@ class RadioPlayer {
     });
 //    play();
     await _completer.future;
+
     playerStateSubscription.cancel();
     audioPositionSubscription.cancel();
   }
@@ -80,7 +80,20 @@ class RadioPlayer {
   }
 
   void play() {
-    _audioPlayer.play(streamUri);
+    if(_radioPlayerData.getUrl() == ''){
+      return;
+    }
+    MediaItem mediaItem = MediaItem(
+      id: 'audio_1',
+      album: 'Streaming...',
+      title: _radioPlayerData.getTitle(),
+    );
+
+    AudioServiceBackground.setMediaItem(mediaItem);
+
+//    if (_radioPlayerData.getUrl() != null) {
+      _audioPlayer.play(_radioPlayerData.getUrl());
+//    }
     if (_position == null) {
       // There may be a delay while the AudioPlayer plugin connects.
       AudioServiceBackground.setState(
@@ -112,23 +125,18 @@ class RadioPlayer {
     _completer.complete();
   }
 
-  void _changeStation(RadioPlayerModel model){
-    MediaItem mediaItem = MediaItem(
-        id: 'audio_1',
-        album: 'album',
-        title: model.getTitle(),
-        artist: model.getTitle());
+  void _changeStation(RadioPlayerModel model) {
+    this._radioPlayerData = model;
 
-    AudioServiceBackground.setMediaItem(mediaItem);
     _audioPlayer.stop();
-    _audioPlayer.play(model.getUrl());
+    play();
   }
 
   void onCustomAction(String actionName, String data) {
-      if(actionName == RadioPlayerActions.changeStation.toString()){
-        _changeStation(RadioPlayerModel.fromData(data));
-        return;
-      }
-      throw new Exception(actionName + ' was not found.');
+    if (actionName == RadioPlayerActions.changeStation.toString()) {
+      _changeStation(RadioPlayerModel.fromData(data));
+      return;
+    }
+    throw new Exception(actionName + ' was not found.');
   }
 }
