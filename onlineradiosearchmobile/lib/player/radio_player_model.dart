@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class RadioPlayerModel extends ChangeNotifier {
   String _url = '';
 
-  String _title = 'Test';
+  String _title = 'Please select radio station';
 
   RadioPlayerModel();
 

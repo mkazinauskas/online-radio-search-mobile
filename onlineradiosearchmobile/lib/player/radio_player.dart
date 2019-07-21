@@ -146,7 +146,9 @@ class RadioPlayer {
 
   void _changeStation(RadioPlayerModel model) {
     if (this._radioPlayerData?.getUrl() == model.getUrl()) {
-      return;
+      if (this._audioPlayer?.state == AudioPlayerState.PLAYING) {
+        return;
+      }
     }
 
     this._radioPlayerData = model;
