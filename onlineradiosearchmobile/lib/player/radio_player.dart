@@ -23,7 +23,6 @@ MediaControl stopControl = MediaControl(
 enum RadioPlayerActions { changeStation }
 
 class RadioPlayer {
-
   RadioPlayerModel _radioPlayerData;
 
   AudioPlayer _audioPlayer = new AudioPlayer();
@@ -33,19 +32,30 @@ class RadioPlayer {
   int _position;
 
   Future<void> run() async {
-//    MediaItem mediaItem = MediaItem(
-//        id: 'audio_1',
-//        album: 'album',
-//        title: 'Sample Title',
-//        artist: 'Sample Artist');
-//
-//    AudioServiceBackground.setMediaItem(mediaItem);
-
     var playerStateSubscription = _audioPlayer.onPlayerStateChanged
-        .where((state) => state == AudioPlayerState.COMPLETED)
         .listen((state) {
-      stop();
+          if(state == AudioPlayerState.COMPLETED){
+            play();
+            return;
+          }
+          if(state == AudioPlayerState.STOPPED){
+            changeBackgroundPlayingItem('Stopped');
+            return;
+          }
+          if(state == AudioPlayerState.PLAYING){
+            changeBackgroundPlayingItem('Playing...');
+            return;
+          }
+          if(state == AudioPlayerState.PAUSED){
+            changeBackgroundPlayingItem('Paused');
+            return;
+          }
     });
+
+    playerStateSubscription.onError((error){
+      changeBackgroundPlayingItem('Failed to load...');
+    });
+
     var audioPositionSubscription =
         _audioPlayer.onAudioPositionChanged.listen((when) {
       final connected = _position == null;
@@ -57,11 +67,11 @@ class RadioPlayer {
         _setPlayingState();
       }
     });
-//    play();
     await _completer.future;
 
     playerStateSubscription.cancel();
     audioPositionSubscription.cancel();
+    AudioServiceBackground.setState(controls: [], basicState: BasicPlaybackState.none);
   }
 
   void _setPlayingState() {
@@ -80,19 +90,13 @@ class RadioPlayer {
   }
 
   void play() {
-    if(_radioPlayerData.getUrl() == ''){
+    if (_radioPlayerData.getUrl() == '') {
       return;
     }
-    MediaItem mediaItem = MediaItem(
-      id: 'audio_1',
-      album: 'Streaming...',
-      title: _radioPlayerData.getTitle(),
-    );
-
-    AudioServiceBackground.setMediaItem(mediaItem);
+    changeBackgroundPlayingItem('Connecting...');
 
 //    if (_radioPlayerData.getUrl() != null) {
-      _audioPlayer.play(_radioPlayerData.getUrl());
+    _audioPlayer.play(_radioPlayerData.getUrl());
 //    }
     if (_position == null) {
       // There may be a delay while the AudioPlayer plugin connects.
@@ -105,6 +109,20 @@ class RadioPlayer {
       // We've already connected, so no delay.
       _setPlayingState();
     }
+  }
+
+  void changeBackgroundPlayingItem(String status) {
+    if (_radioPlayerData.getUrl() == '') {
+      return;
+    }
+    MediaItem mediaItem = MediaItem(
+      id: 'audio_1',
+      album: status,
+      title: _radioPlayerData.getTitle(),
+      artist: 'Live',
+      artUri: 'https://onlineradiosearch.com/resources/img/common/favicon.png'
+    );
+    AudioServiceBackground.setMediaItem(mediaItem);
   }
 
   void pause() {
