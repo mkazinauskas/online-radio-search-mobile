@@ -32,26 +32,26 @@ class RadioPlayer {
   int _position;
 
   Future<void> run() async {
-    var playerStateSubscription = _audioPlayer.onPlayerStateChanged
-        .listen((state) {
-          if(state == AudioPlayerState.COMPLETED){
-            play();
-            return;
-          }
-          if(state == AudioPlayerState.STOPPED){
-            return;
-          }
-          if(state == AudioPlayerState.PLAYING){
-            changeBackgroundPlayingItem('Playing...');
-            return;
-          }
-          if(state == AudioPlayerState.PAUSED){
-            changeBackgroundPlayingItem('Paused');
-            return;
-          }
+    var playerStateSubscription =
+        _audioPlayer.onPlayerStateChanged.listen((state) {
+      if (state == AudioPlayerState.COMPLETED) {
+        play();
+        return;
+      }
+      if (state == AudioPlayerState.STOPPED) {
+        return;
+      }
+      if (state == AudioPlayerState.PLAYING) {
+        changeBackgroundPlayingItem('Playing...');
+        return;
+      }
+      if (state == AudioPlayerState.PAUSED) {
+        changeBackgroundPlayingItem('Paused');
+        return;
+      }
     });
 
-    playerStateSubscription.onError((error){
+    playerStateSubscription.onError((error) {
       changeBackgroundPlayingItem('Failed to load...');
     });
 
@@ -70,7 +70,8 @@ class RadioPlayer {
 
     playerStateSubscription.cancel();
     audioPositionSubscription.cancel();
-    AudioServiceBackground.setState(controls: [], basicState: BasicPlaybackState.none);
+    AudioServiceBackground.setState(
+        controls: [], basicState: BasicPlaybackState.none);
   }
 
   void _setPlayingState() {
@@ -115,12 +116,12 @@ class RadioPlayer {
       return;
     }
     MediaItem mediaItem = MediaItem(
-      id: 'audio_1',
-      album: status,
-      title: _radioPlayerData.getTitle(),
-      artist: 'Live',
-      artUri: 'https://onlineradiosearch.com/resources/img/common/favicon.png'
-    );
+        id: 'audio_1',
+        album: status,
+        title: _radioPlayerData.getTitle(),
+        artist: 'Live',
+        artUri:
+            'https://onlineradiosearch.com/resources/img/common/favicon.png');
     AudioServiceBackground.setMediaItem(mediaItem);
   }
 
@@ -144,6 +145,10 @@ class RadioPlayer {
   }
 
   void _changeStation(RadioPlayerModel model) {
+    if (this._radioPlayerData?.getUrl() == model.getUrl()) {
+      return;
+    }
+
     this._radioPlayerData = model;
 
     _audioPlayer.stop();
