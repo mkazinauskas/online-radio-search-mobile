@@ -39,7 +39,6 @@ class RadioPlayer {
             return;
           }
           if(state == AudioPlayerState.STOPPED){
-            changeBackgroundPlayingItem('Stopped');
             return;
           }
           if(state == AudioPlayerState.PLAYING){
@@ -135,6 +134,7 @@ class RadioPlayer {
   }
 
   void stop() {
+    changeBackgroundPlayingItem('Stopped');
     _audioPlayer.stop();
     AudioServiceBackground.setState(
       controls: [],
