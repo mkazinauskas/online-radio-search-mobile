@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayer/audioplayer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
 
 MediaControl playControl = MediaControl(
@@ -34,6 +35,7 @@ class RadioPlayer {
   Future<void> run() async {
     var playerStateSubscription =
         _audioPlayer.onPlayerStateChanged.listen((state) {
+      debugPrint("Radio player listen!!! `" + state.toString() + "`");
       if (state == AudioPlayerState.COMPLETED) {
         play();
         return;
@@ -58,7 +60,19 @@ class RadioPlayer {
     var audioPositionSubscription =
         _audioPlayer.onAudioPositionChanged.listen((when) {
       final connected = _position == null;
-      _position = when.inMilliseconds;
+      if (_position == when.inMilliseconds) {
+        //Something stuck...
+        if (_audioPlayer.state == AudioPlayerState.PLAYING) {
+          debugPrint("Radio player is in same position!!! `" +
+              when.inMilliseconds.toString() +
+              "`");
+          pause();
+          play();
+        }
+      } else {
+        _position = when.inMilliseconds;
+      }
+
       if (connected) {
         // After a delay, we finally start receiving audio positions
         // from the AudioPlayer plugin, so we can set the state to
@@ -116,7 +130,7 @@ class RadioPlayer {
       return;
     }
     MediaItem mediaItem = MediaItem(
-        id: 'audio_1',
+        id: _radioPlayerData.getId(),
         album: status,
         title: _radioPlayerData.getTitle(),
         artist: 'Live',

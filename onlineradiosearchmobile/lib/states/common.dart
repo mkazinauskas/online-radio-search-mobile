@@ -1,5 +1,0 @@
-class Common{
-  static getRadioPlayerData(){
-
-  }
-}

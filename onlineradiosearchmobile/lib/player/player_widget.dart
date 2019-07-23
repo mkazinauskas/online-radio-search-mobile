@@ -2,6 +2,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/radio_player.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
+import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.dart';
 import 'package:provider/provider.dart';
 
 class PlayerWidget extends StatefulWidget {
@@ -35,6 +36,31 @@ class PlayerWidgetState extends State<PlayerWidget>
 
   void disconnect() {
     AudioService.disconnect();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    recoverCurrentSongFromBackgroundTask();
+  }
+
+  void recoverCurrentSongFromBackgroundTask() async {
+    await AudioService.connect();
+    if (!await AudioService.running) {
+      return;
+    }
+    var radioStationModel =
+        Provider.of<RadioPlayerModel>(context, listen: false);
+    var currentMediaItemId = await AudioService.currentMediaItem?.id;
+    if ((radioStationModel.getId() == null ||
+            radioStationModel.getId() == '') &&
+        currentMediaItemId != null) {
+      Provider.of<PopularStationsModel>(context)
+          .findById(currentMediaItemId)
+          .ifPresent((station) {
+        radioStationModel.setFromStation(station);
+      });
+    }
   }
 
   @override
