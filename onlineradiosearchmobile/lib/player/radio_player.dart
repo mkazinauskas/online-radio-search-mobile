@@ -30,6 +30,8 @@ class RadioPlayer {
 
   Completer _completer = Completer();
 
+  DateTime _lastRefresh = new DateTime.now();
+
   int _position;
 
   Future<void> run() async {
@@ -61,15 +63,22 @@ class RadioPlayer {
         _audioPlayer.onAudioPositionChanged.listen((when) {
       final connected = _position == null;
       if (_position == when.inMilliseconds) {
-        //Something stuck...
-        if (_audioPlayer.state == AudioPlayerState.PLAYING) {
+
+        bool refreshShouldRun = _lastRefresh == null ||
+            DateTime.now().subtract(Duration(seconds: 15)).isAfter(_lastRefresh);
+
+        if (_audioPlayer.state == AudioPlayerState.PLAYING &&
+            refreshShouldRun) {
+          //Something stuck...
+          _lastRefresh = DateTime.now();
           debugPrint("Radio player is in same position!!! `" +
               when.inMilliseconds.toString() +
               "`");
-          pause();
+          _audioPlayer.stop();
           play();
         }
       } else {
+        _lastRefresh = DateTime.now();
         _position = when.inMilliseconds;
       }
 
