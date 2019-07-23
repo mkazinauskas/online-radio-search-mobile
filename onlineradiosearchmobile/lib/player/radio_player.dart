@@ -24,6 +24,9 @@ MediaControl stopControl = MediaControl(
 enum RadioPlayerActions { changeStation }
 
 class RadioPlayer {
+  static const Duration _secondsBeforeIdleStationRestart =
+      Duration(seconds: 15);
+
   RadioPlayerModel _radioPlayerData;
 
   AudioPlayer _audioPlayer = new AudioPlayer();
@@ -63,12 +66,8 @@ class RadioPlayer {
         _audioPlayer.onAudioPositionChanged.listen((when) {
       final connected = _position == null;
       if (_position == when.inMilliseconds) {
-
-        bool refreshShouldRun = _lastRefresh == null ||
-            DateTime.now().subtract(Duration(seconds: 15)).isAfter(_lastRefresh);
-
         if (_audioPlayer.state == AudioPlayerState.PLAYING &&
-            refreshShouldRun) {
+            _refreshShouldRun()) {
           //Something stuck...
           _lastRefresh = DateTime.now();
           debugPrint("Radio player is in same position!!! `" +
@@ -95,6 +94,12 @@ class RadioPlayer {
     audioPositionSubscription.cancel();
     AudioServiceBackground.setState(
         controls: [], basicState: BasicPlaybackState.none);
+  }
+
+  bool _refreshShouldRun() {
+    DateTime maxNonRefreshableTime =
+        DateTime.now().subtract(_secondsBeforeIdleStationRestart);
+    return maxNonRefreshableTime.isAfter(_lastRefresh);
   }
 
   void _setPlayingState() {
