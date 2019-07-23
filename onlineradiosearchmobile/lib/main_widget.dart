@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/player_widget.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_widget.dart';
@@ -67,8 +68,8 @@ class MainWidgetState extends State<MainWidget> {
               ),
               new FlatButton(
                 onPressed: () {
+                  AudioService.stop();
                   Navigator.of(context).pop(true);
-//                      _audioState.stop();
                 },
                 child: new Text('Yes'),
               ),
