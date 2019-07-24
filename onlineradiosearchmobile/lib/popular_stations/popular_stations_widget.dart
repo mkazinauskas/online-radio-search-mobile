@@ -5,16 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../station.dart';
 
-class PopularStationsWidget extends StatefulWidget {
-  PopularStationsWidget();
-
-  @override
-  State<StatefulWidget> createState() {
-    return PopularStationsWidgetState();
-  }
-}
-
-class PopularStationsWidgetState extends State<PopularStationsWidget> {
+class PopularStationsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return items();
@@ -24,21 +15,24 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
     return Consumer<PopularStationsModel>(
       builder: (context, popularStationsModel, child) {
         return ListView.separated(
-            itemCount: popularStationsModel.stationsCount(),
-            separatorBuilder: (context, index) => Divider(
-                  color: Colors.black26,
-                  height: 5,
-                ),
-            itemBuilder: (context, i) {
-              var stations = popularStationsModel.getStations();
-              if (stations.length == 0 && i == 0) {
-                return _loading();
-              }
-              return _buildRow(stations[i]);
-            });
+          itemCount: popularStationsModel.stationsCount(),
+          separatorBuilder: _separator,
+          itemBuilder: (context, i) {
+            var stations = popularStationsModel.getStations();
+            if (stations.length == 0 && i == 0) {
+              return _loading();
+            }
+            return _row(stations[i], context);
+          },
+        );
       },
     );
   }
+
+  Widget _separator(context, index) => Divider(
+        color: Colors.black26,
+        height: 5,
+      );
 
   Widget _loading() {
     return ListTile(
@@ -46,7 +40,7 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
     );
   }
 
-  Widget _buildRow(Station station) {
+  Widget _row(Station station, BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
       onTap: () {
