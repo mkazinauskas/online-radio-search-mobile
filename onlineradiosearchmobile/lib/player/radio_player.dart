@@ -24,8 +24,9 @@ MediaControl stopControl = MediaControl(
 enum RadioPlayerActions { changeStation }
 
 class RadioPlayer {
-  static const Duration _secondsBeforeIdleStationRestart =
-      Duration(seconds: 15);
+  static const Duration _timeBeforeIdleStationRestart = Duration(seconds: 15);
+
+  static const Duration _timeForNoStationDurationUpdate = Duration(seconds: 5);
 
   RadioPlayerModel _radioPlayerData;
 
@@ -34,6 +35,8 @@ class RadioPlayer {
   Completer _completer = Completer();
 
   DateTime _lastRefresh = new DateTime.now();
+
+  DateTime _lastDurationUpdate = new DateTime.now();
 
   int _position;
 
@@ -60,23 +63,16 @@ class RadioPlayer {
 
     playerStateSubscription.onError((error) {
       changeBackgroundPlayingItem('Failed to load...');
+      _retryPlaying(true);
     });
 
     var audioPositionSubscription =
         _audioPlayer.onAudioPositionChanged.listen((when) {
       final connected = _position == null;
       if (_position == when.inMilliseconds) {
-        if (_audioPlayer.state == AudioPlayerState.PLAYING &&
-            _refreshShouldRun()) {
-          //Something stuck...
-          _lastRefresh = DateTime.now();
-          debugPrint("Radio player is in same position!!! `" +
-              when.inMilliseconds.toString() +
-              "`");
-          _audioPlayer.stop();
-          play();
-        }
+        _retryPlaying(false);
       } else {
+        _lastDurationUpdate = DateTime.now();
         _position = when.inMilliseconds;
       }
 
@@ -95,10 +91,28 @@ class RadioPlayer {
         controls: [], basicState: BasicPlaybackState.none);
   }
 
+  void _retryPlaying(bool force) {
+    if ((_audioPlayer.state == AudioPlayerState.PLAYING || force) &&
+        _durationWasNotUpdated() &&
+        _refreshShouldRun()) {
+      //Something stuck...
+      _lastRefresh = DateTime.now();
+      debugPrint("Radio station is being restarted!!!");
+      _audioPlayer.stop();
+      play();
+    }
+  }
+
   bool _refreshShouldRun() {
     DateTime maxNonRefreshableTime =
-        DateTime.now().subtract(_secondsBeforeIdleStationRestart);
+        DateTime.now().subtract(_timeBeforeIdleStationRestart);
     return maxNonRefreshableTime.isAfter(_lastRefresh);
+  }
+
+  bool _durationWasNotUpdated() {
+    DateTime maxNonRefreshableTime =
+        DateTime.now().subtract(_timeForNoStationDurationUpdate);
+    return maxNonRefreshableTime.isAfter(_lastDurationUpdate);
   }
 
   void _setPlayingState() {
