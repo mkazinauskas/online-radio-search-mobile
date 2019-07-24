@@ -77,7 +77,6 @@ class RadioPlayer {
           play();
         }
       } else {
-        _lastRefresh = DateTime.now();
         _position = when.inMilliseconds;
       }
 
