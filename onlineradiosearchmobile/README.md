@@ -20,3 +20,10 @@ samples, guidance on mobile development, and a full API reference.
 
 # Build apk
 `flutter build apk`
+
+
+# Tasks
+* Duration
+* Background music management from common state
+* Use station object in radio player
+* Fix music playback after 2 seconds of not changed music

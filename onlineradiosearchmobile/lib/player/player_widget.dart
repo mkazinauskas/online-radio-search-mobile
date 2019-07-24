@@ -111,18 +111,24 @@ class PlayerWidgetState extends State<PlayerWidget>
                             Consumer<RadioPlayerModel>(
                               builder: (context, model, child) {
                                 doStuff(model);
-                                return Text(model.getTitle(),
-                                    textAlign: TextAlign.left);
+                                return Expanded(
+//                                    child: Flexible(
+                                  child: Text(
+                                    model.getTitle(),
+                                    textAlign: TextAlign.left,
+                                  ),
+//                                ),
+                                );
                               },
                             ),
-                            Expanded(
-                              child: Consumer<RadioPlayerModel>(
-                                builder: (context, model, child) {
-                                  return Text(model.getDuration(),
-                                      textAlign: TextAlign.right);
-                                },
-                              ),
-                            ),
+//                            Consumer<RadioPlayerModel>(
+//                              builder: (context, model, child) {
+//                                return Expanded(
+//                                  child: Text(model.getDuration(),
+//                                      textAlign: TextAlign.right),
+//                                );
+//                              },
+//                            ),
                           ],
                         )))
               ],
