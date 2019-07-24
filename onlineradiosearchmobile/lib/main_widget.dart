@@ -1,7 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/player_widget.dart';
+import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_widget.dart';
+import 'package:provider/provider.dart';
 
 class MainWidget extends StatefulWidget {
   @override
@@ -28,12 +30,19 @@ class MainWidgetState extends State<MainWidget> {
 //            ],
           ),
           body: Column(
-              children: <Widget>[
-            Expanded(
-              child: PopularStationsWidget(),
-            ),
-            PlayerWidget()
-          ].where((widget) => widget != null).toList()),
+            children: <Widget>[
+              Expanded(
+                child: PopularStationsWidget(),
+              ),
+              Consumer<RadioPlayerModel>(
+                builder: (context, model, child) {
+                  return model.hasStation()
+                      ? PlayerWidget()
+                      : new Container(width: 0, height: 0);
+                },
+              ),
+            ],
+          ),
 //          bottomNavigationBar: BottomNavigationBar(
 //              currentIndex: 0,
 //              fixedColor: Colors.deepPurple,

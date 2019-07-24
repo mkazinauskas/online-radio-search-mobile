@@ -5,14 +5,14 @@ import 'package:flutter/foundation.dart';
 import '../station.dart';
 
 class RadioPlayerModel extends ChangeNotifier {
-  
+
   Station _station;
 
   String _id = '';
 
   String _url = '';
 
-  String _title = 'Please select radio station';
+  String _title = '';
 
   RadioPlayerModel();
 
@@ -53,6 +53,10 @@ class RadioPlayerModel extends ChangeNotifier {
 
   String getDuration() {
     return '';
+  }
+
+  bool hasStation(){
+    return this._id != '';
   }
 
   RadioPlayerModel.fromData(String dataAsJson) {
