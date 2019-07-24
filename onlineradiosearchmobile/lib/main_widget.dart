@@ -5,18 +5,11 @@ import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_widget.dart';
 import 'package:provider/provider.dart';
 
-class MainWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return MainWidgetState();
-  }
-}
-
-class MainWidgetState extends State<MainWidget> {
+class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: _onWillPop,
+        onWillPop: () => _onWillPop(context),
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.black54,
@@ -64,7 +57,7 @@ class MainWidgetState extends State<MainWidget> {
         ));
   }
 
-  Future<bool> _onWillPop() {
+  Future<bool> _onWillPop(BuildContext context) {
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(
