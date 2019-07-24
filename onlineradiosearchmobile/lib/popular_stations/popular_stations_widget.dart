@@ -42,7 +42,7 @@ class PopularStationsWidget extends StatelessWidget {
 
   Widget _row(Station station, BuildContext context) {
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
       onTap: () {
         debugPrint("Index: ${station.url}");
         var radioModel = Provider.of<RadioPlayerModel>(context, listen: false);
@@ -51,6 +51,18 @@ class PopularStationsWidget extends StatelessWidget {
         radioModel.setTitle(station.title);
       },
       title: Text(station.title, style: TextStyle(fontSize: 18.0)),
+      leading: Container(
+          padding: EdgeInsets.only(left: 10),
+          child:
+              Consumer<RadioPlayerModel>(builder: (context, radioModel, child) {
+            return Icon(
+              Icons.play_arrow,
+              size: 30.0,
+              color: radioModel.getId() == station.getId()
+                  ? Colors.black
+                  : Colors.black26,
+            );
+          })),
     );
   }
 }
