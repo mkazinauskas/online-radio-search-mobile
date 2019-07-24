@@ -32,6 +32,10 @@ class PopularStationsModel extends ChangeNotifier {
     return Optional.ofNullable(_stations
         .firstWhere((station) => station.getId() == id, orElse: () => null));
   }
+
+  int stationsCount(){
+    return _stations.length;
+  }
 }
 
 class PopularStationsDataSource {

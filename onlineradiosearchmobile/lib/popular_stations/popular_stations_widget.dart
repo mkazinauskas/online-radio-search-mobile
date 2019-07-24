@@ -23,18 +23,18 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
   Widget items() {
     return Consumer<PopularStationsModel>(
       builder: (context, popularStationsModel, child) {
-        return ListView.builder(
-            padding: const EdgeInsets.all(10.0),
+        return ListView.separated(
+            itemCount: popularStationsModel.stationsCount(),
+            separatorBuilder: (context, index) => Divider(
+                  color: Colors.black26,
+                  height: 5,
+                ),
             itemBuilder: (context, i) {
               var stations = popularStationsModel.getStations();
               if (stations.length == 0 && i == 0) {
                 return _loading();
               }
-              if (i < stations.length) {
-                return _buildRow(stations[i]);
-              } else {
-                return null;
-              }
+              return _buildRow(stations[i]);
             });
       },
     );
@@ -42,12 +42,13 @@ class PopularStationsWidgetState extends State<PopularStationsWidget> {
 
   Widget _loading() {
     return ListTile(
-      title: Text('Loading...', style: TextStyle(fontSize: 18.0)),
+      title: const Text('Loading...', style: TextStyle(fontSize: 18.0)),
     );
   }
 
   Widget _buildRow(Station station) {
     return ListTile(
+      contentPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
       onTap: () {
         debugPrint("Index: ${station.url}");
         var radioModel = Provider.of<RadioPlayerModel>(context, listen: false);
