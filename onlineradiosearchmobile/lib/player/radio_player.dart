@@ -131,13 +131,16 @@ class RadioPlayer {
   }
 
   void play() {
-    if (_radioPlayerData.getUrl() == '') {
+    if (_radioPlayerData.getStation() == null) {
       return;
     }
     changeBackgroundPlayingItem('Connecting...');
 
 //    if (_radioPlayerData.getUrl() != null) {
-    _audioPlayer.play(_radioPlayerData.getUrl());
+    _audioPlayer.play(
+        _radioPlayerData.getStation().map((s) => s.getUrl()).orElseThrow(() {
+      new Exception('No station available for playback');
+    }));
 //    }
     if (_position == null) {
       // There may be a delay while the AudioPlayer plugin connects.
@@ -153,13 +156,14 @@ class RadioPlayer {
   }
 
   void changeBackgroundPlayingItem(String status) {
-    if (_radioPlayerData.getUrl() == '') {
+    if (_radioPlayerData.getStation() == null) {
       return;
     }
     MediaItem mediaItem = MediaItem(
-        id: _radioPlayerData.getId(),
+        id: _radioPlayerData.getStation().map((s) => s.getId()).orElse(''),
         album: status,
-        title: _radioPlayerData.getTitle(),
+        title:
+            _radioPlayerData.getStation().map((s) => s.getTitle()).orElse(''),
         artist: 'Live',
         artUri:
             'https://onlineradiosearch.com/resources/img/common/favicon.png');
@@ -186,10 +190,17 @@ class RadioPlayer {
   }
 
   void _changeStation(RadioPlayerModel model) {
-    if (this._radioPlayerData?.getUrl() == model.getUrl()) {
-      if (this._audioPlayer?.state == AudioPlayerState.PLAYING) {
-        return;
-      }
+    if (!model.getStation().isPresent) {
+      return;
+    }
+    if (this._radioPlayerData != null &&
+        this
+            ._radioPlayerData
+            .getStation()
+            .filter((s) => s.equals(model.getStation().value))
+            .isPresent &&
+        this._audioPlayer?.state == AudioPlayerState.PLAYING) {
+      return;
     }
 
     this._radioPlayerData = model;

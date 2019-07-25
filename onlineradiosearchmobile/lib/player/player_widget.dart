@@ -52,13 +52,12 @@ class PlayerWidgetState extends State<PlayerWidget>
     var radioStationModel =
         Provider.of<RadioPlayerModel>(context, listen: false);
     var currentMediaItemId = await AudioService.currentMediaItem?.id;
-    if ((radioStationModel.getId() == null ||
-            radioStationModel.getId() == '') &&
+    if ((radioStationModel.getStation() == null) &&
         currentMediaItemId != null) {
       Provider.of<PopularStationsModel>(context)
           .findById(currentMediaItemId)
           .ifPresent((station) {
-        radioStationModel.setFromStation(station);
+        radioStationModel.setStation(station);
       });
     }
   }
@@ -114,7 +113,10 @@ class PlayerWidgetState extends State<PlayerWidget>
                                 return Expanded(
 //                                    child: Flexible(
                                   child: Text(
-                                    model.getTitle(),
+                                    model
+                                        .getStation()
+                                        .map((s) => s.getTitle())
+                                        .orElse(''),
                                     textAlign: TextAlign.left,
                                   ),
 //                                ),
@@ -181,7 +183,7 @@ class PlayerWidgetState extends State<PlayerWidget>
   }
 
   void doStuff(RadioPlayerModel model) async {
-    if (model.getUrl() == '') {
+    if (!model.getStation().isPresent) {
       return;
     }
     if (await AudioService.running != true) {

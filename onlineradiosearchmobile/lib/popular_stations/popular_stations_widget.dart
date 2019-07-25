@@ -46,9 +46,7 @@ class PopularStationsWidget extends StatelessWidget {
       onTap: () {
         debugPrint("Index: ${station.url}");
         var radioModel = Provider.of<RadioPlayerModel>(context, listen: false);
-        radioModel.setId(station.id);
-        radioModel.setUrl(station.url);
-        radioModel.setTitle(station.title);
+        radioModel.setStation(station);
       },
       title: Text(station.title, style: TextStyle(fontSize: 18.0)),
       leading: Container(
@@ -58,7 +56,10 @@ class PopularStationsWidget extends StatelessWidget {
             return Icon(
               Icons.play_arrow,
               size: 30.0,
-              color: radioModel.getId() == station.getId()
+              color: radioModel
+                      .getStation()
+                      .filter((s) => station.equals(s))
+                      .isPresent
                   ? Colors.black
                   : Colors.black26,
             );

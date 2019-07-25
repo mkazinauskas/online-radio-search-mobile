@@ -19,4 +19,8 @@ class Station {
   String getTitle() {
     return this.title;
   }
+
+  bool equals(Station station){
+    return id == station.getId();
+  }
 }
