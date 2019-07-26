@@ -6,8 +6,6 @@ import 'package:optional/optional_internal.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../station.dart';
-
 class PlayerWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -17,6 +15,8 @@ class PlayerWidget extends StatefulWidget {
 
 class PlayerWidgetState extends State<PlayerWidget>
     with WidgetsBindingObserver {
+  final PlayerController _playerController = new PlayerController();
+
   @override
   void initState() {
     super.initState();
@@ -125,7 +125,7 @@ class PlayerWidgetState extends State<PlayerWidget>
   Widget _stationDisplay() {
     return Consumer<RadioPlayerModel>(
       builder: (context, model, child) {
-        _sendInfoToPlayer(model);
+        _play();
         return Text(
           model.getStation().map((s) => s.getTitle()).orElse(''),
           textAlign: TextAlign.left,
@@ -156,43 +156,6 @@ class PlayerWidgetState extends State<PlayerWidget>
 
   void _play() {
     var model = Provider.of<RadioPlayerModel>(context);
-    _sendInfoToPlayer(model);
+    model.getStation().ifPresent((station) => _playerController.changeStation(station));
   }
-
-  void _sendInfoToPlayer(RadioPlayerModel model) async {
-    if (!model.getStation().isPresent) {
-      return;
-    }
-    Station station = model
-        .getStation()
-        .orElseThrow(() => new Exception("station not present"));
-
-    if (await AudioService.running != true) {
-      await AudioService.start(
-        backgroundTask: _backgroundAudioPlayerTask,
-        resumeOnClick: true,
-        androidNotificationChannelName: 'Online Radio Player',
-        notificationColor: 0xFF2196f3,
-        androidNotificationIcon: 'mipmap/ic_launcher',
-      );
-    }
-    AudioService.running.whenComplete(() {
-      AudioService.customAction(
-          RadioPlayerActions.changeStation.toString(), station.toJson());
-    });
-  }
-}
-
-void _backgroundAudioPlayerTask() async {
-  RadioPlayer player = RadioPlayer();
-  AudioServiceBackground.run(
-    onStart: player.run,
-    onPlay: player.play,
-    onPause: player.pause,
-    onStop: player.stop,
-    onClick: (MediaButton button) => player.playPause(),
-    onCustomAction: (String actionName, dynamic data) {
-      player.onCustomAction(actionName, data);
-    },
-  );
 }

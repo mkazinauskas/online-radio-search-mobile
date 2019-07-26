@@ -208,3 +208,35 @@ class RadioPlayer {
     throw new Exception(actionName + ' was not found.');
   }
 }
+
+class PlayerController {
+  void changeStation(Station station) async {
+    if (await AudioService.running != true) {
+      await AudioService.start(
+        backgroundTask: _backgroundAudioPlayerTask,
+        resumeOnClick: true,
+        androidNotificationChannelName: 'Online Radio Player',
+        notificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+      );
+    }
+    AudioService.running.whenComplete(() {
+      AudioService.customAction(
+          RadioPlayerActions.changeStation.toString(), station.toJson());
+    });
+  }
+}
+
+void _backgroundAudioPlayerTask() async {
+  RadioPlayer player = RadioPlayer();
+  AudioServiceBackground.run(
+    onStart: player.run,
+    onPlay: player.play,
+    onPause: player.pause,
+    onStop: player.stop,
+    onClick: (MediaButton button) => player.playPause(),
+    onCustomAction: (String actionName, dynamic data) {
+      player.onCustomAction(actionName, data);
+    },
+  );
+}
