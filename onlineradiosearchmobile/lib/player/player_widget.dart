@@ -2,7 +2,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/radio_player.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.dart';
 import 'package:optional/optional_internal.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';

@@ -194,6 +194,7 @@ class RadioPlayer {
     }
 
     this._station = station;
+    this._position = 0;
 
     _audioPlayer.stop();
     play();
