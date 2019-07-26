@@ -7,9 +7,9 @@ import 'package:optional/optional_internal.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PlayerWidget extends StatefulWidget {
-  PlayerWidget();
+import '../station.dart';
 
+class PlayerWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return PlayerWidgetState();
@@ -188,6 +188,10 @@ class PlayerWidgetState extends State<PlayerWidget>
     if (!model.getStation().isPresent) {
       return;
     }
+    Station station = model
+        .getStation()
+        .orElseThrow(() => new Exception("station not present"));
+
     if (await AudioService.running != true) {
       await AudioService.start(
         backgroundTask: _backgroundAudioPlayerTask,
@@ -199,7 +203,7 @@ class PlayerWidgetState extends State<PlayerWidget>
     }
     AudioService.running.whenComplete(() {
       AudioService.customAction(
-          RadioPlayerActions.changeStation.toString(), model.toJson());
+          RadioPlayerActions.changeStation.toString(), station.toJson());
     });
   }
 }

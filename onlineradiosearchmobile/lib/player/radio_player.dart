@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/foundation.dart';
-import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
+
+import '../station.dart';
 
 MediaControl playControl = MediaControl(
   androidIcon: 'drawable/ic_action_play_arrow',
@@ -28,7 +29,7 @@ class RadioPlayer {
 
   static const Duration _timeForNoStationDurationUpdate = Duration(seconds: 5);
 
-  RadioPlayerModel _radioPlayerData;
+  Station _station;
 
   AudioPlayer _audioPlayer = new AudioPlayer();
 
@@ -131,16 +132,13 @@ class RadioPlayer {
   }
 
   void play() {
-    if (_radioPlayerData.getStation() == null) {
+    if (_station == null) {
       return;
     }
     changeBackgroundPlayingItem('Connecting...');
 
 //    if (_radioPlayerData.getUrl() != null) {
-    _audioPlayer.play(
-        _radioPlayerData.getStation().map((s) => s.getUrl()).orElseThrow(() {
-      new Exception('No station available for playback');
-    }));
+    _audioPlayer.play(_station.getUrl());
 //    }
     if (_position == null) {
       // There may be a delay while the AudioPlayer plugin connects.
@@ -156,14 +154,13 @@ class RadioPlayer {
   }
 
   void changeBackgroundPlayingItem(String status) {
-    if (_radioPlayerData.getStation() == null) {
+    if (_station == null) {
       return;
     }
     MediaItem mediaItem = MediaItem(
-        id: _radioPlayerData.getStation().map((s) => s.getId()).orElse(''),
+        id: _station.id,
         album: status,
-        title:
-            _radioPlayerData.getStation().map((s) => s.getTitle()).orElse(''),
+        title: _station.title,
         artist: 'Live',
         artUri:
             'https://onlineradiosearch.com/resources/img/common/favicon.png');
@@ -189,21 +186,14 @@ class RadioPlayer {
     _completer.complete();
   }
 
-  void _changeStation(RadioPlayerModel model) {
-    if (!model.getStation().isPresent) {
-      return;
-    }
-    if (this._radioPlayerData != null &&
-        this
-            ._radioPlayerData
-            .getStation()
-            .filter((s) => s.equals(model.getStation().value))
-            .isPresent &&
+  void _changeStation(Station station) {
+    if (this._station != null &&
+        _station.equals(station) &&
         this._audioPlayer?.state == AudioPlayerState.PLAYING) {
       return;
     }
 
-    this._radioPlayerData = model;
+    this._station = station;
 
     _audioPlayer.stop();
     play();
@@ -211,7 +201,7 @@ class RadioPlayer {
 
   void onCustomAction(String actionName, String data) {
     if (actionName == RadioPlayerActions.changeStation.toString()) {
-      _changeStation(RadioPlayerModel.fromData(data));
+      _changeStation(Station.fromJson(data));
       return;
     }
     throw new Exception(actionName + ' was not found.');
