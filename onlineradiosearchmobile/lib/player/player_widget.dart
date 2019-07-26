@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/radio_player.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
 import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.dart';
+import 'package:optional/optional_internal.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 class PlayerWidget extends StatefulWidget {
   PlayerWidget();
@@ -80,64 +82,80 @@ class PlayerWidgetState extends State<PlayerWidget>
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black12,
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                StreamBuilder(
-                  stream: AudioService.playbackStateStream,
-                  builder: (context, snapshot) {
-                    BasicPlaybackState playerBasicState =
-                        snapshot?.data?.basicState;
-
-                    if ([
-                      BasicPlaybackState.connecting,
-                      BasicPlaybackState.playing
-                    ].contains(playerBasicState)) {
-                      return _pauseButton();
-                    } else {
-                      return _playButton();
-                    }
-                  },
-                ),
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.fromLTRB(0, 10.0, 10.0, 10.0),
-                        child: Row(
-                          children: <Widget>[
-                            Consumer<RadioPlayerModel>(
-                              builder: (context, model, child) {
-                                doStuff(model);
-                                return Expanded(
-//                                    child: Flexible(
-                                  child: Text(
-                                    model
-                                        .getStation()
-                                        .map((s) => s.getTitle())
-                                        .orElse(''),
-                                    textAlign: TextAlign.left,
-                                  ),
-//                                ),
-                                );
-                              },
-                            ),
-//                            Consumer<RadioPlayerModel>(
-//                              builder: (context, model, child) {
-//                                return Expanded(
-//                                  child: Text(model.getDuration(),
-//                                      textAlign: TextAlign.right),
-//                                );
-//                              },
-//                            ),
-                          ],
-                        )))
-              ],
-            )
-          ],
-        ),
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: _stationDisplay(),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+            child: _durationDisplay(),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+            child: _displayControlButton(),
+          ),
+        ],
       ),
+    );
+  }
+
+  StreamBuilder<PlaybackState> _displayControlButton() {
+    return StreamBuilder(
+      stream: AudioService.playbackStateStream,
+      builder: (context, snapshot) {
+        BasicPlaybackState playerBasicState = snapshot?.data?.basicState;
+
+        if ([BasicPlaybackState.connecting, BasicPlaybackState.playing]
+            .contains(playerBasicState)) {
+          return _pauseButton();
+        } else {
+          return _playButton();
+        }
+      },
+    );
+  }
+
+  Widget _durationDisplay() {
+    return StreamBuilder(
+      stream: AudioService.playbackStateStream,
+      builder: (context, snapshot) {
+        PlaybackState state = snapshot.data;
+        return StreamBuilder(
+          stream: Observable.periodic(Duration(milliseconds: 500)),
+          builder: (context, snapshdot) {
+            String clock = _durationAsClock(state);
+            return Text(clock, textAlign: TextAlign.right);
+          },
+        );
+      },
+    );
+  }
+
+  String _durationAsClock(PlaybackState state) {
+    var totalTimeInSeconds = Optional.ofNullable(state)
+        .map((state) => state.currentPosition / 1000)
+        .orElse(0.0);
+
+    String hours = (totalTimeInSeconds ~/ 3600).toString().padLeft(2, '0');
+    String minutes = (totalTimeInSeconds ~/ 60).toString().padLeft(2, '0');
+    String seconds =
+        (totalTimeInSeconds % 60).toStringAsFixed(0).padLeft(2, '0');
+
+    String clock = "$hours:$minutes:$seconds";
+    return clock;
+  }
+
+  Widget _stationDisplay() {
+    return Consumer<RadioPlayerModel>(
+      builder: (context, model, child) {
+        doStuff(model);
+        return Text(
+          model.getStation().map((s) => s.getTitle()).orElse(''),
+          textAlign: TextAlign.left,
+        );
+      },
     );
   }
 
@@ -164,22 +182,6 @@ class PlayerWidgetState extends State<PlayerWidget>
   void _play() {
     var model = Provider.of<RadioPlayerModel>(context);
     doStuff(model);
-//    AudioService.play();
-  }
-
-  void _durationChanged(Duration duration) {
-    setState(() {
-//      int totalTimeInSeconds = duration.inSeconds;
-//      if (totalTimeInSeconds == 0) {
-//        _duration = 'Loading...';
-//        return;
-//      }
-//      String hours = (totalTimeInSeconds ~/ 3600).toString().padLeft(2, '0');
-//      String minutes = (totalTimeInSeconds ~/ 60).toString().padLeft(2, '0');
-//      String seconds = (totalTimeInSeconds % 60).toString().padLeft(2, '0');
-//
-//      _duration = "${hours}:${minutes}:${seconds}";
-    });
   }
 
   void doStuff(RadioPlayerModel model) async {
