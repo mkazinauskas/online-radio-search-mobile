@@ -41,30 +41,6 @@ class PlayerWidgetState extends State<PlayerWidget>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    recoverCurrentSongFromBackgroundTask();
-  }
-
-  void recoverCurrentSongFromBackgroundTask() async {
-    await AudioService.connect();
-    if (!await AudioService.running) {
-      return;
-    }
-    var radioStationModel =
-        Provider.of<RadioPlayerModel>(context, listen: false);
-    var currentMediaItemId = await AudioService.currentMediaItem?.id;
-    if ((radioStationModel.getStation() == null) &&
-        currentMediaItemId != null) {
-      Provider.of<PopularStationsModel>(context)
-          .findById(currentMediaItemId)
-          .ifPresent((station) {
-        radioStationModel.setStation(station);
-      });
-    }
-  }
-
-  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
