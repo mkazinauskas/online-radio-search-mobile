@@ -150,7 +150,7 @@ class PlayerWidgetState extends State<PlayerWidget>
   Widget _stationDisplay() {
     return Consumer<RadioPlayerModel>(
       builder: (context, model, child) {
-        doStuff(model);
+        _sendInfoToPlayer(model);
         return Text(
           model.getStation().map((s) => s.getTitle()).orElse(''),
           textAlign: TextAlign.left,
@@ -181,10 +181,10 @@ class PlayerWidgetState extends State<PlayerWidget>
 
   void _play() {
     var model = Provider.of<RadioPlayerModel>(context);
-    doStuff(model);
+    _sendInfoToPlayer(model);
   }
 
-  void doStuff(RadioPlayerModel model) async {
+  void _sendInfoToPlayer(RadioPlayerModel model) async {
     if (!model.getStation().isPresent) {
       return;
     }
