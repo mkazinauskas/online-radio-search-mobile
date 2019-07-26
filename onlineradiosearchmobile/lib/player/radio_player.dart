@@ -27,7 +27,7 @@ enum RadioPlayerActions { changeStation }
 class RadioPlayer {
   static const Duration _timeBeforeIdleStationRestart = Duration(seconds: 15);
 
-  static const Duration _timeForNoStationDurationUpdate = Duration(seconds: 5);
+  static const Duration _timeForNoStationDurationUpdate = Duration(seconds: 8);
 
   Station _station;
 

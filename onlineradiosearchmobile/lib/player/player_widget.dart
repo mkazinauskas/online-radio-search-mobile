@@ -6,14 +6,7 @@ import 'package:optional/optional_internal.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PlayerWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return PlayerWidgetState();
-  }
-}
-
-class PlayerWidgetState extends State<PlayerWidget> {
+class PlayerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +16,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
       child: Row(
         children: [
           Expanded(
-            child: _stationDisplay(),
+            child: _stationDisplay(context),
           ),
           Container(
             padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -31,14 +24,14 @@ class PlayerWidgetState extends State<PlayerWidget> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-            child: _displayControlButton(),
+            child: _displayControlButton(context),
           ),
         ],
       ),
     );
   }
 
-  StreamBuilder<PlaybackState> _displayControlButton() {
+  StreamBuilder<PlaybackState> _displayControlButton(BuildContext context) {
     return StreamBuilder(
       stream: AudioService.playbackStateStream,
       builder: (context, snapshot) {
@@ -48,7 +41,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
             .contains(playerBasicState)) {
           return _pauseButton();
         } else {
-          return _playButton();
+          return _playButton(context);
         }
       },
     );
@@ -83,10 +76,10 @@ class PlayerWidgetState extends State<PlayerWidget> {
     return "$hours:$minutes:$seconds";
   }
 
-  Widget _stationDisplay() {
+  Widget _stationDisplay(BuildContext buildContext) {
     return Consumer<RadioPlayerModel>(
       builder: (context, model, child) {
-        _play();
+        _play(buildContext);
         return Text(
           model.getStation().map((s) => s.getTitle()).orElse(''),
           textAlign: TextAlign.left,
@@ -98,20 +91,21 @@ class PlayerWidgetState extends State<PlayerWidget> {
   Widget _pauseButton() {
     return Container(
       padding: EdgeInsets.all(10.0),
-      child:
-          GestureDetector(onTap: PlayerController.pause, child: Icon(Icons.pause, size: 30.0)),
+      child: GestureDetector(
+          onTap: PlayerController.pause, child: Icon(Icons.pause, size: 30.0)),
     );
   }
 
-  Widget _playButton() {
+  Widget _playButton(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10.0),
       child: GestureDetector(
-          onTap: _play, child: Icon(Icons.play_arrow, size: 30.0)),
+          onTap: () => _play(context),
+          child: Icon(Icons.play_arrow, size: 30.0)),
     );
   }
 
-  void _play() {
+  void _play(BuildContext context) {
     var model = Provider.of<RadioPlayerModel>(context);
     model
         .getStation()
