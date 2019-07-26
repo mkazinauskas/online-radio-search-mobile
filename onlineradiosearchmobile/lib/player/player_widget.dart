@@ -13,45 +13,7 @@ class PlayerWidget extends StatefulWidget {
   }
 }
 
-class PlayerWidgetState extends State<PlayerWidget>
-    with WidgetsBindingObserver {
-  final PlayerController _playerController = new PlayerController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    connect();
-  }
-
-  @override
-  void dispose() {
-    disconnect();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  void connect() async {
-    await AudioService.connect();
-  }
-
-  void disconnect() {
-    AudioService.disconnect();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        connect();
-        break;
-      case AppLifecycleState.paused:
-        disconnect();
-        break;
-      default:
-        break;
-    }
-  }
+class PlayerWidgetState extends State<PlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +80,7 @@ class PlayerWidgetState extends State<PlayerWidget>
     String seconds =
         (totalTimeInSeconds % 60).toStringAsFixed(0).padLeft(2, '0');
 
-    String clock = "$hours:$minutes:$seconds";
-    return clock;
+    return "$hours:$minutes:$seconds";
   }
 
   Widget _stationDisplay() {
@@ -138,7 +99,7 @@ class PlayerWidgetState extends State<PlayerWidget>
     return Container(
       padding: EdgeInsets.all(10.0),
       child:
-          GestureDetector(onTap: _pause, child: Icon(Icons.pause, size: 30.0)),
+          GestureDetector(onTap: PlayerController.pause, child: Icon(Icons.pause, size: 30.0)),
     );
   }
 
@@ -150,12 +111,10 @@ class PlayerWidgetState extends State<PlayerWidget>
     );
   }
 
-  void _pause() {
-    AudioService.pause();
-  }
-
   void _play() {
     var model = Provider.of<RadioPlayerModel>(context);
-    model.getStation().ifPresent((station) => _playerController.changeStation(station));
+    model
+        .getStation()
+        .ifPresent((station) => PlayerController.changeStation(station));
   }
 }

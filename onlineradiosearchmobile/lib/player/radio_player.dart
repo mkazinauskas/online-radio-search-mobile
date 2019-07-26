@@ -210,7 +210,7 @@ class RadioPlayer {
 }
 
 class PlayerController {
-  void changeStation(Station station) async {
+  static void changeStation(Station station) async {
     if (await AudioService.running != true) {
       await AudioService.start(
         backgroundTask: _backgroundAudioPlayerTask,
@@ -224,6 +224,14 @@ class PlayerController {
       AudioService.customAction(
           RadioPlayerActions.changeStation.toString(), station.toJson());
     });
+  }
+
+  static void stop() {
+    AudioService.stop();
+  }
+
+  static void pause() {
+    AudioService.pause();
   }
 }
 
