@@ -132,7 +132,7 @@ class RadioPlayer {
     AudioServiceBackground.setMediaItem(mediaItem);
 
     Map<BasicPlaybackState, List<MediaControl>> controls = {
-      BasicPlaybackState.error: [stopControl],
+      BasicPlaybackState.error: [playControl],
       BasicPlaybackState.connecting: [stopControl],
       BasicPlaybackState.playing: [pauseControl, stopControl],
       BasicPlaybackState.stopped: [],
