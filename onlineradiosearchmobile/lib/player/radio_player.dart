@@ -168,6 +168,13 @@ class RadioPlayer {
       return;
     }
 
+    if (this._station != null &&
+        _station.equals(station) &&
+        this._audioPlayer?.state == AudioPlayerState.PAUSED) {
+        play();
+      return;
+    }
+
     this._station = station;
     this._position = 0;
 
