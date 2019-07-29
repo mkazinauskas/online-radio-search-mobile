@@ -23,6 +23,8 @@ class RadioPlayer {
 
   int _position;
 
+  int _timesRestarted;
+
   Future<void> run() async {
     var playerStateSubscription =
         _audioPlayer.onPlayerStateChanged.listen((state) {
@@ -35,6 +37,7 @@ class RadioPlayer {
       }
       if (state == AudioPlayerState.PLAYING) {
         _setBackgroundPlayingItem(BasicPlaybackState.playing);
+        _timesRestarted = 0;
         return;
       }
       if (state == AudioPlayerState.PAUSED) {
@@ -66,7 +69,7 @@ class RadioPlayer {
 
   void _retryPlaying() {
     var state = AudioService.playbackState?.basicState;
-    if (state != null || state != BasicPlaybackState.playing) {
+    if (state != null && state != BasicPlaybackState.playing) {
       return;
     }
     if (_durationWasNotUpdatedAfterPlayingStarted() && _refreshShouldRun()) {
@@ -77,6 +80,11 @@ class RadioPlayer {
 
   void _restartStationPlay() {
     debugPrint("Radio station is being restarted!!!");
+    if(_timesRestarted == 5){
+      _setBackgroundPlayingItem(BasicPlaybackState.error);
+    }
+    _timesRestarted++;
+    _setBackgroundPlayingItem(BasicPlaybackState.connecting);
     _audioPlayer.stop();
     play();
   }
