@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PlayerWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,7 +15,14 @@ class PlayerWidget extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _stationDisplay(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: TextDirection.ltr,
+              children: <Widget>[
+                _stationDisplay(context),
+                _statusDisplay(context)
+              ],
+            ),
           ),
           Container(
             padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -35,14 +41,19 @@ class PlayerWidget extends StatelessWidget {
     return StreamBuilder(
       stream: AudioService.playbackStateStream,
       builder: (context, snapshot) {
-        BasicPlaybackState playerBasicState = snapshot?.data?.basicState;
+        BasicPlaybackState state = snapshot?.data?.basicState;
 
-        if ([BasicPlaybackState.connecting, BasicPlaybackState.playing]
-            .contains(playerBasicState)) {
-          return _pauseButton();
-        } else {
-          return _playButton(context);
-        }
+        Map<BasicPlaybackState, Function> controls = {
+          BasicPlaybackState.none: () => _playButton(context),
+          BasicPlaybackState.connecting: () => _stopButton(),
+          BasicPlaybackState.playing: () => _pauseButton(),
+          BasicPlaybackState.paused: () => _playButton(context),
+          BasicPlaybackState.stopped: () => _playButton(context),
+          BasicPlaybackState.error: () => _playButton(context),
+          null: () => _playButton(context),
+        };
+        var control = controls[state];
+        return control();
       },
     );
   }
@@ -96,6 +107,14 @@ class PlayerWidget extends StatelessWidget {
     );
   }
 
+  Widget _stopButton() {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: GestureDetector(
+          onTap: PlayerController.stop, child: Icon(Icons.stop, size: 30.0)),
+    );
+  }
+
   Widget _playButton(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10.0),
@@ -110,5 +129,18 @@ class PlayerWidget extends StatelessWidget {
     model
         .getStation()
         .ifPresent((station) => PlayerController.changeStation(station));
+  }
+
+  Widget _statusDisplay(BuildContext context) {
+    return StreamBuilder(
+      stream: AudioService.playbackStateStream,
+      builder: (context, snapshot) {
+        BasicPlaybackState state = snapshot?.data?.basicState;
+        return Text(
+          PlaybackStatus.from(state),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        );
+      },
+    );
   }
 }

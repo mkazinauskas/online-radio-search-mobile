@@ -6,24 +6,6 @@ import 'package:flutter/foundation.dart';
 
 import '../station.dart';
 
-MediaControl playControl = MediaControl(
-  androidIcon: 'drawable/ic_action_play_arrow',
-  label: 'Play',
-  action: MediaAction.play,
-);
-MediaControl pauseControl = MediaControl(
-  androidIcon: 'drawable/ic_action_pause',
-  label: 'Pause',
-  action: MediaAction.pause,
-);
-MediaControl stopControl = MediaControl(
-  androidIcon: 'drawable/ic_action_stop',
-  label: 'Stop',
-  action: MediaAction.stop,
-);
-
-enum RadioPlayerActions { changeStation }
-
 class RadioPlayer {
   static const Duration _timeBeforeIdleStationRestart = Duration(seconds: 15);
 
@@ -46,42 +28,32 @@ class RadioPlayer {
         _audioPlayer.onPlayerStateChanged.listen((state) {
       debugPrint("Radio player listen!!! `" + state.toString() + "`");
       if (state == AudioPlayerState.COMPLETED) {
-        play();
         return;
       }
       if (state == AudioPlayerState.STOPPED) {
         return;
       }
       if (state == AudioPlayerState.PLAYING) {
-        changeBackgroundPlayingItem('Playing...');
+        changeBackgroundPlayingItem2(BasicPlaybackState.playing);
         return;
       }
       if (state == AudioPlayerState.PAUSED) {
-        changeBackgroundPlayingItem('Paused');
         return;
       }
     });
 
     playerStateSubscription.onError((error) {
-      changeBackgroundPlayingItem('Failed to load...');
-      _retryPlaying(true);
+      changeBackgroundPlayingItem2(BasicPlaybackState.error);
+      _retryPlaying();
     });
 
     var audioPositionSubscription =
         _audioPlayer.onAudioPositionChanged.listen((when) {
-      final connected = _position == null;
       if (_position == when.inMilliseconds) {
-        _retryPlaying(false);
+        _retryPlaying();
       } else {
         _lastDurationUpdate = DateTime.now();
         _position = when.inMilliseconds;
-      }
-
-      if (connected) {
-        // After a delay, we finally start receiving audio positions
-        // from the AudioPlayer plugin, so we can set the state to
-        // playing.
-        _setPlayingState();
       }
     });
     await _completer.future;
@@ -92,8 +64,9 @@ class RadioPlayer {
         controls: [], basicState: BasicPlaybackState.none);
   }
 
-  void _retryPlaying(bool force) {
-    if ((_audioPlayer.state == AudioPlayerState.PLAYING || force) &&
+  void _retryPlaying() {
+    return;
+    if ((_audioPlayer.state == AudioPlayerState.PLAYING) &&
         _durationWasNotUpdated() &&
         _refreshShouldRun()) {
       //Something stuck...
@@ -116,14 +89,6 @@ class RadioPlayer {
     return maxNonRefreshableTime.isAfter(_lastDurationUpdate);
   }
 
-  void _setPlayingState() {
-    AudioServiceBackground.setState(
-      controls: [pauseControl, stopControl],
-      basicState: BasicPlaybackState.playing,
-      position: _position,
-    );
-  }
-
   void playPause() {
     if (AudioServiceBackground.state.basicState == BasicPlaybackState.playing)
       pause();
@@ -135,54 +100,52 @@ class RadioPlayer {
     if (_station == null) {
       return;
     }
-    changeBackgroundPlayingItem('Connecting...');
 
-//    if (_radioPlayerData.getUrl() != null) {
+    changeBackgroundPlayingItem2(BasicPlaybackState.connecting);
+
     _audioPlayer.play(_station.getUrl());
-//    }
-    if (_position == null) {
-      // There may be a delay while the AudioPlayer plugin connects.
-      AudioServiceBackground.setState(
-        controls: [stopControl],
-        basicState: BasicPlaybackState.connecting,
-        position: 0,
-      );
-    } else {
-      // We've already connected, so no delay.
-      _setPlayingState();
-    }
   }
 
-  void changeBackgroundPlayingItem(String status) {
-    if (_station == null) {
-      return;
-    }
+  void changeBackgroundPlayingItem2(BasicPlaybackState state) {
     MediaItem mediaItem = MediaItem(
         id: _station.id,
-        album: status,
+        album: PlaybackStatus.from(state),
         title: _station.title,
         artist: 'Live',
         artUri:
             'https://onlineradiosearch.com/resources/img/common/favicon.png');
     AudioServiceBackground.setMediaItem(mediaItem);
+
+    Map<BasicPlaybackState, List<MediaControl>> controls = {
+      BasicPlaybackState.connecting: [stopControl],
+      BasicPlaybackState.playing: [pauseControl, stopControl],
+      BasicPlaybackState.stopped: [],
+      BasicPlaybackState.none: [playControl, stopControl],
+      BasicPlaybackState.paused: [playControl, stopControl],
+    };
+
+    Map<BasicPlaybackState, int> position = {
+      BasicPlaybackState.connecting: 0,
+      BasicPlaybackState.playing: _position,
+      BasicPlaybackState.stopped: 0,
+      BasicPlaybackState.none: 0,
+      BasicPlaybackState.paused: _position,
+    };
+    AudioServiceBackground.setState(
+      controls: controls[state],
+      basicState: state,
+      position: position[state],
+    );
   }
 
   void pause() {
+    changeBackgroundPlayingItem2(BasicPlaybackState.paused);
     _audioPlayer.pause();
-    AudioServiceBackground.setState(
-      controls: [playControl, stopControl],
-      basicState: BasicPlaybackState.paused,
-      position: _position,
-    );
   }
 
   void stop() {
-    changeBackgroundPlayingItem('Stopped');
+    changeBackgroundPlayingItem2(BasicPlaybackState.stopped);
     _audioPlayer.stop();
-    AudioServiceBackground.setState(
-      controls: [],
-      basicState: BasicPlaybackState.stopped,
-    );
     _completer.complete();
   }
 
@@ -248,3 +211,37 @@ void _backgroundAudioPlayerTask() async {
     },
   );
 }
+
+class PlaybackStatus {
+  static final Map<BasicPlaybackState, String> _messages = {
+    BasicPlaybackState.paused: 'Paused',
+    BasicPlaybackState.error: 'Error while playing...',
+    BasicPlaybackState.playing: 'Playing...',
+    null: 'Ready',
+    BasicPlaybackState.none: 'Ready',
+    BasicPlaybackState.stopped: 'Stopped',
+    BasicPlaybackState.connecting: 'Connecting...'
+  };
+
+  static String from(BasicPlaybackState state) {
+    return _messages[state];
+  }
+}
+
+MediaControl playControl = MediaControl(
+  androidIcon: 'drawable/ic_action_play_arrow',
+  label: 'Play',
+  action: MediaAction.play,
+);
+MediaControl pauseControl = MediaControl(
+  androidIcon: 'drawable/ic_action_pause',
+  label: 'Pause',
+  action: MediaAction.pause,
+);
+MediaControl stopControl = MediaControl(
+  androidIcon: 'drawable/ic_action_stop',
+  label: 'Stop',
+  action: MediaAction.stop,
+);
+
+enum RadioPlayerActions { changeStation }
