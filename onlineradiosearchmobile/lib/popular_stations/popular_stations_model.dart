@@ -26,6 +26,9 @@ class PopularStationsModel extends ChangeNotifier {
   }
 
   void _addStations(List<Station> stations) {
+    if (stations == null) {
+      return;
+    }
     _stations.addAll(stations);
     notifyListeners();
   }

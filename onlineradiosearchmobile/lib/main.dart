@@ -6,26 +6,25 @@ import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.
 import 'package:provider/provider.dart';
 
 void main() {
-  RadioPlayerModel radioPlayerModel = RadioPlayerModel();
-  PopularStationsModel popularStationsModel = PopularStationsModel();
-  new ModelsSynchroniser(radioPlayerModel, popularStationsModel);
-  return runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (context) => radioPlayerModel),
-        ChangeNotifierProvider(builder: (context) => popularStationsModel),
-      ],
-      child: MyApp(),
-    ),
-  );
+  return runApp(OnlineRadioSearchApp());
 }
 
-class MyApp extends StatelessWidget {
+class OnlineRadioSearchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    RadioPlayerModel radioPlayerModel = RadioPlayerModel();
+    PopularStationsModel popularStationsModel = PopularStationsModel();
+    new ModelsSynchroniser(radioPlayerModel, popularStationsModel);
+
     return MaterialApp(
       title: 'Online Radio',
-      home: MainWidget(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(builder: (context) => radioPlayerModel),
+          ChangeNotifierProvider(builder: (context) => popularStationsModel),
+        ],
+        child: MainWidget(),
+      ),
     );
   }
 }
