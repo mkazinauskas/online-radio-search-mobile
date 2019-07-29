@@ -7,9 +7,11 @@ import 'package:flutter/foundation.dart';
 import '../station.dart';
 
 class RadioPlayer {
-  static const Duration _timeBeforeIdleStationRestart = Duration(seconds: 15);
+  static const Duration _timeBeforeIdleStationRestart = Duration(seconds: 5);
 
-  static const Duration _timeForNoStationDurationUpdate = Duration(seconds: 8);
+  static const Duration _timeForNoStationDurationUpdate = Duration(seconds: 3);
+
+  static const int _maxTimesToRetry = 3;
 
   Station _station;
 
@@ -80,8 +82,9 @@ class RadioPlayer {
 
   void _restartStationPlay() {
     debugPrint("Radio station is being restarted!!!");
-    if(_timesRestarted == 5){
+    if(_timesRestarted == _maxTimesToRetry){
       _setBackgroundPlayingItem(BasicPlaybackState.error);
+      return;
     }
     _timesRestarted++;
     _setBackgroundPlayingItem(BasicPlaybackState.connecting);
@@ -129,6 +132,7 @@ class RadioPlayer {
     AudioServiceBackground.setMediaItem(mediaItem);
 
     Map<BasicPlaybackState, List<MediaControl>> controls = {
+      BasicPlaybackState.error: [stopControl],
       BasicPlaybackState.connecting: [stopControl],
       BasicPlaybackState.playing: [pauseControl, stopControl],
       BasicPlaybackState.stopped: [],
@@ -137,6 +141,7 @@ class RadioPlayer {
     };
 
     Map<BasicPlaybackState, int> position = {
+      BasicPlaybackState.error: 0,
       BasicPlaybackState.connecting: 0,
       BasicPlaybackState.playing: _position,
       BasicPlaybackState.stopped: 0,
