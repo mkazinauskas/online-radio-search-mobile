@@ -14,17 +14,31 @@ class PopularStationsWidget extends StatelessWidget {
   Widget items() {
     return Consumer<PopularStationsModel>(
       builder: (context, popularStationsModel, child) {
-        return ListView.separated(
-          itemCount: popularStationsModel.stationsCount(),
-          separatorBuilder: _separator,
-          itemBuilder: (context, i) {
-            var stations = popularStationsModel.getStations();
-            if (stations.length == 0 && i == 0) {
-              return _loading();
-            }
-            return _row(stations[i], context);
-          },
-        );
+        var loadingState = popularStationsModel.loadingState();
+
+        if (loadingState == PopularStationsLoadingState.NONE) {
+          return _message('Loading...');
+        }
+
+        if (loadingState == PopularStationsLoadingState.ERROR) {
+          return _retryLoad(popularStationsModel, context);
+        }
+
+        return _displayItems(context, popularStationsModel);
+      },
+    );
+  }
+
+  Widget _displayItems(BuildContext context, PopularStationsModel model) {
+    return ListView.separated(
+      itemCount: model.stationsCount(),
+      separatorBuilder: _separator,
+      itemBuilder: (context, i) {
+        var stations = model.getStations();
+        if (stations.length == 0 && i == 0) {
+          return _message('No stations available...');
+        }
+        return _row(stations[i], context);
       },
     );
   }
@@ -34,9 +48,9 @@ class PopularStationsWidget extends StatelessWidget {
         height: 5,
       );
 
-  Widget _loading() {
-    return ListTile(
-      title: const Text('Loading...', style: TextStyle(fontSize: 18.0)),
+  Widget _message(String message) {
+    return Center(
+      child: Text(message, style: TextStyle(fontSize: 18.0)),
     );
   }
 
@@ -64,6 +78,28 @@ class PopularStationsWidget extends StatelessWidget {
                   : Colors.black26,
             );
           })),
+    );
+  }
+
+  Widget _retryLoad(PopularStationsModel model, BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'Error while fetching data. Please check internet connection',
+          style: TextStyle(fontSize: 18.0),
+          textAlign: TextAlign.center,
+        ),
+        IconButton(
+            padding: EdgeInsets.all(10),
+            iconSize: 40.0,
+            icon: const Icon(
+              Icons.refresh,
+            ),
+            tooltip: 'Refresh',
+            onPressed: model.downloadData),
+      ],
     );
   }
 }

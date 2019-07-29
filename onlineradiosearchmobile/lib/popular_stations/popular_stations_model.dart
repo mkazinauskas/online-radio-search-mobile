@@ -10,12 +10,18 @@ import '../station.dart';
 class PopularStationsModel extends ChangeNotifier {
   final List<Station> _stations = [];
 
+  PopularStationsLoadingState _loadingState = PopularStationsLoadingState.NONE;
+
   PopularStationsModel() {
-    PopularStationsDataSource().read(_addStations);
+    downloadData();
   }
 
-  void _addStation(Station station) {
-    _stations.add(station);
+  void downloadData() async {
+    PopularStationsDataSource().read(_addStations, _setLoadingState);
+  }
+
+  void _setLoadingState(PopularStationsLoadingState state) {
+    _loadingState = state;
     notifyListeners();
   }
 
@@ -36,18 +42,26 @@ class PopularStationsModel extends ChangeNotifier {
   int stationsCount() {
     return _stations.length;
   }
+
+  PopularStationsLoadingState loadingState() {
+    return _loadingState;
+  }
 }
 
 class PopularStationsDataSource {
   final String _url =
       'https://modestukasai.github.io/onlineradiosearch_data/popular-stations.json';
 
-  void read(onComplete) async {
+  void read(onComplete, onStateChange) async {
+    onStateChange(PopularStationsLoadingState.NONE);
     http
         .get(_url)
         .then((responseBody) => _parseStations(responseBody.body))
-        .then((stations) => onComplete(stations))
-        .whenComplete(() {});
+        .catchError((error) => onStateChange(PopularStationsLoadingState.ERROR))
+        .then((stations) {
+      onComplete(stations);
+      onStateChange(PopularStationsLoadingState.COMPLETE);
+    }).whenComplete(() {});
   }
 
   List<Station> _parseStations(String responseBody) {
@@ -63,3 +77,5 @@ class PopularStationsDataSource {
     );
   }
 }
+
+enum PopularStationsLoadingState { NONE, COMPLETE, ERROR }

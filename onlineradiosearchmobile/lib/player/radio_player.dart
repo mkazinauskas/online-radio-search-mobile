@@ -19,7 +19,7 @@ class RadioPlayer {
 
   DateTime _lastRefresh = new DateTime.now();
 
-  DateTime _lastDurationUpdate = new DateTime.now();
+  DateTime _lastPlayingStarted = new DateTime.now();
 
   int _position;
 
@@ -34,7 +34,7 @@ class RadioPlayer {
         return;
       }
       if (state == AudioPlayerState.PLAYING) {
-        changeBackgroundPlayingItem2(BasicPlaybackState.playing);
+        _setBackgroundPlayingItem(BasicPlaybackState.playing);
         return;
       }
       if (state == AudioPlayerState.PAUSED) {
@@ -43,8 +43,8 @@ class RadioPlayer {
     });
 
     playerStateSubscription.onError((error) {
-      changeBackgroundPlayingItem2(BasicPlaybackState.error);
-      _retryPlaying();
+      _setBackgroundPlayingItem(BasicPlaybackState.error);
+      _restartStationPlay();
     });
 
     var audioPositionSubscription =
@@ -52,7 +52,7 @@ class RadioPlayer {
       if (_position == when.inMilliseconds) {
         _retryPlaying();
       } else {
-        _lastDurationUpdate = DateTime.now();
+        _lastPlayingStarted = DateTime.now();
         _position = when.inMilliseconds;
       }
     });
@@ -65,16 +65,20 @@ class RadioPlayer {
   }
 
   void _retryPlaying() {
-    return;
-    if ((_audioPlayer.state == AudioPlayerState.PLAYING) &&
-        _durationWasNotUpdated() &&
-        _refreshShouldRun()) {
-      //Something stuck...
-      _lastRefresh = DateTime.now();
-      debugPrint("Radio station is being restarted!!!");
-      _audioPlayer.stop();
-      play();
+    var state = AudioService.playbackState?.basicState;
+    if (state != null || state != BasicPlaybackState.playing) {
+      return;
     }
+    if (_durationWasNotUpdatedAfterPlayingStarted() && _refreshShouldRun()) {
+      _lastRefresh = DateTime.now();
+      _restartStationPlay();
+    }
+  }
+
+  void _restartStationPlay() {
+    debugPrint("Radio station is being restarted!!!");
+    _audioPlayer.stop();
+    play();
   }
 
   bool _refreshShouldRun() {
@@ -83,10 +87,10 @@ class RadioPlayer {
     return maxNonRefreshableTime.isAfter(_lastRefresh);
   }
 
-  bool _durationWasNotUpdated() {
+  bool _durationWasNotUpdatedAfterPlayingStarted() {
     DateTime maxNonRefreshableTime =
         DateTime.now().subtract(_timeForNoStationDurationUpdate);
-    return maxNonRefreshableTime.isAfter(_lastDurationUpdate);
+    return maxNonRefreshableTime.isAfter(_lastPlayingStarted);
   }
 
   void playPause() {
@@ -101,12 +105,12 @@ class RadioPlayer {
       return;
     }
 
-    changeBackgroundPlayingItem2(BasicPlaybackState.connecting);
+    _setBackgroundPlayingItem(BasicPlaybackState.connecting);
 
     _audioPlayer.play(_station.getUrl());
   }
 
-  void changeBackgroundPlayingItem2(BasicPlaybackState state) {
+  void _setBackgroundPlayingItem(BasicPlaybackState state) {
     MediaItem mediaItem = MediaItem(
         id: _station.id,
         album: PlaybackStatus.from(state),
@@ -139,12 +143,12 @@ class RadioPlayer {
   }
 
   void pause() {
-    changeBackgroundPlayingItem2(BasicPlaybackState.paused);
+    _setBackgroundPlayingItem(BasicPlaybackState.paused);
     _audioPlayer.pause();
   }
 
   void stop() {
-    changeBackgroundPlayingItem2(BasicPlaybackState.stopped);
+    _setBackgroundPlayingItem(BasicPlaybackState.stopped);
     _audioPlayer.stop();
     _completer.complete();
   }
