@@ -60,11 +60,12 @@ class PopularStationsDataSource {
     http
         .get(_url)
         .then((responseBody) => _parseStations(responseBody.body))
-        .catchError((error) => onStateChange(PopularStationsLoadingState.ERROR))
         .then((stations) {
-      onComplete(stations);
-      onStateChange(PopularStationsLoadingState.COMPLETE);
-    }).whenComplete(() {});
+          onComplete(stations);
+          onStateChange(PopularStationsLoadingState.COMPLETE);
+        })
+        .catchError((error) => onStateChange(PopularStationsLoadingState.ERROR))
+        .whenComplete(() {});
   }
 
   List<Station> _parseStations(String responseBody) {

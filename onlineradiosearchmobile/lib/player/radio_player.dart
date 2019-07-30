@@ -19,7 +19,7 @@ class RadioPlayer {
 
   Completer _completer = Completer();
 
-  DateTime _lastRefresh = new DateTime.now();
+  DateTime _lastRestart = new DateTime.now();
 
   DateTime _lastPlayingStarted = new DateTime.now();
 
@@ -75,7 +75,6 @@ class RadioPlayer {
       return;
     }
     if (_durationWasNotUpdatedAfterPlayingStarted() && _refreshShouldRun()) {
-      _lastRefresh = DateTime.now();
       _restartStationPlay();
     }
   }
@@ -87,7 +86,7 @@ class RadioPlayer {
       return;
     }
     _timesRestarted++;
-    _setBackgroundPlayingItem(BasicPlaybackState.connecting);
+    _lastRestart = DateTime.now();
     _audioPlayer.stop();
     play();
   }
@@ -95,7 +94,7 @@ class RadioPlayer {
   bool _refreshShouldRun() {
     DateTime maxNonRefreshableTime =
         DateTime.now().subtract(_timeBeforeIdleStationRestart);
-    return maxNonRefreshableTime.isAfter(_lastRefresh);
+    return maxNonRefreshableTime.isAfter(_lastRestart);
   }
 
   bool _durationWasNotUpdatedAfterPlayingStarted() {

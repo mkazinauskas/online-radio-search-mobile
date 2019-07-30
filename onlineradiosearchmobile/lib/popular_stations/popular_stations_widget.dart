@@ -21,7 +21,16 @@ class PopularStationsWidget extends StatelessWidget {
         }
 
         if (loadingState == PopularStationsLoadingState.ERROR) {
-          return _retryLoad(popularStationsModel, context);
+          return _retryLoad(
+              'Error while fetching data. Please check internet connection',
+              popularStationsModel,
+              context);
+        }
+
+        if (loadingState == PopularStationsLoadingState.COMPLETE &&
+            popularStationsModel.stationsCount() == 0) {
+          return _retryLoad('No stations are currently available.',
+              popularStationsModel, context);
         }
 
         return _displayItems(context, popularStationsModel);
@@ -35,9 +44,6 @@ class PopularStationsWidget extends StatelessWidget {
       separatorBuilder: _separator,
       itemBuilder: (context, i) {
         var stations = model.getStations();
-        if (stations.length == 0 && i == 0) {
-          return _message('No stations available...');
-        }
         return _row(stations[i], context);
       },
     );
@@ -81,13 +87,14 @@ class PopularStationsWidget extends StatelessWidget {
     );
   }
 
-  Widget _retryLoad(PopularStationsModel model, BuildContext context) {
+  Widget _retryLoad(
+      String message, PopularStationsModel model, BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Error while fetching data. Please check internet connection',
+          message,
           style: TextStyle(fontSize: 18.0),
           textAlign: TextAlign.center,
         ),
