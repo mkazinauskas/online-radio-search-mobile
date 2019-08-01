@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.dart';
+import 'package:onlineradiosearchmobile/popular_stations/radio_stations_model.dart';
 
 import '../station.dart';
 
@@ -9,7 +9,7 @@ class ModelsSynchroniser {
 
   final RadioPlayerModel _radioPlayerModel;
 
-  final PopularStationsModel _popularStationsModel;
+  final RadioStationsModel _popularStationsModel;
 
   ModelsSynchroniser(this._radioPlayerModel, this._popularStationsModel) {
     _refreshStateFromBackgroundService();

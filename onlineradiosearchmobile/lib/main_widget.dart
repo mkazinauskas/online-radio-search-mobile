@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/player_widget.dart';
 import 'package:onlineradiosearchmobile/player/radio_player.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_widget.dart';
+import 'package:onlineradiosearchmobile/popular_stations/radio_stations_widget.dart';
 import 'package:provider/provider.dart';
 
 class MainWidget extends StatelessWidget {
@@ -13,7 +13,7 @@ class MainWidget extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.black54,
-            title: Text('Popular stations'),
+            title: Text('Radio stations'),
 //            actions: <Widget>[
 //              IconButton(
 //                  icon: Icon(Icons.search),
@@ -25,7 +25,7 @@ class MainWidget extends StatelessWidget {
           body: Column(
             children: <Widget>[
               Expanded(
-                child: PopularStationsWidget(),
+                child: RadioStationsWidget(),
               ),
               Consumer<RadioPlayerModel>(
                 builder: (context, model, child) {

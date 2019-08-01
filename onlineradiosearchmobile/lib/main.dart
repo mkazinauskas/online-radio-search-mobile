@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/main_widget.dart';
 import 'package:onlineradiosearchmobile/player/models_synchroniser.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.dart';
+import 'package:onlineradiosearchmobile/popular_stations/radio_stations_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -13,7 +13,7 @@ class OnlineRadioSearchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RadioPlayerModel radioPlayerModel = RadioPlayerModel();
-    PopularStationsModel popularStationsModel = PopularStationsModel();
+    RadioStationsModel popularStationsModel = RadioStationsModel();
     new ModelsSynchroniser(radioPlayerModel, popularStationsModel);
 
     return MaterialApp(

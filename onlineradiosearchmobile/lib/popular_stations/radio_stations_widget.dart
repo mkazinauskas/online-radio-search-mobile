@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:onlineradiosearchmobile/popular_stations/popular_stations_model.dart';
+import 'package:onlineradiosearchmobile/popular_stations/radio_stations_model.dart';
 import 'package:provider/provider.dart';
 
 import '../station.dart';
 
-class PopularStationsWidget extends StatelessWidget {
+class RadioStationsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return items();
   }
 
   Widget items() {
-    return Consumer<PopularStationsModel>(
+    return Consumer<RadioStationsModel>(
       builder: (context, popularStationsModel, child) {
         var loadingState = popularStationsModel.loadingState();
 
@@ -38,7 +38,7 @@ class PopularStationsWidget extends StatelessWidget {
     );
   }
 
-  Widget _displayItems(BuildContext context, PopularStationsModel model) {
+  Widget _displayItems(BuildContext context, RadioStationsModel model) {
     return ListView.separated(
       itemCount: model.stationsCount(),
       separatorBuilder: _separator,
@@ -88,7 +88,7 @@ class PopularStationsWidget extends StatelessWidget {
   }
 
   Widget _retryLoad(
-      String message, PopularStationsModel model, BuildContext context) {
+      String message, RadioStationsModel model, BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,7 +105,7 @@ class PopularStationsWidget extends StatelessWidget {
               Icons.refresh,
             ),
             tooltip: 'Refresh',
-            onPressed: model.downloadData),
+            onPressed: model.retryDataLoading),
       ],
     );
   }

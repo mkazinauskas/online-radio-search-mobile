@@ -2,22 +2,37 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:optional/optional.dart';
 
 import '../station.dart';
 
-class PopularStationsModel extends ChangeNotifier {
+class RadioStationsModel extends ChangeNotifier {
   final List<Station> _stations = [];
 
   PopularStationsLoadingState _loadingState = PopularStationsLoadingState.NONE;
 
-  PopularStationsModel() {
-    downloadData();
+  RadioStationsModel() {
+    loadDataFromLocalSystem();
+//    downloadData();
+  }
+
+  void retryDataLoading() async {
+    loadDataFromLocalSystem();
+//    downloadData();
   }
 
   void downloadData() async {
     PopularStationsDataSource().read(_addStations, _setLoadingState);
+  }
+
+  void loadDataFromLocalSystem() async {
+    new StationsLocalDataSource().load().then(_addStations).whenComplete(() {
+      _loadingState = PopularStationsLoadingState.COMPLETE;
+    }).catchError((error) {
+      _loadingState = PopularStationsLoadingState.ERROR;
+    });
   }
 
   void _setLoadingState(PopularStationsLoadingState state) {
@@ -51,6 +66,15 @@ class PopularStationsModel extends ChangeNotifier {
   }
 }
 
+class StationsLocalDataSource {
+  final PATH = 'assets/data/stations.json';
+
+  Future<List<Station>> load() async {
+    String data = await rootBundle.loadString(PATH);
+    return StationsFromJsonParser.parseStations(data);
+  }
+}
+
 class PopularStationsDataSource {
   final String _url =
       'https://modestukasai.github.io/onlineradiosearch_data/popular-stations.json';
@@ -59,7 +83,8 @@ class PopularStationsDataSource {
     onStateChange(PopularStationsLoadingState.NONE);
     http
         .get(_url)
-        .then((responseBody) => _parseStations(responseBody.body))
+        .then((responseBody) =>
+            StationsFromJsonParser.parseStations(responseBody.body))
         .then((stations) {
           onComplete(stations);
           onStateChange(PopularStationsLoadingState.COMPLETE);
@@ -67,13 +92,15 @@ class PopularStationsDataSource {
         .catchError((error) => onStateChange(PopularStationsLoadingState.ERROR))
         .whenComplete(() {});
   }
+}
 
-  List<Station> _parseStations(String responseBody) {
+class StationsFromJsonParser {
+  static List<Station> parseStations(String responseBody) {
     return List<Station>.from(
         JsonCodec().decode(responseBody).map(_singleStation).toList());
   }
 
-  _singleStation(dynamic json) {
+  static _singleStation(dynamic json) {
     return Station(
       (json['id'] as int).toString(),
       json['title'] as String,
