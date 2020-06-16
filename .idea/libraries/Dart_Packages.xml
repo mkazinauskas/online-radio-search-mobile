@@ -26,6 +26,7 @@
         <entry key="audio_service">
           <value>
             <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/audio_service-0.11.0/lib" />
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/audio_service-0.3.0/lib" />
             </list>
           </value>
@@ -48,6 +49,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.1.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="clock">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/clock-1.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -80,10 +88,31 @@
             </list>
           </value>
         </entry>
+        <entry key="file">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/file-5.2.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter">
           <value>
             <list>
               <option value="$USER_HOME$/tools/flutter/packages/flutter/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_cache_manager">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_cache_manager-1.4.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_isolate">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_isolate-1.0.0+14/lib" />
             </list>
           </value>
         </entry>
@@ -101,9 +130,24 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_tts">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_tts-0.8.7/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_web_plugins">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/packages/flutter_web_plugins/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="http">
           <value>
             <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.12.1/lib" />
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.12.0+2/lib" />
             </list>
           </value>
@@ -111,6 +155,7 @@
         <entry key="http_parser">
           <value>
             <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.4/lib" />
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.3/lib" />
             </list>
           </value>
@@ -119,6 +164,20 @@
           <value>
             <list>
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/image-2.1.12/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="intl">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.16.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="just_audio">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/just_audio-0.2.1/lib" />
             </list>
           </value>
         </entry>
@@ -146,13 +205,43 @@
         <entry key="path">
           <value>
             <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.7.0/lib" />
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.6.4/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="path_provider">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.10/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="path_provider_linux">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="path_provider_macos">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="path_provider_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-1.0.2/lib" />
             </list>
           </value>
         </entry>
         <entry key="pedantic">
           <value>
             <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.0/lib" />
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.7.0/lib" />
             </list>
           </value>
@@ -161,6 +250,27 @@
           <value>
             <list>
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-2.4.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="platform">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/platform-2.2.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="plugin_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-1.0.2/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="process">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/process-3.0.13/lib" />
             </list>
           </value>
         </entry>
@@ -181,6 +291,7 @@
         <entry key="rxdart">
           <value>
             <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.24.1/lib" />
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.22.0/lib" />
             </list>
           </value>
@@ -196,6 +307,20 @@
           <value>
             <list>
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.7.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="sqflite">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-1.3.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="sqflite_common">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite_common-1.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -220,6 +345,13 @@
             </list>
           </value>
         </entry>
+        <entry key="synchronized">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/synchronized-2.2.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="term_glyph">
           <value>
             <list>
@@ -241,10 +373,24 @@
             </list>
           </value>
         </entry>
+        <entry key="uuid">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/uuid-2.1.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="vector_math">
           <value>
             <list>
               <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.8/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="xdg_directories">
+          <value>
+            <list>
+              <option value="$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/xdg_directories-0.1.0/lib" />
             </list>
           </value>
         </entry>
@@ -268,41 +414,67 @@
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/archive-2.0.13/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.6.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.4.1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/audio_service-0.11.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/audio_service-0.3.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayer-0.5.2/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-2.0.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.1.3/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/clock-1.0.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.14.12/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/convert-2.1.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/crypto-2.1.4/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-0.1.2/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-0.1.3/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/file-5.2.0/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_cache_manager-1.4.1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_isolate-1.0.0+14/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_launcher_icons-0.7.2+1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_tts-0.8.7/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.12.0+2/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.12.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.3/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.4/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/image-2.1.12/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.16.1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/just_audio-0.2.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.6/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.1.8/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/optional-3.0.2+1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.6.4/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.7.0/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.10/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+3/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-1.0.2/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.7.0/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-2.4.0/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/platform-2.2.1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-1.0.2/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/process-3.0.13/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/provider-3.0.0+1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-2.1.3/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.22.0/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.24.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.7.0/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-1.3.1/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite_common-1.0.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/stack_trace-1.9.3/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/stream_channel-2.0.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.0.5/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/synchronized-2.2.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.1.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.15/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/uuid-2.1.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.8/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/xdg_directories-0.1.0/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/xml-3.6.1/lib" />
       <root url="file://$USER_HOME$/tools/flutter/.pub-cache/hosted/pub.dartlang.org/yaml-2.1.16/lib" />
       <root url="file://$USER_HOME$/tools/flutter/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$USER_HOME$/tools/flutter/packages/flutter/lib" />
       <root url="file://$USER_HOME$/tools/flutter/packages/flutter_test/lib" />
+      <root url="file://$USER_HOME$/tools/flutter/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
