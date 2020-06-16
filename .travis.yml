@@ -9,7 +9,7 @@ addons:
       - libstdc++6
       - fonts-droid-fallback
 before_script:
-  - git clone --branch 1.20.0-1.0.pre https://github.com/flutter/flutter.git
+  - git clone https://github.com/flutter/flutter.git --depth 1 --branch 1.17.3
   - ./flutter/bin/flutter doctor
 script:
   - ./flutter/bin/flutter test
