@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/online-radio-search-mobile.iml" filepath="$PROJECT_DIR$/.idea/online-radio-search-mobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onlineradiosearchmobile.iml" filepath="$PROJECT_DIR$/onlineradiosearchmobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/onlineradiosearchmobile_android.iml" filepath="$PROJECT_DIR$/android/onlineradiosearchmobile_android.iml" />
     </modules>
   </component>
 </project>
