@@ -3,8 +3,8 @@ import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/player/AudioPlayerTask.dart';
-import 'package:onlineradiosearchmobile/player/ScreenState.dart';
+import 'package:onlineradiosearchmobile/screens/player/audio_player_task.dart';
+import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
 
 // NOTE: Your entrypoint MUST be a top-level function.
