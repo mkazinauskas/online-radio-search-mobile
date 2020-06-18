@@ -31,6 +31,9 @@ class AppBottomNavigationBar extends StatelessWidget {
   }
 
   void _onItemTapped(int index) {
+    if (index == _navigationBarItem.index) {
+      return;
+    }
     switch (index) {
       case SearchNavigationBarItem.index_value:
         {
@@ -44,7 +47,7 @@ class AppBottomNavigationBar extends StatelessWidget {
         break;
       case PlayerNavigationBarItem.index_value:
         {
-          Navigator.pushNamed(_buildContext, Routes.PLAYER);
+          Navigator.pushReplacementNamed(_buildContext, Routes.PLAYER);
         }
         break;
       default:
