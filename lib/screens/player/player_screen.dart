@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_player_task.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
@@ -15,11 +16,16 @@ void _audioPlayerTaskEntrypoint() async {
 class PlayerScreen extends StatelessWidget {
   /// Tracks the position while the user drags the seek bar.
   final BehaviorSubject<double> _dragPositionSubject =
-  BehaviorSubject.seeded(null);
+      BehaviorSubject.seeded(null);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black54,
+        title: Text('Player'),
+      ),
+      body: Center(
         child: StreamBuilder<ScreenState>(
           stream: _screenStateStream,
           builder: (context, snapshot) {
@@ -86,6 +92,9 @@ class PlayerScreen extends StatelessWidget {
             );
           },
         ),
+      ),
+      bottomNavigationBar:
+          AppBottomNavigationBar(context, PlayerNavigationBarItem()),
     );
   }
 
@@ -96,23 +105,23 @@ class PlayerScreen extends StatelessWidget {
           AudioService.queueStream,
           AudioService.currentMediaItemStream,
           AudioService.playbackStateStream,
-              (queue, mediaItem, playbackState) =>
+          (queue, mediaItem, playbackState) =>
               ScreenState(queue, mediaItem, playbackState));
 
   RaisedButton audioPlayerButton() => startButton(
-    'AudioPlayer',
+        'AudioPlayer',
         () {
-      AudioService.start(
-        backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
-        androidNotificationChannelName: 'Audio Service Demo',
-        // Enable this if you want the Android service to exit the foreground state on pause.
-        //androidStopForegroundOnPause: true,
-        androidNotificationColor: 0xFF2196f3,
-        androidNotificationIcon: 'mipmap/ic_launcher',
-        androidEnableQueue: true,
+          AudioService.start(
+            backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
+            androidNotificationChannelName: 'Audio Service Demo',
+            // Enable this if you want the Android service to exit the foreground state on pause.
+            //androidStopForegroundOnPause: true,
+            androidNotificationColor: 0xFF2196f3,
+            androidNotificationIcon: 'mipmap/ic_launcher',
+            androidEnableQueue: true,
+          );
+        },
       );
-    },
-  );
 
   RaisedButton startButton(String label, VoidCallback onPressed) =>
       RaisedButton(
@@ -121,22 +130,22 @@ class PlayerScreen extends StatelessWidget {
       );
 
   IconButton playButton() => IconButton(
-    icon: Icon(Icons.play_arrow),
-    iconSize: 64.0,
-    onPressed: AudioService.play,
-  );
+        icon: Icon(Icons.play_arrow),
+        iconSize: 64.0,
+        onPressed: AudioService.play,
+      );
 
   IconButton pauseButton() => IconButton(
-    icon: Icon(Icons.pause),
-    iconSize: 64.0,
-    onPressed: AudioService.pause,
-  );
+        icon: Icon(Icons.pause),
+        iconSize: 64.0,
+        onPressed: AudioService.pause,
+      );
 
   IconButton stopButton() => IconButton(
-    icon: Icon(Icons.stop),
-    iconSize: 64.0,
-    onPressed: AudioService.stop,
-  );
+        icon: Icon(Icons.stop),
+        iconSize: 64.0,
+        onPressed: AudioService.stop,
+      );
 
   Widget positionIndicator(MediaItem mediaItem, PlaybackState state) {
     double seekPos;
@@ -144,7 +153,7 @@ class PlayerScreen extends StatelessWidget {
       stream: Rx.combineLatest2<double, double, double>(
           _dragPositionSubject.stream,
           Stream.periodic(Duration(milliseconds: 200)),
-              (dragPosition, _) => dragPosition),
+          (dragPosition, _) => dragPosition),
       builder: (context, snapshot) {
         double position =
             snapshot.data ?? state.currentPosition.inMilliseconds.toDouble();
