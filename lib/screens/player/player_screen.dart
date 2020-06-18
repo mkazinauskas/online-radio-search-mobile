@@ -12,18 +12,14 @@ void _audioPlayerTaskEntrypoint() async {
   AudioServiceBackground.run(() => AudioPlayerTask());
 }
 
-class MainScreen extends StatelessWidget {
+class PlayerScreen extends StatelessWidget {
   /// Tracks the position while the user drags the seek bar.
   final BehaviorSubject<double> _dragPositionSubject =
   BehaviorSubject.seeded(null);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Audio Service Demo'),
-      ),
-      body: Center(
+    return Center(
         child: StreamBuilder<ScreenState>(
           stream: _screenStateStream,
           builder: (context, snapshot) {
@@ -90,7 +86,6 @@ class MainScreen extends StatelessWidget {
             );
           },
         ),
-      ),
     );
   }
 
