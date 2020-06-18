@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/search/latest_radio_station.dart';
 import 'package:onlineradiosearchmobile/screens/search/latest_radio_stations.dart';
@@ -83,6 +84,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 style: TextStyle(color: Colors.black))
           ],
         ),
+        onTap: () => {
+              Fluttertoast.showToast(
+                msg: id.toString(),
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+              )
+            },
         trailing:
             Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 30.0));
   }
