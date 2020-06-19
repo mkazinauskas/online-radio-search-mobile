@@ -1,9 +1,11 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:onlineradiosearchmobile/main.dart';
+import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
+import 'package:onlineradiosearchmobile/screens/api/streams_client.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
-import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
+import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/search/latest_radio_station.dart';
 import 'package:onlineradiosearchmobile/screens/search/latest_radio_stations.dart';
 
@@ -93,15 +95,20 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
         onTap: () {
-//              Fluttertoast.showToast(
-//                msg: id.toString(),
-//                toastLength: Toast.LENGTH_SHORT,
-//                gravity: ToastGravity.CENTER,
-//              );
-//              AudioService.b(MediaItem(id:id.toString(), title: title))
-          var item = PlayerItem(
-              id.toString(), title, 'http://joyhits.online/joyhitshq.mp3');
-          AudioServiceController.changeStation(item);
+          StreamsClient((List<StreamResponse> response, ApiState state) {
+            if (state == ApiState.COMPLETE) {
+              response.retainWhere((element) => element.working);
+              var item = PlayerItem(id.toString(), title, response[0].url);
+              AudioServiceController.changeStation(item);
+              Navigator.pushNamed(context, Routes.PLAYER);
+            } else {
+              Fluttertoast.showToast(
+                msg: 'Failed to load data.',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+              );
+            }
+          }).load(id);
         },
         trailing:
             Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 30.0));

@@ -11,14 +11,14 @@ class StreamsClient {
 
   StreamsClient(this._onComplete);
 
-  void load(int streamId) async {
-    var url = _url.replaceAll('radioStationId', streamId.toString());
+  void load(int radioStationId) async {
+    var url = _url.replaceAll('{radioStationId}', radioStationId.toString());
     http
         .get(url)
         .then((responseBody) =>
         _ResponseJsonToObjectConverter.convert(responseBody.body))
-        .then((stations) {
-          _onComplete(stations, ApiState.COMPLETE);
+        .then((data) {
+          _onComplete(data, ApiState.COMPLETE);
         })
         .catchError((error) => _onComplete([], ApiState.ERROR))
         .whenComplete(() {});
@@ -28,14 +28,15 @@ class StreamsClient {
 class StreamResponse {
   final int id;
   final String url;
+  final bool working;
 
-  StreamResponse(this.id, this.url);
+  StreamResponse(this.id, this.url, this.working);
 }
 
 class _ResponseJsonToObjectConverter {
   static List<StreamResponse> convert(String responseBody) {
     dynamic decoded = JsonCodec().decode(responseBody)['_embedded']
-        ['radioStationStreamsResponseList'];
+        ['radioStationStreamResponseList'];
     return List<StreamResponse>.from(decoded.map(_singleStation).toList());
   }
 
@@ -43,6 +44,7 @@ class _ResponseJsonToObjectConverter {
     return StreamResponse(
       (json['id'] as int),
       json['url'] as String,
+      json['working'] as bool,
     );
   }
 }
