@@ -80,8 +80,13 @@ class _SearchScreenState extends State<SearchScreen> {
         subtitle: Row(
           children: <Widget>[
             Icon(Icons.linear_scale, color: Colors.black),
-            Text(website == null ? "" : website,
-                style: TextStyle(color: Colors.black))
+            Flexible(
+              child: Text(
+                website == null ? "" : website,
+                style: TextStyle(color: Colors.black),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         onTap: () => {
