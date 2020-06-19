@@ -108,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
               }
               var item = PlayerItem(id.toString(), title, response[0].url);
               AudioServiceController.changeStation(item);
-              Navigator.pushNamed(context, Routes.PLAYER);
+              Navigator.pushReplacementNamed(context, Routes.PLAYER);
             } else {
               Fluttertoast.showToast(
                 msg: 'Failed to load data.',
