@@ -32,13 +32,7 @@ MediaControl stopControl = MediaControl(
 );
 
 class AudioPlayerTask extends BackgroundAudioTask {
-  final _queue = <MediaItem>[
-    MediaItem(
-      id: "http://joyhits.online/joyhitshq.mp3",
-      album: "Hits",
-      title: "Joy Hits",
-    )
-  ];
+  final _queue = <MediaItem>[];
   int _queueIndex = -1;
   AudioPlayer _audioPlayer = new AudioPlayer();
   AudioProcessingState _skipState;
@@ -56,6 +50,15 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   @override
   void onStart(Map<String, dynamic> params) {
+    var item = PlayerItem.fromJson(params['radioStation']);
+    _queue.clear();
+    MediaItem mediaItem = MediaItem(
+      id: item.url,
+      album: 'Live',
+      title: item.title,
+      extras: {'id': item.id.toString()},
+    );
+    _queue.add(mediaItem);
     _playerStateSubscription = _audioPlayer.playbackStateStream
         .where((state) => state == AudioPlaybackState.completed)
         .listen((state) {
@@ -272,20 +275,20 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<dynamic> onCustomAction(String name, dynamic arguments) {
-      print(name);
-      print(arguments);
-      if(AudioServiceActions.changeStation.toString() == name){
-        var item = PlayerItem.fromJson(arguments);
-        _queue.clear();
-        MediaItem mediaItem = MediaItem(
-            id: item.url,
-            album: 'Live',
-            title: item.title,
-            extras: {'id': item.id.toString()},
-        );
-        _queue.add(mediaItem);
-        AudioServiceBackground.setQueue(_queue);
-        _skip(0);
-      }
+    print(name);
+    print(arguments);
+    if (AudioServiceActions.changeStation.toString() == name) {
+      var item = PlayerItem.fromJson(arguments);
+      _queue.clear();
+      MediaItem mediaItem = MediaItem(
+        id: item.url,
+        album: 'Live',
+        title: item.title,
+        extras: {'id': item.id.toString()},
+      );
+      _queue.add(mediaItem);
+      AudioServiceBackground.setQueue(_queue);
+      _skip(0);
+    }
   }
 }

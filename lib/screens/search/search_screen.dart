@@ -98,6 +98,14 @@ class _SearchScreenState extends State<SearchScreen> {
           StreamsClient((List<StreamResponse> response, ApiState state) {
             if (state == ApiState.COMPLETE) {
               response.retainWhere((element) => element.working);
+              if (response.isEmpty) {
+                Fluttertoast.showToast(
+                  msg: 'No working stream found.',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                );
+                return;
+              }
               var item = PlayerItem(id.toString(), title, response[0].url);
               AudioServiceController.changeStation(item);
               Navigator.pushNamed(context, Routes.PLAYER);

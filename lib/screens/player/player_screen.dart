@@ -103,7 +103,7 @@ class PlayerScreen extends StatelessWidget {
   RaisedButton audioPlayerButton() => startButton(
         'AudioPlayer',
         () {
-          AudioServiceController.start();
+//          AudioServiceController.start();
         },
       );
 
