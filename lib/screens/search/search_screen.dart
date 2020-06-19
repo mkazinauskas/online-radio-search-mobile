@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
@@ -90,11 +91,12 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
         onTap: () => {
-              Fluttertoast.showToast(
-                msg: id.toString(),
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              )
+//              Fluttertoast.showToast(
+//                msg: id.toString(),
+//                toastLength: Toast.LENGTH_SHORT,
+//                gravity: ToastGravity.CENTER,
+//              );
+//              AudioService.b(MediaItem(id:id.toString(), title: title))
             },
         trailing:
             Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 30.0));

@@ -4,14 +4,9 @@ import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
-import 'package:onlineradiosearchmobile/screens/player/audio_player_task.dart';
+import 'package:onlineradiosearchmobile/screens/player/audio_service_starter.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
-
-// NOTE: Your entrypoint MUST be a top-level function.
-void _audioPlayerTaskEntrypoint() async {
-  AudioServiceBackground.run(() => AudioPlayerTask());
-}
 
 class PlayerScreen extends StatelessWidget {
   /// Tracks the position while the user drags the seek bar.
@@ -111,15 +106,7 @@ class PlayerScreen extends StatelessWidget {
   RaisedButton audioPlayerButton() => startButton(
         'AudioPlayer',
         () {
-          AudioService.start(
-            backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
-            androidNotificationChannelName: 'Audio Service Demo',
-            // Enable this if you want the Android service to exit the foreground state on pause.
-            //androidStopForegroundOnPause: true,
-            androidNotificationColor: 0xFF2196f3,
-            androidNotificationIcon: 'mipmap/ic_launcher',
-            androidEnableQueue: true,
-          );
+          AudioServiceStarter.start();
         },
       );
 
