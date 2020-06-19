@@ -24,6 +24,7 @@ class AudioServiceController {
     AudioService.stop().whenComplete(() {
       if (AudioService.playbackStateStream == null || !AudioService.running) {
         start(playerItem);
+        return;
       }
       var subscription;
       subscription = AudioService.playbackStateStream.listen((state) {
