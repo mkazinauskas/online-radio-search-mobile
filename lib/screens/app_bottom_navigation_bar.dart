@@ -25,7 +25,7 @@ class AppBottomNavigationBar extends StatelessWidget {
         ),
       ],
       currentIndex: _navigationBarItem.index,
-      selectedItemColor: Colors.amber[800],
+//      selectedItemColor: Colors.amber[800],
       onTap: _onItemTapped,
     );
   }

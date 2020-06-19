@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
+import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 
 MediaControl playControl = MediaControl(
   androidIcon: 'drawable/ic_action_play_arrow',
@@ -35,20 +37,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
       id: "http://joyhits.online/joyhitshq.mp3",
       album: "Hits",
       title: "Joy Hits",
-      artist: "Science Friday and WNYC Studios",
-      duration: Duration(milliseconds: 5739820),
-      artUri:
-          "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-    ),
-    MediaItem(
-      id: "https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3",
-      album: "Science Friday",
-      title: "From Cat Rheology To Operatic Incompetence",
-      artist: "Science Friday and WNYC Studios",
-      duration: Duration(milliseconds: 2856950),
-      artUri:
-          "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-    ),
+    )
   ];
   int _queueIndex = -1;
   AudioPlayer _audioPlayer = new AudioPlayer();
@@ -168,32 +157,32 @@ class AudioPlayerTask extends BackgroundAudioTask {
     }
   }
 
-  @override
-  void onSeekTo(Duration position) {
-    _audioPlayer.seek(position);
-  }
+//  @override
+//  void onSeekTo(Duration position) {
+//    _audioPlayer.seek(position);
+//  }
 
   @override
   void onClick(MediaButton button) {
     playPause();
   }
 
-  @override
-  Future<void> onFastForward() async {
-    await _seekRelative(fastForwardInterval);
-  }
+//  @override
+//  Future<void> onFastForward() async {
+//    await _seekRelative(fastForwardInterval);
+//  }
+//
+//  @override
+//  Future<void> onRewind() async {
+//    await _seekRelative(rewindInterval);
+//  }
 
-  @override
-  Future<void> onRewind() async {
-    await _seekRelative(rewindInterval);
-  }
-
-  Future<void> _seekRelative(Duration offset) async {
-    var newPosition = _audioPlayer.playbackEvent.position + offset;
-    if (newPosition < Duration.zero) newPosition = Duration.zero;
-    if (newPosition > mediaItem.duration) newPosition = mediaItem.duration;
-    await _audioPlayer.seek(_audioPlayer.playbackEvent.position + offset);
-  }
+//  Future<void> _seekRelative(Duration offset) async {
+//    var newPosition = _audioPlayer.playbackEvent.position + offset;
+//    if (newPosition < Duration.zero) newPosition = Duration.zero;
+//    if (newPosition > mediaItem.duration) newPosition = mediaItem.duration;
+//    await _audioPlayer.seek(_audioPlayer.playbackEvent.position + offset);
+//  }
 
   @override
   Future<void> onStop() async {
@@ -266,18 +255,37 @@ class AudioPlayerTask extends BackgroundAudioTask {
   List<MediaControl> getControls() {
     if (_playing) {
       return [
-        skipToPreviousControl,
+//        skipToPreviousControl,
         pauseControl,
         stopControl,
-        skipToNextControl
+//        skipToNextControl
       ];
     } else {
       return [
-        skipToPreviousControl,
+//        skipToPreviousControl,
         playControl,
         stopControl,
-        skipToNextControl
+//        skipToNextControl
       ];
     }
+  }
+
+  @override
+  Future<dynamic> onCustomAction(String name, dynamic arguments) {
+      print(name);
+      print(arguments);
+      if(AudioServiceActions.changeStation.toString() == name){
+        var item = PlayerItem.fromJson(arguments);
+        _queue.clear();
+        MediaItem mediaItem = MediaItem(
+            id: item.url,
+            album: 'Live',
+            title: item.title,
+            extras: {'id': item.id.toString()},
+        );
+        _queue.add(mediaItem);
+        AudioServiceBackground.setQueue(_queue);
+        _skip(0);
+      }
   }
 }

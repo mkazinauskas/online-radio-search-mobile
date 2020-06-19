@@ -2,6 +2,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
+import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
+import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/search/latest_radio_station.dart';
 import 'package:onlineradiosearchmobile/screens/search/latest_radio_stations.dart';
 
@@ -90,14 +92,17 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ],
         ),
-        onTap: () => {
+        onTap: () {
 //              Fluttertoast.showToast(
 //                msg: id.toString(),
 //                toastLength: Toast.LENGTH_SHORT,
 //                gravity: ToastGravity.CENTER,
 //              );
 //              AudioService.b(MediaItem(id:id.toString(), title: title))
-            },
+          var item = PlayerItem(
+              id.toString(), title, 'http://joyhits.online/joyhitshq.mp3');
+          AudioServiceController.changeStation(item);
+        },
         trailing:
             Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 30.0));
   }
