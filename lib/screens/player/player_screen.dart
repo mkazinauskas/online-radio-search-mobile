@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
-import 'package:onlineradiosearchmobile/screens/player/audio_service_starter.dart';
+import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -16,7 +16,6 @@ class PlayerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black54,
         title: Text('Player'),
       ),
       body: Center(
@@ -104,7 +103,7 @@ class PlayerScreen extends StatelessWidget {
   RaisedButton audioPlayerButton() => startButton(
         'AudioPlayer',
         () {
-          AudioServiceStarter.start();
+          AudioServiceController.start();
         },
       );
 

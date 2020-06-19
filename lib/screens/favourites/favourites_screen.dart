@@ -10,7 +10,6 @@ class FavouritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black54,
         title: Text('Favourites'),
 //            actions: <Widget>[
 //              IconButton(
