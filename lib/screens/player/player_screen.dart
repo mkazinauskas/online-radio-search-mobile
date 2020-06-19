@@ -36,26 +36,26 @@ class PlayerScreen extends StatelessWidget {
                 if (processingState == AudioProcessingState.none) ...[
                   audioPlayerButton(),
                 ] else ...[
-                  if (queue != null && queue.isNotEmpty)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.skip_previous),
-                          iconSize: 64.0,
-                          onPressed: mediaItem == queue.first
-                              ? null
-                              : AudioService.skipToPrevious,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.skip_next),
-                          iconSize: 64.0,
-                          onPressed: mediaItem == queue.last
-                              ? null
-                              : AudioService.skipToNext,
-                        ),
-                      ],
-                    ),
+//                  if (queue != null && queue.isNotEmpty)
+//                    Row(
+//                      mainAxisAlignment: MainAxisAlignment.center,
+//                      children: [
+//                        IconButton(
+//                          icon: Icon(Icons.skip_previous),
+//                          iconSize: 64.0,
+//                          onPressed: mediaItem == queue.first
+//                              ? null
+//                              : AudioService.skipToPrevious,
+//                        ),
+//                        IconButton(
+//                          icon: Icon(Icons.skip_next),
+//                          iconSize: 64.0,
+//                          onPressed: mediaItem == queue.last
+//                              ? null
+//                              : AudioService.skipToNext,
+//                        ),
+//                      ],
+//                    ),
                   if (mediaItem?.title != null) Text(mediaItem.title),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
