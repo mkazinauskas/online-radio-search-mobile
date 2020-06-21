@@ -1,5 +1,4 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_player_task.dart';
 
