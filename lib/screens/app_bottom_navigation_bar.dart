@@ -1,4 +1,6 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
@@ -25,6 +27,7 @@ class AppBottomNavigationBar extends StatelessWidget {
         ),
       ],
       currentIndex: _navigationBarItem.index,
+
 //      selectedItemColor: Colors.amber[800],
       onTap: _onItemTapped,
     );
@@ -47,7 +50,15 @@ class AppBottomNavigationBar extends StatelessWidget {
         break;
       case PlayerNavigationBarItem.index_value:
         {
-          Navigator.pushReplacementNamed(_buildContext, Routes.PLAYER);
+          if (AudioService.running) {
+            Navigator.pushReplacementNamed(_buildContext, Routes.PLAYER);
+          } else {
+            Fluttertoast.showToast(
+              msg: 'Please select station to play.',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+            );
+          }
         }
         break;
       default:
