@@ -6,7 +6,7 @@ import 'latest_radio_station.dart';
 
 class LatestRadioStations {
   static const _url =
-      "https://api.onlineradiosearch.com/radio-stations?sort=id%2Cdesc&page=0&size=20";
+      "https://api.onlineradiosearch.com/radio-stations?sort=id%2Cdesc&page=0&size=20&enabled=true";
 
   final dynamic _onComplete;
 
