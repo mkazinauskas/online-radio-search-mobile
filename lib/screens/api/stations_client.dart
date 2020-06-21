@@ -19,7 +19,7 @@ class StationsClient {
         .then((stations) {
           _onComplete(stations, ApiState.COMPLETE);
         })
-        .catchError((error) => _onComplete([], ApiState.ERROR))
+        .catchError((error) => _onComplete(List<Station>(), ApiState.ERROR))
         .whenComplete(() {});
   }
 }

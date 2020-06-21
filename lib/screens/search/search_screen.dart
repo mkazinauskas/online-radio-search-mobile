@@ -23,20 +23,17 @@ class _SearchScreenState extends State<SearchScreen> {
     StationsClient((List<Station> stations, ApiState state) => {
           this.setState(() {
             _state = state;
+
             _radioStations.clear();
-            _radioStations.addAll(stations);
+            if (stations.isNotEmpty) {
+              _radioStations.addAll(stations);
+            }
           })
         }).load();
   }
 
   @override
   Widget build(BuildContext context) {
-    var text = _state != ApiState.COMPLETE ? [Text(_state.toString())] : [];
-
-    List<ListTile> list = [];
-    if (_state == ApiState.COMPLETE) {
-      list = _radioStations.map((station) => _listTile(station)).toList();
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Discover'),
@@ -48,14 +45,53 @@ class _SearchScreenState extends State<SearchScreen> {
 //                  })
 //            ],
       ),
-      body: new Container(
-          child: new SingleChildScrollView(
-              child: Column(
-        children: <Widget>[...text, ...list],
-      ))),
+      body: renderBody(),
       bottomNavigationBar:
           AppBottomNavigationBar(context, SearchNavigationBarItem()),
     );
+  }
+
+  Widget renderBody() {
+    if (_state == ApiState.LOADING) {
+      return Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new CircularProgressIndicator(),
+          new Text(
+            "  Loading...",
+            textAlign: TextAlign.center,
+          )
+        ],
+      ));
+    }
+
+    if (_state == ApiState.ERROR) {
+      return Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Text(
+            "  Loading failed...",
+            textAlign: TextAlign.center,
+          ),
+          RaisedButton(
+            child: Text('Reload'),
+            onPressed: () =>
+                Navigator.pushReplacementNamed(context, Routes.SEARCH),
+          )
+        ],
+      ));
+    }
+
+    var stationsList =
+        _radioStations.map((station) => _listTile(station)).toList();
+
+    return new Container(
+        child: new SingleChildScrollView(
+            child: Column(
+      children: stationsList,
+    )));
   }
 
   ListTile _listTile(Station station) {
