@@ -6,8 +6,7 @@ import 'package:onlineradiosearchmobile/screens/api/streams_client.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
-import 'package:onlineradiosearchmobile/screens/search/latest_radio_station.dart';
-import 'package:onlineradiosearchmobile/screens/search/latest_radio_stations.dart';
+import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key key}) : super(key: key);
@@ -17,13 +16,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final List<LatestRadioStation> _radioStations = [];
-  PopularStationsLoadingState _state = PopularStationsLoadingState.LOADING;
+  final List<Station> _radioStations = [];
+  ApiState _state = ApiState.LOADING;
 
   _SearchScreenState() {
-    LatestRadioStations((List<LatestRadioStation> stations,
-            PopularStationsLoadingState state) =>
-        {
+    StationsClient((List<Station> stations, ApiState state) => {
           this.setState(() {
             _state = state;
             _radioStations.clear();
@@ -34,16 +31,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var text = _state != PopularStationsLoadingState.COMPLETE
-        ? [Text(_state.toString())]
-        : [];
+    var text = _state != ApiState.COMPLETE ? [Text(_state.toString())] : [];
 
     List<ListTile> list = [];
-    if (_state == PopularStationsLoadingState.COMPLETE) {
-      list = _radioStations
-          .map((station) =>
-              _listTile(station.id, station.title, station.website))
-          .toList();
+    if (_state == ApiState.COMPLETE) {
+      list = _radioStations.map((station) => _listTile(station)).toList();
     }
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +58,11 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  ListTile _listTile(int id, String title, String website) {
+  ListTile _listTile(Station station) {
+    var genres = '';
+    if (station.genres.isNotEmpty) {
+      genres = ' - ' + station.genres.map((genre) => genre.title).join(', ');
+    }
     return ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         leading: Container(
@@ -76,18 +72,24 @@ class _SearchScreenState extends State<SearchScreen> {
                   right: new BorderSide(width: 1.0, color: Colors.black))),
           child: Icon(Icons.favorite, color: Colors.black),
         ),
-        title: Text(
-          title,
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+        title: Row(children: [
+          Flexible(
+            child: Text(
+              station.title + genres,
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.fade,
+            ),
+          ),
+        ]),
         // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
 
         subtitle: Row(
           children: <Widget>[
-            Icon(Icons.linear_scale, color: Colors.black),
+//            Icon(Icons.linear_scale, color: Colors.black),
             Flexible(
               child: Text(
-                website == null ? "" : website,
+                station.website == null ? "" : station.website,
                 style: TextStyle(color: Colors.black),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -106,7 +108,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 );
                 return;
               }
-              var item = PlayerItem(id.toString(), title, response[0].url);
+              var item = PlayerItem(
+                  station.id.toString(), station.title, response[0].url);
               AudioServiceController.changeStation(item);
               Navigator.pushReplacementNamed(context, Routes.PLAYER);
             } else {
@@ -116,7 +119,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 gravity: ToastGravity.CENTER,
               );
             }
-          }).load(id);
+          }).load(station.id);
         },
         trailing:
             Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 30.0));
