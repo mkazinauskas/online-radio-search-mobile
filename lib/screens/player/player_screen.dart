@@ -33,7 +33,7 @@ class PlayerScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (processingState == AudioProcessingState.none) ...[
-                  audioPlayerButton(),
+                  loadingView(),
                 ] else ...[
 //                  if (queue != null && queue.isNotEmpty)
 //                    Row(
@@ -100,17 +100,17 @@ class PlayerScreen extends StatelessWidget {
           (queue, mediaItem, playbackState) =>
               ScreenState(queue, mediaItem, playbackState));
 
-  RaisedButton audioPlayerButton() => startButton(
-        'AudioPlayer',
-        () {
-//          AudioServiceController.start();
-        },
-      );
-
-  RaisedButton startButton(String label, VoidCallback onPressed) =>
-      RaisedButton(
-        child: Text(label),
-        onPressed: onPressed,
+  Widget loadingView() => Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new CircularProgressIndicator(),
+            new Text(
+              "  Loading...",
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
       );
 
   IconButton playButton() => IconButton(
