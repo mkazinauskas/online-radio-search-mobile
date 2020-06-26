@@ -8,7 +8,7 @@ class StationsClient {
       "https://api.onlineradiosearch.com/radio-stations?sort=id%2Cdesc&page=0&size=20&enabled=true";
 
   static const _search_url =
-      "https://api.onlineradiosearch.com/search/radio-station?title=test&page=0&size=20&enabled=true";
+      "https://api.onlineradiosearch.com/search/radio-station?title={title}&page=0&size=20&enabled=true";
 
   final dynamic _onComplete;
 
@@ -27,7 +27,7 @@ class StationsClient {
   }
 
   Future<Result> search(String title) {
-    var url = _search_url.replaceAll("{title}", title);
+    var url = _search_url.replaceAll('{title}', title);
     return http
         .get(url)
         .then((responseBody) =>
@@ -42,8 +42,11 @@ class StationsClient {
 
 class _LatestRadioStationsFromJsonParser {
   static List<Station> parseStations(String responseBody) {
-    dynamic decoded = JsonCodec().decode(responseBody)['_embedded']
-        ['radioStationResponseList'];
+    var embedded = JsonCodec().decode(responseBody)['_embedded'];
+    if (embedded == null) {
+      return List<Station>();
+    }
+    dynamic decoded = embedded['radioStationResponseList'];
     return List<Station>.from(decoded.map(_singleStation).toList());
   }
 
@@ -61,8 +64,11 @@ class _LatestRadioStationsFromJsonParser {
 
 class _SearchRadioStationsFromJsonParser {
   static List<Station> parseStations(String responseBody) {
-    dynamic decoded = JsonCodec().decode(responseBody)['_embedded']
-        ['searchRadioStationResultResponseList'];
+    var embedded = JsonCodec().decode(responseBody)['_embedded'];
+    if (embedded == null) {
+      return List<Station>();
+    }
+    dynamic decoded = embedded['searchRadioStationResultResponseList'];
     return List<Station>.from(decoded.map(_singleStation).toList());
   }
 
