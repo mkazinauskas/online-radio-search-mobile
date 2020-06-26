@@ -40,18 +40,21 @@ class AppBottomNavigationBar extends StatelessWidget {
     switch (index) {
       case SearchNavigationBarItem.index_value:
         {
-          Navigator.pushReplacementNamed(_buildContext, Routes.SEARCH);
+          Navigator.pushNamedAndRemoveUntil(
+              _buildContext, Routes.SEARCH, (route) => false);
         }
         break;
       case FavouritesNavigationBarItem.index_value:
         {
-          Navigator.pushReplacementNamed(_buildContext, Routes.FAVOURITES);
+          Navigator.pushNamedAndRemoveUntil(
+              _buildContext, Routes.FAVOURITES, (route) => false);
         }
         break;
       case PlayerNavigationBarItem.index_value:
         {
           if (AudioService.running) {
-            Navigator.pushReplacementNamed(_buildContext, Routes.PLAYER);
+            Navigator.pushNamedAndRemoveUntil(
+                _buildContext, Routes.PLAYER, (route) => false);
           } else {
             Fluttertoast.showToast(
               msg: 'Please select station to play.',
