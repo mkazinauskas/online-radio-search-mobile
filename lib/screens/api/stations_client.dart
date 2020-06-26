@@ -7,6 +7,9 @@ class StationsClient {
   static const _url =
       "https://api.onlineradiosearch.com/radio-stations?sort=id%2Cdesc&page=0&size=20&enabled=true";
 
+  static const _search_url =
+      "https://api.onlineradiosearch.com/search/radio-station?title=test&page=0&size=20&enabled=true";
+
   final dynamic _onComplete;
 
   StationsClient(this._onComplete);
@@ -22,6 +25,19 @@ class StationsClient {
         .catchError((error) => _onComplete(List<Station>(), ApiState.ERROR))
         .whenComplete(() {});
   }
+
+  Future<Result> search(String title) {
+    var url = _search_url.replaceAll("{title}", title);
+    return http
+        .get(url)
+        .then((responseBody) =>
+            _SearchRadioStationsFromJsonParser.parseStations(responseBody.body))
+        .then((stations) {
+      return Result(stations, ApiState.COMPLETE);
+    }).catchError((error) {
+      return Result(List<Station>(), ApiState.ERROR);
+    });
+  }
 }
 
 class _LatestRadioStationsFromJsonParser {
@@ -33,14 +49,41 @@ class _LatestRadioStationsFromJsonParser {
 
   static _singleStation(dynamic json) {
     return Station(
-        (json['id'] as int),
-        json['title'] as String,
-        json['website'] as String,
-        (json['genres'] as List<dynamic>)
-            .map((genre) => Genre(genre['title']))
-            .toList(),
+      (json['id'] as int),
+      json['title'] as String,
+      json['website'] as String,
+      (json['genres'] as List<dynamic>)
+          .map((genre) => Genre(genre['title']))
+          .toList(),
     );
   }
+}
+
+class _SearchRadioStationsFromJsonParser {
+  static List<Station> parseStations(String responseBody) {
+    dynamic decoded = JsonCodec().decode(responseBody)['_embedded']
+        ['searchRadioStationResultResponseList'];
+    return List<Station>.from(decoded.map(_singleStation).toList());
+  }
+
+  static _singleStation(dynamic json) {
+    var genres = json['genres'] as List<dynamic>;
+    return Station(
+      (json['id'] as int),
+      json['title'] as String,
+      json['website'] as String,
+      genres == null
+          ? []
+          : genres.map((genre) => Genre(genre['title'])).toList(),
+    );
+  }
+}
+
+class Result {
+  final List<Station> stations;
+  final ApiState state;
+
+  Result(this.stations, this.state);
 }
 
 class Station {
