@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
@@ -60,7 +61,7 @@ class PlayerScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (playing) pauseButton() else playButton(),
-                      stopButton(),
+                      stopButton(context),
                     ],
                   ),
                   Text("Processing state: " +
@@ -125,9 +126,13 @@ class PlayerScreen extends StatelessWidget {
         onPressed: AudioService.pause,
       );
 
-  IconButton stopButton() => IconButton(
+  IconButton stopButton(BuildContext context) => IconButton(
         icon: Icon(Icons.stop),
         iconSize: 64.0,
-        onPressed: AudioService.stop,
+        onPressed: () {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
+          AudioService.stop();
+        },
       );
 }
