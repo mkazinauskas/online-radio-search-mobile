@@ -4,7 +4,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
-import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
 
