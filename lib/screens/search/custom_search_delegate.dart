@@ -5,6 +5,7 @@ import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/api/streams_client.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
+import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
 
 import '../../main.dart';
 
@@ -51,7 +52,8 @@ class CustomSearchDelegate extends SearchDelegate {
           }
 
           List<ListTile> result = (builder.data.stations as List<Station>)
-              .map((station) => _listTile(station, context))
+              .map(
+                  (station) => StationsListCreator.createTile(station, context))
               .toList();
 
           return new Container(
@@ -62,73 +64,6 @@ class CustomSearchDelegate extends SearchDelegate {
             ),
           );
         });
-  }
-
-  ListTile _listTile(Station station, BuildContext context) {
-    var genres = '';
-    if (station.genres.isNotEmpty) {
-      genres = ' - ' + station.genres.map((genre) => genre.title).join(', ');
-    }
-    return ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: Container(
-          padding: EdgeInsets.only(right: 12.0),
-          decoration: new BoxDecoration(
-              border: new Border(
-                  right: new BorderSide(width: 1.0, color: Colors.black))),
-          child: Icon(Icons.favorite, color: Colors.black),
-        ),
-        title: Row(children: [
-          Flexible(
-            child: Text(
-              station.title + genres,
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              overflow: TextOverflow.fade,
-            ),
-          ),
-        ]),
-        // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
-
-        subtitle: Row(
-          children: <Widget>[
-//            Icon(Icons.linear_scale, color: Colors.black),
-            Flexible(
-              child: Text(
-                station.website == null ? "" : station.website,
-                style: TextStyle(color: Colors.black),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        onTap: () {
-          StreamsClient((List<StreamResponse> response, ApiState state) {
-            if (state == ApiState.COMPLETE) {
-              response.retainWhere((element) => element.working);
-              if (response.isEmpty) {
-                Fluttertoast.showToast(
-                  msg: 'No working stream found.',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                );
-                return;
-              }
-              var item = PlayerItem(
-                  station.id.toString(), station.title, response[0].url);
-              AudioServiceController.changeStation(item);
-              Navigator.pushNamed(context, Routes.PLAYER);
-            } else {
-              Fluttertoast.showToast(
-                msg: 'Failed to load data.',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              );
-            }
-          }).load(station.id);
-        },
-        trailing:
-            Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 30.0));
   }
 
   Column emptyQueryMessage() {
