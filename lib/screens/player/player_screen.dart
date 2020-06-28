@@ -64,7 +64,7 @@ class PlayerScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      favouritesButton(playerItem.id),
+                      favouritesButton(playerItem),
                       if (playing) pauseButton() else playButton(),
                       stopButton(context),
                     ],
@@ -119,8 +119,8 @@ class PlayerScreen extends StatelessWidget {
         ),
       );
 
-  Widget favouritesButton(String radioStationId) {
-    var favouriteStation = FavouritesRepository.findOne(radioStationId);
+  Widget favouritesButton(PlayerItem playerItem) {
+    var favouriteStation = FavouritesRepository.findOne(playerItem.id);
     return FutureBuilder(
         future: favouriteStation,
         builder: (_, builder) {
@@ -132,23 +132,23 @@ class PlayerScreen extends StatelessWidget {
           return IconButton(
             icon: Icon(Icons.favorite),
             iconSize: 64.0,
-            enableFeedback: ready,
             color: isFavourite ? Colors.pink : Colors.black,
             onPressed: () {
               if (!ready) {
                 return;
               }
-              var currentMediaItemExtras = AudioService.currentMediaItem.extras;
-              var item =
-                  PlayerItem.fromJson(currentMediaItemExtras['radioStation']);
-              AddToFavouritesHandler().handler(AddToFavouritesCommand(
-                item.id,
-                item.uniqueId,
-                item.title,
-                item.streamUrl,
-                item.genres,
-              ));
-              print(radioStationId);
+              if (isFavourite) {
+                int favouriteStationId = builder.data.value.id;
+                FavouritesRepository.delete(favouriteStationId);
+              } else {
+                AddToFavouritesHandler().handler(AddToFavouritesCommand(
+                  playerItem.id,
+                  playerItem.uniqueId,
+                  playerItem.title,
+                  playerItem.streamUrl,
+                  playerItem.genres,
+                ));
+              }
             },
           );
         });
