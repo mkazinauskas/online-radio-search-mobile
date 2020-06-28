@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:optional/optional_internal.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -32,8 +33,17 @@ class FavouritesRepository {
   static Future<List<FavouriteStation>> findAll() async {
     return init()
         .then((value) => _db.query(_table_name))
-        .then((value) => value.map(FavouriteStation.fromMap).toList());
+        .then((value) => value.map(FavouriteStation._fromMap).toList());
   }
+
+  static Future<Optional<FavouriteStation>> findOne(
+          String radioStationId) async =>
+      await _db
+          .query(_table_name,
+              where: 'radioStationId = ?', whereArgs: [radioStationId])
+          .then((value) => value.length > 0 ? value.first : null)
+          .then(FavouriteStation._fromMap)
+          .then((value) => Optional.ofNullable(value));
 
   static Future<int> insert(FavouriteStation model) async {
     return init().then((value) => _db.insert(_table_name, model.toMap()));
@@ -75,7 +85,10 @@ class FavouriteStation {
     return map;
   }
 
-  static FavouriteStation fromMap(Map<String, dynamic> input) {
+  static FavouriteStation _fromMap(Map<String, dynamic> input) {
+    if (input == null) {
+      return null;
+    }
     return FavouriteStation(
         id: input['id'] as int,
         radioStationId: input['radioStationId'].toString(),

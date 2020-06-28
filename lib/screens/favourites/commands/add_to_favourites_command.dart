@@ -12,8 +12,8 @@ class AddToFavouritesCommand {
 }
 
 class AddToFavouritesHandler {
-  void handler(AddToFavouritesCommand command) {
-    _Validator.validate(command);
+  void handler(AddToFavouritesCommand command) async {
+    await _Validator.validate(command);
     FavouriteStation station = FavouriteStation(
         radioStationId: command.radioStationId,
         uniqueId: command.uniqueId,
@@ -25,9 +25,12 @@ class AddToFavouritesHandler {
 }
 
 class _Validator {
-  static void validate(AddToFavouritesCommand command) {
+  static void validate(AddToFavouritesCommand command) async {
     if (command.radioStationId == null) {
       throw Exception("Radio station id cannot be null");
+    }
+    if((await FavouritesRepository.findOne(command.radioStationId)).isPresent){
+      throw Exception("Radio station is already added to favourites");
     }
     //Todo: finish
   }
