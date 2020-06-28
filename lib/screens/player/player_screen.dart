@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
+import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
@@ -25,8 +26,10 @@ class PlayerScreen extends StatelessWidget {
           stream: _screenStateStream,
           builder: (context, snapshot) {
             final screenState = snapshot.data;
-            final queue = screenState?.queue;
             final mediaItem = screenState?.mediaItem;
+            final playerItem = mediaItem == null
+                ? null
+                : PlayerItem.fromJson(mediaItem.extras['radioStation']);
             final state = screenState?.playbackState;
             final processingState =
                 state?.processingState ?? AudioProcessingState.none;
@@ -61,7 +64,7 @@ class PlayerScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      favouritesButton(mediaItem.id),
+                      favouritesButton(playerItem.id),
                       if (playing) pauseButton() else playButton(),
                       stopButton(context),
                     ],
@@ -116,23 +119,39 @@ class PlayerScreen extends StatelessWidget {
         ),
       );
 
-  IconButton favouritesButton(String radioStationId) {
-    return IconButton(
-      icon: Icon(Icons.favorite),
-      iconSize: 64.0,
-      onPressed: () {
-        var currentMediaItemExtras = AudioService.currentMediaItem.extras;
-        var item = PlayerItem.fromJson(currentMediaItemExtras['radioStation']);
-        AddToFavouritesHandler().handler(AddToFavouritesCommand(
-          item.id,
-          item.uniqueId,
-          item.title,
-          item.streamUrl,
-          item.genres,
-        ));
-        print(radioStationId);
-      },
-    );
+  Widget favouritesButton(String radioStationId) {
+    var favouriteStation = FavouritesRepository.findOne(radioStationId);
+    return FutureBuilder(
+        future: favouriteStation,
+        builder: (_, builder) {
+          var ready = builder.connectionState == ConnectionState.done &&
+              builder.error == null;
+
+          var isFavourite = builder.data != null && builder.data.isPresent;
+
+          return IconButton(
+            icon: Icon(Icons.favorite),
+            iconSize: 64.0,
+            enableFeedback: ready,
+            color: isFavourite ? Colors.pink : Colors.black,
+            onPressed: () {
+              if (!ready) {
+                return;
+              }
+              var currentMediaItemExtras = AudioService.currentMediaItem.extras;
+              var item =
+                  PlayerItem.fromJson(currentMediaItemExtras['radioStation']);
+              AddToFavouritesHandler().handler(AddToFavouritesCommand(
+                item.id,
+                item.uniqueId,
+                item.title,
+                item.streamUrl,
+                item.genres,
+              ));
+              print(radioStationId);
+            },
+          );
+        });
   }
 
   IconButton playButton() => IconButton(
