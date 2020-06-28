@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
-import 'package:onlineradiosearchmobile/screens/player/player_screen.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
-
-import 'package:provider/provider.dart';
 
 class FavouritesScreen extends StatelessWidget {
   @override
@@ -16,13 +12,6 @@ class FavouritesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Favourites'),
-//            actions: <Widget>[
-//              IconButton(
-//                  icon: Icon(Icons.search),
-//                  onPressed: () {
-//                    showSearch(context: context, delegate: DataSearch());
-//                  })
-//            ],
       ),
       body: FutureBuilder(
           future: allFavourites,

@@ -51,8 +51,10 @@ class StationsListCreator {
                 );
                 return;
               }
-              List<String> genres = List<String>.from(
-                  station.genres.map((e) => e.title).toList());
+              List<String> genres = station.genres.length > 0
+                  ? List<String>.from(
+                      station.genres.map((e) => e.title).toList())
+                  : [];
               var item = PlayerItem(
                 station.id.toString(),
                 station.uniqueId,

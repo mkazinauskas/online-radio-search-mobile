@@ -75,7 +75,7 @@ class FavouriteStation {
       'uniqueId': uniqueId,
       'title': title,
       'streamUrl': streamUrl,
-      'genres': genres == null ? "" : genres.join(";")
+      'genres': genres.isEmpty ? "" : genres.join(";")
     };
     return map;
   }
@@ -84,12 +84,14 @@ class FavouriteStation {
     if (input == null) {
       return null;
     }
+    var genres = (input['genres'] as String);
     return FavouriteStation(
-        id: input['id'] as int,
-        radioStationId: input['radioStationId'].toString(),
-        uniqueId: input['uniqueId'],
-        title: input['title'],
-        streamUrl: input['streamUrl'],
-        genres: (input['genres'] as String).split(';'));
+      id: input['id'] as int,
+      radioStationId: input['radioStationId'].toString(),
+      uniqueId: input['uniqueId'],
+      title: input['title'],
+      streamUrl: input['streamUrl'],
+      genres: genres.isEmpty ? [] : genres.split(';'),
+    );
   }
 }

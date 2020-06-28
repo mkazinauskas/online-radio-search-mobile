@@ -12,12 +12,13 @@ class PlayerItem {
 
   static PlayerItem fromJson(String json) {
     var item = JsonCodec().decode(json);
+    var genres = (item['_genres'] as String);
     return new PlayerItem(
       item['_id'],
       item['_uniqueId'],
       item['_title'],
       item['_streamUrl'],
-      (item['_genres'] as String).split(';'),
+      genres.isEmpty ? [] : genres.split(';'),
     );
   }
 
