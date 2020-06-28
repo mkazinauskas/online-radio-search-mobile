@@ -24,6 +24,10 @@ class FavouritesScreen extends StatelessWidget {
               return error();
             }
 
+            if(builder.data.isEmpty){
+              return noResults();
+            }
+
             List<ListTile> result = (builder.data as List<FavouriteStation>)
                 .map(
                   (e) => Station(
@@ -76,5 +80,18 @@ class FavouritesScreen extends StatelessWidget {
         ),
       ],
     ));
+  }
+
+  Widget noResults() {
+    return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Text(
+              "No results, please add Radio Stations",
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ));
   }
 }
