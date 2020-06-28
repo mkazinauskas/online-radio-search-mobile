@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
@@ -40,27 +41,16 @@ class PlayerScreen extends StatelessWidget {
                 if (processingState == AudioProcessingState.none) ...[
                   loadingView(),
                 ] else ...[
-//                  if (queue != null && queue.isNotEmpty)
-//                    Row(
-//                      mainAxisAlignment: MainAxisAlignment.center,
-//                      children: [
-//                        IconButton(
-//                          icon: Icon(Icons.skip_previous),
-//                          iconSize: 64.0,
-//                          onPressed: mediaItem == queue.first
-//                              ? null
-//                              : AudioService.skipToPrevious,
-//                        ),
-//                        IconButton(
-//                          icon: Icon(Icons.skip_next),
-//                          iconSize: 64.0,
-//                          onPressed: mediaItem == queue.last
-//                              ? null
-//                              : AudioService.skipToNext,
-//                        ),
-//                      ],
-//                    ),
-                  if (mediaItem?.title != null) Text(mediaItem.title),
+                  Align(
+                      child: mediaItem?.title != null
+                          ? Text(
+                              mediaItem.title,
+                              style: TextStyle(
+                                fontSize: 32.0,
+                              ),
+                            )
+                          : null),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -68,22 +58,6 @@ class PlayerScreen extends StatelessWidget {
                       if (playing) pauseButton() else playButton(),
                       stopButton(context),
                     ],
-                  ),
-                  Text("Processing state: " +
-                      "$processingState".replaceAll(RegExp(r'^.*\.'), '')),
-                  StreamBuilder(
-                    stream: AudioService.customEventStream,
-                    builder: (context, snapshot) {
-                      return Text("custom event: ${snapshot.data}");
-                    },
-                  ),
-                  StreamBuilder<bool>(
-                    stream: AudioService.notificationClickEventStream,
-                    builder: (context, snapshot) {
-                      return Text(
-                        'Notification Click Status: ${snapshot.data}',
-                      );
-                    },
                   ),
                 ],
               ],
