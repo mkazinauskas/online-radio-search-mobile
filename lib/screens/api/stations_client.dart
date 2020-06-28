@@ -53,6 +53,7 @@ class _LatestRadioStationsFromJsonParser {
   static _singleStation(dynamic json) {
     return Station(
       (json['id'] as int),
+      json['uniqueId'] as String,
       json['title'] as String,
       json['website'] as String,
       (json['genres'] as List<dynamic>)
@@ -76,6 +77,7 @@ class _SearchRadioStationsFromJsonParser {
     var genres = json['genres'] as List<dynamic>;
     return Station(
       (json['id'] as int),
+      json['uniqueId'] as String,
       json['title'] as String,
       json['website'] as String,
       genres == null
@@ -94,11 +96,12 @@ class Result {
 
 class Station {
   final int id;
+  final String uniqueId;
   final String title;
   final String website;
   final List<Genre> genres;
 
-  Station(this.id, this.title, this.website, this.genres);
+  const Station(this.id, this.uniqueId, this.title, this.website, this.genres);
 }
 
 class Genre {

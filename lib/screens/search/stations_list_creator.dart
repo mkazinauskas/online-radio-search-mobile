@@ -51,8 +51,15 @@ class StationsListCreator {
                 );
                 return;
               }
+              List<String> genres = List<String>.from(
+                  station.genres.map((e) => e.title).toList());
               var item = PlayerItem(
-                  station.id.toString(), station.title, response[0].url);
+                station.id.toString(),
+                station.uniqueId,
+                station.title,
+                response[0].url,
+                genres,
+              );
               AudioServiceController.changeStation(item);
               Navigator.pushNamed(context, Routes.PLAYER);
             } else {

@@ -53,10 +53,10 @@ class AudioPlayerTask extends BackgroundAudioTask {
     var item = PlayerItem.fromJson(params['radioStation']);
     _queue.clear();
     MediaItem mediaItem = MediaItem(
-      id: item.url,
+      id: item.streamUrl,
       album: 'Live',
       title: item.title,
-      extras: {'id': item.id.toString()},
+      extras: params,
     );
     _queue.add(mediaItem);
     _playerStateSubscription = _audioPlayer.playbackStateStream
@@ -281,7 +281,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
       var item = PlayerItem.fromJson(arguments);
       _queue.clear();
       MediaItem mediaItem = MediaItem(
-        id: item.url,
+        id: item.streamUrl,
         album: 'Live',
         title: item.title,
         extras: {'id': item.id.toString()},
