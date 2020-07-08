@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
-import 'package:onlineradiosearchmobile/screens/api/streams_client.dart';
-import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
-import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
-
-import '../../main.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   @override
@@ -81,9 +75,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // This method is called everytime the search term changes.
-    // If you want to add search suggestions as the user enters their search term, this is the place to do that.
-    return Column();
+    return buildResults(context);
   }
 
   Widget loading() {
