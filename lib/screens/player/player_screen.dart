@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +12,14 @@ import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PlayerScreen extends StatelessWidget {
-  /// Tracks the position while the user drags the seek bar.
-  final BehaviorSubject<double> _dragPositionSubject =
-      BehaviorSubject.seeded(null);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Player'),
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
       ),
+      backgroundColor: Colors.blue,
       body: Center(
         child: StreamBuilder<ScreenState>(
           stream: _screenStateStream,
@@ -37,21 +34,18 @@ class PlayerScreen extends StatelessWidget {
                 state?.processingState ?? AudioProcessingState.none;
             final playing = state?.playing ?? false;
 
+            if (processingState == AudioProcessingState.none) {
+              return loadingView();
+            }
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (processingState == AudioProcessingState.none) ...[
-                  loadingView(),
-                ] else ...[
-                  Align(
-                      child: mediaItem?.title != null
-                          ? Text(
-                              mediaItem.title,
-                              style: TextStyle(
-                                fontSize: 32.0,
-                              ),
-                            )
-                          : null),
+                ...[
+                  Align(child: _titleWidget(playerItem)),
+                  SizedBox.fromSize(
+                    size: Size.fromHeight(15.0),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -72,6 +66,21 @@ class PlayerScreen extends StatelessWidget {
     );
   }
 
+  Widget _titleWidget(PlayerItem playerItem) {
+    if (playerItem == null) {
+      return null;
+    }
+
+    return Text(
+      playerItem.title,
+      style: TextStyle(
+        fontSize: 24.0,
+        color: Colors.white,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
   /// Encapsulate all the different data we're interested in into a single
   /// stream so we don't have to nest StreamBuilders.
   Stream<ScreenState> get _screenStateStream =>
@@ -86,29 +95,28 @@ class PlayerScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new CircularProgressIndicator(),
-            new Text(
-              "  Loading...",
-              textAlign: TextAlign.center,
-            )
+            CircularProgressIndicator(backgroundColor: Colors.white),
           ],
         ),
       );
 
   IconButton playButton() => IconButton(
         icon: Icon(Icons.play_arrow),
+        color: Colors.white,
         iconSize: 64.0,
         onPressed: AudioService.play,
       );
 
   IconButton pauseButton() => IconButton(
         icon: Icon(Icons.pause),
+        color: Colors.white,
         iconSize: 64.0,
         onPressed: AudioService.pause,
       );
 
   IconButton stopButton(BuildContext context) => IconButton(
         icon: Icon(Icons.stop),
+        color: Colors.white,
         iconSize: 64.0,
         onPressed: () {
           Navigator.of(context)
@@ -128,7 +136,6 @@ class FavouriteButton extends StatefulWidget {
 }
 
 class _FavouriteButtonState extends State<FavouriteButton> {
-
   int _favouriteStationId;
 
   _FavouriteButtonState(FavouriteButton widget) {
@@ -155,7 +162,7 @@ class _FavouriteButtonState extends State<FavouriteButton> {
     return IconButton(
       icon: Icon(Icons.favorite),
       iconSize: 64.0,
-      color: _isFavourite() ? Colors.pink : Colors.black,
+      color: _isFavourite() ? Colors.pink : Colors.white,
       onPressed: () {
         if (_isFavourite()) {
           FavouritesRepository.delete(_favouriteStationId).then((value) => {

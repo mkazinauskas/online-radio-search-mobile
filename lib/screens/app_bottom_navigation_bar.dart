@@ -12,6 +12,10 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Colors.blue,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white60,
+      selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
