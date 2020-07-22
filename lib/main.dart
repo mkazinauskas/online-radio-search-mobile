@@ -17,6 +17,7 @@ class OnlineRadioSearchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Online Radio Search',
       theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: Routes.SEARCH,
