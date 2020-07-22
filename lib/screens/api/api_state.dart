@@ -1,0 +1,2 @@
+
+enum ApiState { LOADING, COMPLETE, ERROR }

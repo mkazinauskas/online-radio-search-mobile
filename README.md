@@ -1,6 +1,11 @@
 # onlineradiosearchmobile
 
-onlineradiosearch.com mobile app
+Online Radio Search App
+
+## How to generate signing key
+* `flutter doctor -v`
+* locate java path and replace java with keytool
+* `/java-path-from-flutter/keytool -genkey -v -keystore key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key`
 
 ## Getting Started
 
@@ -8,22 +13,9 @@ This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-
-# Update icons
-`flutter pub pub run flutter_launcher_icons:main`
-
-# Build apk
-`flutter build apk`
-
-
-# Tasks
-* Duration
-* Background music management from common state
-* Use station object in radio player
-* Fix music playback after 2 seconds of not changed music

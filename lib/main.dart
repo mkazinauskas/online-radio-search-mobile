@@ -1,30 +1,39 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:onlineradiosearchmobile/main_widget.dart';
-import 'package:onlineradiosearchmobile/player/models_synchroniser.dart';
-import 'package:onlineradiosearchmobile/player/radio_player_model.dart';
-import 'package:onlineradiosearchmobile/popular_stations/radio_stations_model.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'package:onlineradiosearchmobile/screens/favourites/favourites_screen.dart';
+import 'package:onlineradiosearchmobile/screens/player/player_screen.dart';
+import 'package:onlineradiosearchmobile/screens/search/discover_screen.dart';
 
 void main() {
-  return runApp(OnlineRadioSearchApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.blue, // navigation bar color
+  ));
+
+  runApp(AudioServiceWidget(child: new OnlineRadioSearchApp()));
 }
 
 class OnlineRadioSearchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    RadioPlayerModel radioPlayerModel = RadioPlayerModel();
-    RadioStationsModel popularStationsModel = RadioStationsModel();
-    new ModelsSynchroniser(radioPlayerModel, popularStationsModel);
-
     return MaterialApp(
-      title: 'Online Radio',
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(builder: (context) => radioPlayerModel),
-          ChangeNotifierProvider(builder: (context) => popularStationsModel),
-        ],
-        child: MainWidget(),
-      ),
+      debugShowCheckedModeBanner: false,
+      title: 'Online Radio Search',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: Routes.SEARCH,
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        Routes.SEARCH: (context) => DiscoverScreen(),
+        Routes.FAVOURITES: (context) => FavouritesScreen(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        Routes.PLAYER: (context) => PlayerScreen(),
+      },
     );
   }
+}
+
+class Routes {
+  static final SEARCH = '/search';
+  static final PLAYER = '/player';
+  static final FAVOURITES = '/favourites';
 }
