@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
@@ -42,7 +43,8 @@ class PlayerScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ...[
-                  Align(child: _titleWidget(playerItem)),
+                  _titleWidget(playerItem),
+                  _statusIndicator(playing),
                   SizedBox.fromSize(
                     size: Size.fromHeight(15.0),
                   ),
@@ -64,6 +66,21 @@ class PlayerScreen extends StatelessWidget {
       bottomNavigationBar:
           AppBottomNavigationBar(context, PlayerNavigationBarItem()),
     );
+  }
+
+  Widget _statusIndicator(bool playing) {
+    if(!playing){
+      return SizedBox.shrink();
+    }
+    return Column(children: [
+      SizedBox.fromSize(
+        size: Size.fromHeight(15.0),
+      ),
+      SpinKitWave(
+        color: Colors.white,
+        size: 50.0,
+      ),
+    ]);
   }
 
   Widget _titleWidget(PlayerItem playerItem) {
