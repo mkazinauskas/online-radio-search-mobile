@@ -1,10 +1,18 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/favourites_screen.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_screen.dart';
 import 'package:onlineradiosearchmobile/screens/search/discover_screen.dart';
 
-void main() => runApp(AudioServiceWidget(child: new OnlineRadioSearchApp()));
+void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.blue, // navigation bar color
+    statusBarColor: Colors.blue, // status bar color
+  ));
+
+  runApp(AudioServiceWidget(child: new OnlineRadioSearchApp()));
+}
 
 class OnlineRadioSearchApp extends StatelessWidget {
   @override
