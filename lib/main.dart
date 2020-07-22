@@ -8,7 +8,6 @@ import 'package:onlineradiosearchmobile/screens/search/discover_screen.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.blue, // navigation bar color
-    statusBarColor: Colors.blue, // status bar color
   ));
 
   runApp(AudioServiceWidget(child: new OnlineRadioSearchApp()));
