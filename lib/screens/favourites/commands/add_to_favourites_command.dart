@@ -12,7 +12,7 @@ class AddToFavouritesCommand {
 }
 
 class AddToFavouritesHandler {
-  void handler(AddToFavouritesCommand command) async {
+  Future<void> handler(AddToFavouritesCommand command) async {
     await _Validator.validate(command);
     FavouriteStation station = FavouriteStation(
         radioStationId: command.radioStationId,
@@ -20,17 +20,18 @@ class AddToFavouritesHandler {
         title: command.title,
         streamUrl: command.streamUrl,
         genres: command.genres);
-    FavouritesRepository.insert(station);
+    await FavouritesRepository.insert(station);
+    return  Future.value();
   }
 }
 
 class _Validator {
   static void validate(AddToFavouritesCommand command) async {
     if (command.radioStationId == null) {
-      throw Exception("Radio station id cannot be null");
+      throw Exception('Radio station id cannot be null');
     }
     if((await FavouritesRepository.findOne(command.radioStationId)).isPresent){
-      throw Exception("Radio station is already added to favourites");
+      throw Exception('Radio station is already added to favourites');
     }
     //Todo: finish
   }

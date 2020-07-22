@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class PlayerScreen extends StatelessWidget {
             final processingState =
                 state?.processingState ?? AudioProcessingState.none;
             final playing = state?.playing ?? false;
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -50,11 +52,11 @@ class PlayerScreen extends StatelessWidget {
                               ),
                             )
                           : null),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      favouritesButton(playerItem),
+                      if (playerItem != null)
+                        FavouriteButton(playerItem: playerItem),
                       if (playing) pauseButton() else playButton(),
                       stopButton(context),
                     ],
@@ -93,41 +95,6 @@ class PlayerScreen extends StatelessWidget {
         ),
       );
 
-  Widget favouritesButton(PlayerItem playerItem) {
-    var favouriteStation = FavouritesRepository.findOne(playerItem.id);
-    return FutureBuilder(
-        future: favouriteStation,
-        builder: (_, builder) {
-          var ready = builder.connectionState == ConnectionState.done &&
-              builder.error == null;
-
-          var isFavourite = builder.data != null && builder.data.isPresent;
-
-          return IconButton(
-            icon: Icon(Icons.favorite),
-            iconSize: 64.0,
-            color: isFavourite ? Colors.pink : Colors.black,
-            onPressed: () {
-              if (!ready) {
-                return;
-              }
-              if (isFavourite) {
-                int favouriteStationId = builder.data.value.id;
-                FavouritesRepository.delete(favouriteStationId);
-              } else {
-                AddToFavouritesHandler().handler(AddToFavouritesCommand(
-                  playerItem.id,
-                  playerItem.uniqueId,
-                  playerItem.title,
-                  playerItem.streamUrl,
-                  playerItem.genres,
-                ));
-              }
-            },
-          );
-        });
-  }
-
   IconButton playButton() => IconButton(
         icon: Icon(Icons.play_arrow),
         iconSize: 64.0,
@@ -149,4 +116,65 @@ class PlayerScreen extends StatelessWidget {
           AudioService.stop();
         },
       );
+}
+
+class FavouriteButton extends StatefulWidget {
+  final PlayerItem playerItem;
+
+  FavouriteButton({Key key, this.playerItem}) : super(key: key);
+
+  @override
+  _FavouriteButtonState createState() => _FavouriteButtonState(this);
+}
+
+class _FavouriteButtonState extends State<FavouriteButton> {
+
+  int _favouriteStationId;
+
+  _FavouriteButtonState(FavouriteButton widget) {
+    _findFavouriteId(widget);
+  }
+
+  void _findFavouriteId(FavouriteButton widget) {
+    FavouritesRepository.findOne(widget.playerItem.id).then((value) => {
+          if (value.isPresent)
+            {
+              this.setState(() {
+                _favouriteStationId = value.value.id;
+              })
+            }
+        });
+  }
+
+  bool _isFavourite() {
+    return _favouriteStationId != null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.favorite),
+      iconSize: 64.0,
+      color: _isFavourite() ? Colors.pink : Colors.black,
+      onPressed: () {
+        if (_isFavourite()) {
+          FavouritesRepository.delete(_favouriteStationId).then((value) => {
+                this.setState(() {
+                  _favouriteStationId = null;
+                })
+              });
+        } else {
+          AddToFavouritesHandler()
+              .handler(AddToFavouritesCommand(
+                widget.playerItem.id,
+                widget.playerItem.uniqueId,
+                widget.playerItem.title,
+                widget.playerItem.streamUrl,
+                widget.playerItem.genres,
+              ))
+              .then((value) => _findFavouriteId(widget));
+        }
+      },
+    );
+  }
 }
