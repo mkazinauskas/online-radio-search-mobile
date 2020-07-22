@@ -60,16 +60,8 @@ class CustomSearchDelegate extends SearchDelegate {
         });
   }
 
-  Column emptyQueryMessage() {
+  Widget emptyQueryMessage() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Center(
-          child: Text(
-            "Search term must not be empty",
-          ),
-        )
-      ],
     );
   }
 
