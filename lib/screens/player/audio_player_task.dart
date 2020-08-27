@@ -49,7 +49,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
   StreamSubscription<AudioPlaybackEvent> _eventSubscription;
 
   @override
-  void onStart(Map<String, dynamic> params) {
+  Future<void> onStart(Map<String, dynamic> params) {
     var item = PlayerItem.fromJson(params['radioStation']);
     _queue.clear();
     MediaItem mediaItem = MediaItem(
@@ -143,7 +143,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
   }
 
   @override
-  void onPlay() {
+  Future<void> onPlay() {
     if (_skipState == null) {
       _playing = true;
       _audioPlayer.play();
@@ -152,7 +152,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
   }
 
   @override
-  void onPause() {
+  Future<void> onPause() {
     if (_skipState == null) {
       _playing = false;
       _audioPlayer.pause();
@@ -166,7 +166,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
 //  }
 
   @override
-  void onClick(MediaButton button) {
+  Future<void> onClick(MediaButton button) {
     playPause();
   }
 
@@ -199,36 +199,36 @@ class AudioPlayerTask extends BackgroundAudioTask {
     await super.onStop();
   }
 
-  /* Handling Audio Focus */
-  @override
-  void onAudioFocusLost(AudioInterruption interruption) {
-    if (_playing) _interrupted = true;
-    switch (interruption) {
-      case AudioInterruption.pause:
-      case AudioInterruption.temporaryPause:
-      case AudioInterruption.unknownPause:
-        onPause();
-        break;
-      case AudioInterruption.temporaryDuck:
-        _audioPlayer.setVolume(0.5);
-        break;
-    }
-  }
-
-  @override
-  void onAudioFocusGained(AudioInterruption interruption) {
-    switch (interruption) {
-      case AudioInterruption.temporaryPause:
-        if (!_playing && _interrupted) onPlay();
-        break;
-      case AudioInterruption.temporaryDuck:
-        _audioPlayer.setVolume(1.0);
-        break;
-      default:
-        break;
-    }
-    _interrupted = false;
-  }
+//  /* Handling Audio Focus */
+//  @override
+//  void onAudioFocusLost(AudioInterruption interruption) {
+//    if (_playing) _interrupted = true;
+//    switch (interruption) {
+//      case AudioInterruption.pause:
+//      case AudioInterruption.temporaryPause:
+//      case AudioInterruption.unknownPause:
+//        onPause();
+//        break;
+//      case AudioInterruption.temporaryDuck:
+//        _audioPlayer.setVolume(0.5);
+//        break;
+//    }
+//  }
+//
+//  @override
+//  void onAudioFocusGained(AudioInterruption interruption) {
+//    switch (interruption) {
+//      case AudioInterruption.temporaryPause:
+//        if (!_playing && _interrupted) onPlay();
+//        break;
+//      case AudioInterruption.temporaryDuck:
+//        _audioPlayer.setVolume(1.0);
+//        break;
+//      default:
+//        break;
+//    }
+//    _interrupted = false;
+//  }
 
   @override
   void onAudioBecomingNoisy() {
