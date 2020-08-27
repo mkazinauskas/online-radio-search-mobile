@@ -18,7 +18,8 @@ class StationsClient {
     http
         .get(_url)
         .then((responseBody) =>
-            _LatestRadioStationsFromJsonParser.parseStations(responseBody.body))
+            _LatestRadioStationsFromJsonParser.parseStations(
+                utf8.decode(responseBody.bodyBytes)))
         .then((stations) {
           _onComplete(stations, ApiState.COMPLETE);
         })
@@ -30,8 +31,11 @@ class StationsClient {
     var url = _search_url.replaceAll('{title}', title);
     return http
         .get(url)
-        .then((responseBody) =>
-            _SearchRadioStationsFromJsonParser.parseStations(responseBody.body))
+        .then(
+          (responseBody) => _SearchRadioStationsFromJsonParser.parseStations(
+            utf8.decode(responseBody.bodyBytes),
+          ),
+        )
         .then((stations) {
       return Result(stations, ApiState.COMPLETE);
     }).catchError((error) {

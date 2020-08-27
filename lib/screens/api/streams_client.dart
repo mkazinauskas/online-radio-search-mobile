@@ -15,8 +15,8 @@ class StreamsClient {
     var url = _url.replaceAll('{radioStationId}', radioStationId.toString());
     http
         .get(url)
-        .then((responseBody) =>
-        _ResponseJsonToObjectConverter.convert(responseBody.body))
+        .then((responseBody) => _ResponseJsonToObjectConverter.convert(
+            utf8.decode(responseBody.bodyBytes)))
         .then((data) {
           _onComplete(data, ApiState.COMPLETE);
         })
