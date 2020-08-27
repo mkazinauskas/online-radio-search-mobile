@@ -76,10 +76,6 @@ class CustomSearchDelegate extends SearchDelegate {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         new CircularProgressIndicator(),
-        new Text(
-          "  Loading...",
-          textAlign: TextAlign.center,
-        )
       ],
     ));
   }

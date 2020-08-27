@@ -57,10 +57,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new CircularProgressIndicator(),
-          new Text(
-            "  Loading...",
-            textAlign: TextAlign.center,
-          )
         ],
       ));
     }
@@ -70,15 +66,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new Text(
-            "  Loading failed...",
-            textAlign: TextAlign.center,
-          ),
-          RaisedButton(
-            child: Text('Reload'),
+          IconButton(
+            color: Colors.white,
+            iconSize: 54,
+            icon: Icon(Icons.refresh_sharp),
             onPressed: () =>
                 Navigator.pushReplacementNamed(context, Routes.SEARCH),
-          )
+          ),
         ],
       ));
     }

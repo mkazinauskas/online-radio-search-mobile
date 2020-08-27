@@ -35,8 +35,12 @@ class PlayerScreen extends StatelessWidget {
                 state?.processingState ?? AudioProcessingState.none;
             final playing = state?.playing ?? false;
 
-            if (processingState == AudioProcessingState.none) {
-              return loadingView();
+            if (!AudioService.running) {
+              return _goToSearch(context);
+            }
+
+            if (processingState != AudioProcessingState.ready) {
+              return _loadingView();
             }
 
             return Column(
@@ -69,7 +73,7 @@ class PlayerScreen extends StatelessWidget {
   }
 
   Widget _statusIndicator(bool playing) {
-    if(!playing){
+    if (!playing) {
       return SizedBox.shrink();
     }
     return Column(children: [
@@ -85,7 +89,7 @@ class PlayerScreen extends StatelessWidget {
 
   Widget _titleWidget(PlayerItem playerItem) {
     if (playerItem == null) {
-      return null;
+      return SizedBox.shrink();
     }
 
     return Text(
@@ -108,7 +112,7 @@ class PlayerScreen extends StatelessWidget {
           (queue, mediaItem, playbackState) =>
               ScreenState(queue, mediaItem, playbackState));
 
-  Widget loadingView() => Center(
+  Widget _loadingView() => Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -116,6 +120,23 @@ class PlayerScreen extends StatelessWidget {
           ],
         ),
       );
+
+  Widget _goToSearch(BuildContext context) => Center(
+    child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              color: Colors.white,
+              iconSize: 54,
+              icon: Icon(Icons.refresh_sharp),
+              onPressed: () =>
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false),
+            ),
+          ],
+        ))
+  );
 
   IconButton playButton() => IconButton(
         icon: Icon(Icons.play_arrow),

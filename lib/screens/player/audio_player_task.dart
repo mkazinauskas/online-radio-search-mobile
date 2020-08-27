@@ -5,271 +5,178 @@ import 'package:just_audio/just_audio.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 
-MediaControl playControl = MediaControl(
-  androidIcon: 'drawable/ic_action_play_arrow',
-  label: 'Play',
-  action: MediaAction.play,
-);
-MediaControl pauseControl = MediaControl(
-  androidIcon: 'drawable/ic_action_pause',
-  label: 'Pause',
-  action: MediaAction.pause,
-);
-MediaControl skipToNextControl = MediaControl(
-  androidIcon: 'drawable/ic_action_skip_next',
-  label: 'Next',
-  action: MediaAction.skipToNext,
-);
-MediaControl skipToPreviousControl = MediaControl(
-  androidIcon: 'drawable/ic_action_skip_previous',
-  label: 'Previous',
-  action: MediaAction.skipToPrevious,
-);
-MediaControl stopControl = MediaControl(
-  androidIcon: 'drawable/ic_action_stop',
-  label: 'Stop',
-  action: MediaAction.stop,
-);
-
 class AudioPlayerTask extends BackgroundAudioTask {
-  final _queue = <MediaItem>[];
-  int _queueIndex = -1;
-  AudioPlayer _audioPlayer = new AudioPlayer();
+  final _mediaLibrary = MediaLibrary();
+  AudioPlayer _player = new AudioPlayer();
   AudioProcessingState _skipState;
-  bool _playing;
-  bool _interrupted = false;
+  Seeker _seeker;
+  StreamSubscription<PlaybackEvent> _eventSubscription;
 
-  bool get hasNext => _queueIndex + 1 < _queue.length;
-
-  bool get hasPrevious => _queueIndex > 0;
-
-  MediaItem get mediaItem => _queue[_queueIndex];
-
-  StreamSubscription<AudioPlaybackState> _playerStateSubscription;
-  StreamSubscription<AudioPlaybackEvent> _eventSubscription;
+  List<MediaItem> get queue => _mediaLibrary.items;
+  int get index => _player.currentIndex;
+  MediaItem get mediaItem => index == null ? null : queue[index];
 
   @override
-  Future<void> onStart(Map<String, dynamic> params) {
+  Future<void> onStart(Map<String, dynamic> params) async {
     var item = PlayerItem.fromJson(params['radioStation']);
-    _queue.clear();
+    _mediaLibrary.items.clear();
     MediaItem mediaItem = MediaItem(
       id: item.streamUrl,
       album: 'Live',
       title: item.title,
       extras: params,
     );
-    _queue.add(mediaItem);
-    _playerStateSubscription = _audioPlayer.playbackStateStream
-        .where((state) => state == AudioPlaybackState.completed)
-        .listen((state) {
-      _handlePlaybackCompleted();
+    _mediaLibrary.items.add(mediaItem);
+
+    // Broadcast media item changes.
+    _player.currentIndexStream.listen((index) {
+      if (index != null) AudioServiceBackground.setMediaItem(queue[index]);
     });
-    _eventSubscription = _audioPlayer.playbackEventStream.listen((event) {
-      final bufferingState =
-          event.buffering ? AudioProcessingState.buffering : null;
-      switch (event.state) {
-        case AudioPlaybackState.paused:
-          _setState(
-            processingState: bufferingState ?? AudioProcessingState.ready,
-            position: event.position,
-          );
+    // Propagate all events from the audio player to AudioService clients.
+    _eventSubscription = _player.playbackEventStream.listen((event) {
+      _broadcastState();
+    });
+    // Special processing for state transitions.
+    _player.processingStateStream.listen((state) {
+      switch (state) {
+        case ProcessingState.completed:
+        // In this example, the service stops when reaching the end.
+          onStop();
           break;
-        case AudioPlaybackState.playing:
-          _setState(
-            processingState: bufferingState ?? AudioProcessingState.ready,
-            position: event.position,
-          );
-          break;
-        case AudioPlaybackState.connecting:
-          _setState(
-            processingState: _skipState ?? AudioProcessingState.connecting,
-            position: event.position,
-          );
+        case ProcessingState.ready:
+        // If we just came from skipping between tracks, clear the skip
+        // state now that we're ready to play.
+          _skipState = null;
           break;
         default:
           break;
       }
     });
 
-    AudioServiceBackground.setQueue(_queue);
-    onSkipToNext();
-  }
-
-  void _handlePlaybackCompleted() {
-    if (hasNext) {
-      onSkipToNext();
-    } else {
+    // Load and broadcast the queue
+    AudioServiceBackground.setQueue(queue);
+    try {
+      await _player.load(ConcatenatingAudioSource(
+        children:
+        queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
+      ));
+      // In this example, we automatically start playing on start.
+      onPlay();
+    } catch (e) {
+      print("Error: $e");
       onStop();
     }
   }
 
-  void playPause() {
-    if (AudioServiceBackground.state.playing)
-      onPause();
-    else
-      onPlay();
-  }
-
   @override
-  Future<void> onSkipToNext() => _skip(1);
-
-  @override
-  Future<void> onSkipToPrevious() => _skip(-1);
-
-  Future<void> _skip(int offset) async {
-    final newPos = _queueIndex + offset;
-    if (!(newPos >= 0 && newPos < _queue.length)) return;
-    if (_playing == null) {
-      // First time, we want to start playing
-      _playing = true;
-    } else if (_playing) {
-      // Stop current item
-      await _audioPlayer.stop();
-    }
-    // Load next item
-    _queueIndex = newPos;
-    AudioServiceBackground.setMediaItem(mediaItem);
-    _skipState = offset > 0
+  Future<void> onSkipToQueueItem(String mediaId) async {
+    // Then default implementations of onSkipToNext and onSkipToPrevious will
+    // delegate to this method.
+    final newIndex = queue.indexWhere((item) => item.id == mediaId);
+    if (newIndex == -1) return;
+    // During a skip, the player may enter the buffering state. We could just
+    // propagate that state directly to AudioService clients but AudioService
+    // has some more specific states we could use for skipping to next and
+    // previous. This variable holds the preferred state to send instead of
+    // buffering during a skip, and it is cleared as soon as the player exits
+    // buffering (see the listener in onStart).
+    _skipState = newIndex > index
         ? AudioProcessingState.skippingToNext
         : AudioProcessingState.skippingToPrevious;
-    await _audioPlayer.setUrl(mediaItem.id);
-    _skipState = null;
-    // Resume playback if we were playing
-    if (_playing) {
-      onPlay();
-    } else {
-      _setState(processingState: AudioProcessingState.ready);
-    }
+    // This jumps to the beginning of the queue item at newIndex.
+    _player.seek(Duration.zero, index: newIndex);
   }
 
   @override
-  Future<void> onPlay() {
-    if (_skipState == null) {
-      _playing = true;
-      _audioPlayer.play();
-      AudioServiceBackground.sendCustomEvent('just played');
-    }
-  }
+  Future<void> onPlay() => _player.play();
 
   @override
-  Future<void> onPause() {
-    if (_skipState == null) {
-      _playing = false;
-      _audioPlayer.pause();
-      AudioServiceBackground.sendCustomEvent('just paused');
-    }
-  }
-
-//  @override
-//  void onSeekTo(Duration position) {
-//    _audioPlayer.seek(position);
-//  }
+  Future<void> onPause() => _player.pause();
 
   @override
-  Future<void> onClick(MediaButton button) {
-    playPause();
-  }
+  Future<void> onSeekTo(Duration position) => _player.seek(position);
 
-//  @override
-//  Future<void> onFastForward() async {
-//    await _seekRelative(fastForwardInterval);
-//  }
-//
-//  @override
-//  Future<void> onRewind() async {
-//    await _seekRelative(rewindInterval);
-//  }
+  @override
+  Future<void> onFastForward() => _seekRelative(fastForwardInterval);
 
-//  Future<void> _seekRelative(Duration offset) async {
-//    var newPosition = _audioPlayer.playbackEvent.position + offset;
-//    if (newPosition < Duration.zero) newPosition = Duration.zero;
-//    if (newPosition > mediaItem.duration) newPosition = mediaItem.duration;
-//    await _audioPlayer.seek(_audioPlayer.playbackEvent.position + offset);
-//  }
+  @override
+  Future<void> onRewind() => _seekRelative(-rewindInterval);
+
+  @override
+  Future<void> onSeekForward(bool begin) async => _seekContinuously(begin, 1);
+
+  @override
+  Future<void> onSeekBackward(bool begin) async => _seekContinuously(begin, -1);
 
   @override
   Future<void> onStop() async {
-    await _audioPlayer.stop();
-    await _audioPlayer.dispose();
-    _playing = false;
-    _playerStateSubscription.cancel();
+    await _player.pause();
+    await _player.dispose();
     _eventSubscription.cancel();
-    await _setState(processingState: AudioProcessingState.stopped);
+    // It is important to wait for this state to be broadcast before we shut
+    // down the task. If we don't, the background task will be destroyed before
+    // the message gets sent to the UI.
+    await _broadcastState();
     // Shut down this task
     await super.onStop();
   }
 
-//  /* Handling Audio Focus */
-//  @override
-//  void onAudioFocusLost(AudioInterruption interruption) {
-//    if (_playing) _interrupted = true;
-//    switch (interruption) {
-//      case AudioInterruption.pause:
-//      case AudioInterruption.temporaryPause:
-//      case AudioInterruption.unknownPause:
-//        onPause();
-//        break;
-//      case AudioInterruption.temporaryDuck:
-//        _audioPlayer.setVolume(0.5);
-//        break;
-//    }
-//  }
-//
-//  @override
-//  void onAudioFocusGained(AudioInterruption interruption) {
-//    switch (interruption) {
-//      case AudioInterruption.temporaryPause:
-//        if (!_playing && _interrupted) onPlay();
-//        break;
-//      case AudioInterruption.temporaryDuck:
-//        _audioPlayer.setVolume(1.0);
-//        break;
-//      default:
-//        break;
-//    }
-//    _interrupted = false;
-//  }
-
-  @override
-  void onAudioBecomingNoisy() {
-    onPause();
+  /// Jumps away from the current position by [offset].
+  Future<void> _seekRelative(Duration offset) async {
+    var newPosition = _player.position + offset;
+    // Make sure we don't jump out of bounds.
+    if (newPosition < Duration.zero) newPosition = Duration.zero;
+    if (newPosition > mediaItem.duration) newPosition = mediaItem.duration;
+    // Perform the jump via a seek.
+    await _player.seek(newPosition);
   }
 
-  Future<void> _setState({
-    AudioProcessingState processingState,
-    Duration position,
-    Duration bufferedPosition,
-  }) async {
-    if (position == null) {
-      position = _audioPlayer.playbackEvent.position;
+  /// Begins or stops a continuous seek in [direction]. After it begins it will
+  /// continue seeking forward or backward by 10 seconds within the audio, at
+  /// intervals of 1 second in app time.
+  void _seekContinuously(bool begin, int direction) {
+    _seeker?.stop();
+    if (begin) {
+      _seeker = Seeker(_player, Duration(seconds: 10 * direction),
+          Duration(seconds: 1), mediaItem)
+        ..start();
     }
+  }
+
+  /// Broadcasts the current state to all clients.
+  Future<void> _broadcastState() async {
     await AudioServiceBackground.setState(
-      controls: getControls(),
-      systemActions: [MediaAction.seekTo],
-      processingState:
-          processingState ?? AudioServiceBackground.state.processingState,
-      playing: _playing,
-      position: position,
-      bufferedPosition: bufferedPosition ?? position,
-      speed: _audioPlayer.speed,
+      controls: [
+        if (_player.playing) MediaControl.pause else MediaControl.play,
+        MediaControl.stop,
+      ],
+      systemActions: [
+      ],
+      processingState: _getProcessingState(),
+      playing: _player.playing,
+      position: _player.position,
+      bufferedPosition: _player.bufferedPosition,
+      speed: _player.speed,
     );
   }
 
-  List<MediaControl> getControls() {
-    if (_playing) {
-      return [
-//        skipToPreviousControl,
-        pauseControl,
-        stopControl,
-//        skipToNextControl
-      ];
-    } else {
-      return [
-//        skipToPreviousControl,
-        playControl,
-        stopControl,
-//        skipToNextControl
-      ];
+  /// Maps just_audio's processing state into into audio_service's playing
+  /// state. If we are in the middle of a skip, we use [_skipState] instead.
+  AudioProcessingState _getProcessingState() {
+    if (_skipState != null) return _skipState;
+    switch (_player.processingState) {
+      case ProcessingState.none:
+        return AudioProcessingState.stopped;
+      case ProcessingState.loading:
+        return AudioProcessingState.connecting;
+      case ProcessingState.buffering:
+        return AudioProcessingState.buffering;
+      case ProcessingState.ready:
+        return AudioProcessingState.ready;
+      case ProcessingState.completed:
+        return AudioProcessingState.completed;
+      default:
+        throw Exception("Invalid state: ${_player.processingState}");
     }
   }
 
@@ -279,16 +186,54 @@ class AudioPlayerTask extends BackgroundAudioTask {
     print(arguments);
     if (AudioServiceActions.changeStation.toString() == name) {
       var item = PlayerItem.fromJson(arguments);
-      _queue.clear();
+      _mediaLibrary.items.clear();
       MediaItem mediaItem = MediaItem(
         id: item.streamUrl,
         album: 'Live',
         title: item.title,
         extras: {'id': item.id.toString()},
       );
-      _queue.add(mediaItem);
-      AudioServiceBackground.setQueue(_queue);
-      _skip(0);
+      _mediaLibrary.items.add(mediaItem);
+      AudioServiceBackground.setQueue(queue);
+      onSkipToNext();
     }
+  }
+
+}
+
+class MediaLibrary {
+  final _items = <MediaItem>[
+  ];
+
+  List<MediaItem> get items => _items;
+}
+
+class Seeker {
+  final AudioPlayer player;
+  final Duration positionInterval;
+  final Duration stepInterval;
+  final MediaItem mediaItem;
+  bool _running = false;
+
+  Seeker(
+      this.player,
+      this.positionInterval,
+      this.stepInterval,
+      this.mediaItem,
+      );
+
+  start() async {
+    _running = true;
+    while (_running) {
+      Duration newPosition = player.position + positionInterval;
+      if (newPosition < Duration.zero) newPosition = Duration.zero;
+      if (newPosition > mediaItem.duration) newPosition = mediaItem.duration;
+      player.seek(newPosition);
+      await Future.delayed(stepInterval);
+    }
+  }
+
+  stop() {
+    _running = false;
   }
 }

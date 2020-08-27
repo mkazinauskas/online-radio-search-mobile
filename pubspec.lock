@@ -30,7 +30,7 @@ packages:
     source: hosted
     version: "0.14.0"
   audio_session:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: audio_session
       url: "https://pub.dartlang.org"
@@ -190,7 +190,7 @@ packages:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.2"
+    version: "0.4.0"
   matcher:
     dependency: transitive
     description:
