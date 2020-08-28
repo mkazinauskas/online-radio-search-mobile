@@ -8,6 +8,7 @@ import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
+import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/player/screen_state.dart';
 import 'package:rxdart/rxdart.dart';
@@ -122,21 +123,19 @@ class PlayerScreen extends StatelessWidget {
       );
 
   Widget _goToSearch(BuildContext context) => Center(
-    child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              color: Colors.white,
-              iconSize: 54,
-              icon: Icon(Icons.refresh_sharp),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false),
-            ),
-          ],
-        ))
-  );
+          child: Center(
+              child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          IconButton(
+            color: Colors.white,
+            iconSize: 54,
+            icon: Icon(Icons.refresh_sharp),
+            onPressed: () => Navigator.of(context)
+                .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false),
+          ),
+        ],
+      )));
 
   IconButton playButton() => IconButton(
         icon: Icon(Icons.play_arrow),
@@ -157,9 +156,10 @@ class PlayerScreen extends StatelessWidget {
         color: Colors.white,
         iconSize: 64.0,
         onPressed: () {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
-          AudioService.stop();
+          AudioServiceController.stop().whenComplete(() {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
+          });
         },
       );
 }

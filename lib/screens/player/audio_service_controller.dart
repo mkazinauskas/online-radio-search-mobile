@@ -3,11 +3,11 @@ import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 import 'package:onlineradiosearchmobile/screens/player/audio_player_task.dart';
 
 class AudioServiceController {
-  static void start(PlayerItem playerItem) {
+  static Future<void> start(PlayerItem playerItem) async {
     if (AudioService.running) {
       return;
     }
-    AudioService.start(
+    await AudioService.start(
       backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
       androidNotificationChannelName: 'Online Radio Search',
       // Enable this if you want the Android service to exit the foreground state on pause.
@@ -19,27 +19,25 @@ class AudioServiceController {
     );
   }
 
-  static void changeStation(PlayerItem playerItem) {
+  static Future<void> stop() async {
+    if (AudioService.running) {
+      if (!AudioService.connected) {
+        await AudioService.connect();
+      }
+      await AudioService.stop();
+    }
+  }
+
+  static Future<void> changeStation(PlayerItem playerItem) async {
     if (theSameStationIsPlaying(playerItem)) {
       return;
     }
 
     if (AudioService.running) {
-      AudioService.stop().whenComplete(() {
-        if (AudioService.playbackStateStream == null || !AudioService.running) {
-          start(playerItem);
-          return;
-        }
-        var subscription;
-        subscription = AudioService.playbackStateStream.listen((state) {
-          if (!AudioService.running) {
-            subscription.cancel();
-            start(playerItem);
-          }
-        });
-      });
+      await stop();
+      await start(playerItem);
     } else {
-      start(playerItem);
+      await start(playerItem);
     }
   }
 
