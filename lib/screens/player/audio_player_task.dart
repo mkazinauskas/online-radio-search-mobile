@@ -180,26 +180,6 @@ class AudioPlayerTask extends BackgroundAudioTask {
     }
   }
 
-  @override
-  Future<dynamic> onCustomAction(String name, dynamic arguments) {
-    print(name);
-    print(arguments);
-    if (AudioServiceActions.changeStation.toString() == name) {
-      var item = PlayerItem.fromJson(arguments);
-      _mediaLibrary.items.clear();
-      MediaItem mediaItem = MediaItem(
-        id: item.streamUrl,
-        album: 'Live',
-        title: item.title,
-        extras: {'id': item.id.toString()},
-      );
-      _mediaLibrary.items.add(mediaItem);
-      AudioServiceBackground.setQueue(queue);
-      onSkipToNext();
-    }
-    return Future(null);
-  }
-
 }
 
 class MediaLibrary {

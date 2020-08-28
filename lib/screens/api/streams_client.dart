@@ -12,6 +12,10 @@ class StreamsClient {
   StreamsClient(this._onComplete);
 
   void load(int radioStationId) async {
+    if(radioStationId == null){
+      _onComplete([], ApiState.ERROR);
+      return;
+    }
     var url = _url.replaceAll('{radioStationId}', radioStationId.toString());
     http
         .get(url)

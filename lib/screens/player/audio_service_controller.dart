@@ -24,23 +24,23 @@ class AudioServiceController {
       return;
     }
 
-    AudioService.stop().whenComplete(() {
-      if (AudioService.playbackStateStream == null || !AudioService.running) {
-        start(playerItem);
-        return;
-      }
-      var subscription;
-      subscription = AudioService.playbackStateStream.listen((state) {
-        if (!AudioService.running) {
-          subscription.cancel();
+    if (AudioService.running) {
+      AudioService.stop().whenComplete(() {
+        if (AudioService.playbackStateStream == null || !AudioService.running) {
           start(playerItem);
+          return;
         }
+        var subscription;
+        subscription = AudioService.playbackStateStream.listen((state) {
+          if (!AudioService.running) {
+            subscription.cancel();
+            start(playerItem);
+          }
+        });
       });
-    });
-    AudioService.customAction(
-      AudioServiceActions.changeStation.toString(),
-      playerItem.toJson(),
-    );
+    } else {
+      start(playerItem);
+    }
   }
 
   static bool theSameStationIsPlaying(PlayerItem playerItem) {
