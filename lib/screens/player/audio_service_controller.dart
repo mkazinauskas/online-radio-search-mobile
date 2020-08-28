@@ -33,10 +33,10 @@ class AudioServiceController {
         }
       });
     });
-//    AudioService.customAction(
-//      AudioServiceActions.changeStation.toString(),
-//      playerItem.toJson(),
-//    );
+    AudioService.customAction(
+      AudioServiceActions.changeStation.toString(),
+      playerItem.toJson(),
+    );
   }
 }
 
