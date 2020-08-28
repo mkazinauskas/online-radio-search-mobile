@@ -20,6 +20,10 @@ class AudioServiceController {
   }
 
   static void changeStation(PlayerItem playerItem) {
+    if (theSameStationIsPlaying(playerItem)) {
+      return;
+    }
+
     AudioService.stop().whenComplete(() {
       if (AudioService.playbackStateStream == null || !AudioService.running) {
         start(playerItem);
@@ -37,6 +41,13 @@ class AudioServiceController {
       AudioServiceActions.changeStation.toString(),
       playerItem.toJson(),
     );
+  }
+
+  static bool theSameStationIsPlaying(PlayerItem playerItem) {
+    var currentMediaItem = AudioService.currentMediaItem;
+    return currentMediaItem != null &&
+        AudioService.playbackState.playing &&
+        currentMediaItem.id == playerItem.streamUrl;
   }
 }
 
