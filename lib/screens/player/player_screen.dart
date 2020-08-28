@@ -36,7 +36,7 @@ class PlayerScreen extends StatelessWidget {
                 state?.processingState ?? AudioProcessingState.none;
             final playing = state?.playing ?? false;
 
-            if (!AudioService.running) {
+            if (!AudioService.running || !AudioService.connected) {
               return _goToSearch(context);
             }
 
@@ -156,10 +156,9 @@ class PlayerScreen extends StatelessWidget {
         color: Colors.white,
         iconSize: 64.0,
         onPressed: () {
-          AudioServiceController.stop().whenComplete(() {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
-          });
+          AudioServiceController.stop();
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
         },
       );
 }

@@ -29,6 +29,9 @@ class AudioServiceController {
   }
 
   static Future<void> changeStation(PlayerItem playerItem) async {
+    if (!AudioService.connected) {
+      await AudioService.connect();
+    }
     if (theSameStationIsPlaying(playerItem)) {
       return;
     }
