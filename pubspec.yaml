@@ -28,9 +28,9 @@ dependencies:
   just_audio: ^0.4.0
   rxdart: ^0.24.1
   audio_service: ^0.14.0
-  provider: ^4.1.3
+  provider: ^4.3.2+1
   optional: ^5.0.0
-  fluttertoast: ^4.0.1
+  fluttertoast: ^7.0.2
   flutter_launcher_icons: ^0.7.5
   audio_session: ^0.0.3
   sqflite:
