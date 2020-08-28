@@ -61,9 +61,13 @@ class AppBottomNavigationBar extends StatelessWidget {
                 _buildContext, Routes.PLAYER, (route) => false);
           } else {
             Fluttertoast.showToast(
-              msg: 'Please select station to play.',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
+                msg: 'Please select station to play',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.blueAccent,
+                textColor: Colors.white,
+                fontSize: 16.0
             );
           }
         }
