@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
@@ -81,10 +80,6 @@ class PlayerScreen extends StatelessWidget {
       SizedBox.fromSize(
         size: Size.fromHeight(15.0),
       ),
-      SpinKitWave(
-        color: Colors.white,
-        size: 50.0,
-      ),
     ]);
   }
 
@@ -137,30 +132,17 @@ class PlayerScreen extends StatelessWidget {
         ],
       )));
 
-  IconButton playButton() => IconButton(
-        icon: Icon(Icons.play_arrow),
-        color: Colors.white,
-        iconSize: 64.0,
-        onPressed: AudioService.play,
-      );
+  Widget playButton() =>
+      _buttonControl(AudioService.play, Icons.play_arrow, Colors.blue);
 
-  IconButton pauseButton() => IconButton(
-        icon: Icon(Icons.pause),
-        color: Colors.white,
-        iconSize: 64.0,
-        onPressed: AudioService.pause,
-      );
+  Widget pauseButton() =>
+      _buttonControl(AudioService.pause, Icons.pause, Colors.blue);
 
-  IconButton stopButton(BuildContext context) => IconButton(
-        icon: Icon(Icons.stop),
-        color: Colors.white,
-        iconSize: 64.0,
-        onPressed: () {
-          AudioServiceController.stop();
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
-        },
-      );
+  Widget stopButton(BuildContext context) => _buttonControl(() {
+        AudioServiceController.stop();
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
+      }, Icons.stop, Colors.blue);
 }
 
 class FavouriteButton extends StatefulWidget {
@@ -196,29 +178,39 @@ class _FavouriteButtonState extends State<FavouriteButton> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.favorite),
-      iconSize: 64.0,
-      color: _isFavourite() ? Colors.pink : Colors.white,
-      onPressed: () {
-        if (_isFavourite()) {
-          FavouritesRepository.delete(_favouriteStationId).then((value) => {
-                this.setState(() {
-                  _favouriteStationId = null;
-                })
-              });
-        } else {
-          AddToFavouritesHandler()
-              .handler(AddToFavouritesCommand(
-                widget.playerItem.id,
-                widget.playerItem.uniqueId,
-                widget.playerItem.title,
-                widget.playerItem.streamUrl,
-                widget.playerItem.genres,
-              ))
-              .then((value) => _findFavouriteId(widget));
-        }
-      },
-    );
+    return _buttonControl(() {
+      if (_isFavourite()) {
+        FavouritesRepository.delete(_favouriteStationId).then((value) => {
+              this.setState(() {
+                _favouriteStationId = null;
+              })
+            });
+      } else {
+        AddToFavouritesHandler()
+            .handler(AddToFavouritesCommand(
+              widget.playerItem.id,
+              widget.playerItem.uniqueId,
+              widget.playerItem.title,
+              widget.playerItem.streamUrl,
+              widget.playerItem.genres,
+            ))
+            .then((value) => _findFavouriteId(widget));
+      }
+    }, Icons.favorite, _isFavourite() ? Colors.pink : Colors.blue);
   }
+}
+
+Widget _buttonControl(dynamic action, IconData icon, Color color) {
+  return RawMaterialButton(
+    onPressed: action,
+    elevation: 2.0,
+    fillColor: Colors.white,
+    child: Icon(
+      icon,
+      color: color,
+      size: 35.0,
+    ),
+    padding: EdgeInsets.all(15.0),
+    shape: CircleBorder(),
+  );
 }
