@@ -43,15 +43,13 @@ class PlayerScreen extends StatelessWidget {
               return _loadingView();
             }
 
-            return Column(
+            return Container(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ...[
                   _titleWidget(playerItem),
                   _statusIndicator(playing),
-                  SizedBox.fromSize(
-                    size: Size.fromHeight(15.0),
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -63,7 +61,7 @@ class PlayerScreen extends StatelessWidget {
                   ),
                 ],
               ],
-            );
+            ));
           },
         ),
       ),
@@ -74,13 +72,16 @@ class PlayerScreen extends StatelessWidget {
 
   Widget _statusIndicator(bool playing) {
     if (!playing) {
-      return SizedBox.shrink();
+      return
+        Image.asset(
+              'assets/visualizer-stopped.png',
+              fit: BoxFit.scaleDown,
+      );
     }
-    return Column(children: [
-      SizedBox.fromSize(
-        size: Size.fromHeight(15.0),
-      ),
-    ]);
+    return Image.asset(
+      'assets/visualizer.gif',
+      fit: BoxFit.scaleDown,
+    );
   }
 
   Widget _titleWidget(PlayerItem playerItem) {
