@@ -33,7 +33,7 @@ class OnlineRadioSearchApp extends StatelessWidget {
 }
 
 class Routes {
-  static final SEARCH = '/search';
-  static final PLAYER = '/player';
-  static final FAVOURITES = '/favourites';
+  static final String SEARCH = '/search';
+  static final String PLAYER = '/player';
+  static final String FAVOURITES = '/favourites';
 }
