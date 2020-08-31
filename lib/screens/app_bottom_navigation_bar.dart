@@ -19,15 +19,15 @@ class AppBottomNavigationBar extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
-          title: Text('Search'),
+          label: 'Search',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite),
-          title: Text('Favourites'),
+          label: 'Favourites',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.play_arrow),
-          title: Text('Player'),
+          label: 'Player',
         ),
       ],
       currentIndex: _navigationBarItem.index,
@@ -67,8 +67,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 timeInSecForIosWeb: 1,
                 backgroundColor: Colors.blueAccent,
                 textColor: Colors.white,
-                fontSize: 16.0
-            );
+                fontSize: 16.0);
           }
         }
         break;
