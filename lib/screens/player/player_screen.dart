@@ -28,7 +28,7 @@ class PlayerScreen extends StatelessWidget {
             ScreenData data = new ScreenData(snapshot);
 
             if (!AudioService.running || !AudioService.connected) {
-              return _goToSearch(context);
+              return _refreshView(context);
             }
 
             if (data.processingState != AudioProcessingState.ready) {
@@ -42,15 +42,7 @@ class PlayerScreen extends StatelessWidget {
                 ...[
                   _titleWidget(data.playerItem),
                   _statusIndicator(data.playing),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (data.playerItem != null)
-                        FavouriteButton(playerItem: data.playerItem),
-                      if (data.playing) pauseButton() else playButton(),
-                      stopButton(context),
-                    ],
-                  ),
+                  buttons(data, context),
                 ],
               ],
             ));
@@ -59,6 +51,18 @@ class PlayerScreen extends StatelessWidget {
       ),
       bottomNavigationBar:
           AppBottomNavigationBar(context, PlayerNavigationBarItem()),
+    );
+  }
+
+  Row buttons(ScreenData data, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (data.playerItem != null)
+          FavouriteButton(playerItem: data.playerItem),
+        if (data.playing) pauseButton() else playButton(),
+        stopButton(context),
+      ],
     );
   }
 
@@ -109,7 +113,7 @@ class PlayerScreen extends StatelessWidget {
         ),
       );
 
-  Widget _goToSearch(BuildContext context) => Center(
+  Widget _refreshView(BuildContext context) => Center(
           child: Center(
               child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
