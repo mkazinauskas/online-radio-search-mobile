@@ -82,7 +82,7 @@ class StationsListCreator {
               } else {
                 Alert.show(context, 'Failed to load data.');
               }
-            }).load(station.id);
+            })?.load(station.id);
           },
         ),
       ),

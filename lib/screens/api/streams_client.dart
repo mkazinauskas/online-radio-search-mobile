@@ -12,7 +12,7 @@ class StreamsClient {
   StreamsClient(this._onComplete);
 
   void load(int radioStationId) async {
-    if(radioStationId == null){
+    if (radioStationId == null) {
       _onComplete([], ApiState.ERROR);
       return;
     }
@@ -39,9 +39,13 @@ class StreamResponse {
 
 class _ResponseJsonToObjectConverter {
   static List<StreamResponse> convert(String responseBody) {
-    dynamic decoded = JsonCodec().decode(responseBody)['_embedded']
-        ['radioStationStreamResponseList'];
-    return List<StreamResponse>.from(decoded.map(_singleStation).toList());
+    dynamic embedded = JsonCodec().decode(responseBody)['_embedded'];
+    if (embedded == null) {
+      return [];
+    }
+    return List<StreamResponse>.from(embedded['radioStationStreamResponseList']
+        ?.map(_singleStation)
+        ?.toList());
   }
 
   static _singleStation(dynamic json) {
