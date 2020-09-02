@@ -26,53 +26,89 @@ class PlayerScreen extends StatelessWidget {
         child: LayoutBuilder(builder: (builder, constraints) {
           return Center(
             child: StreamBuilder<ScreenState>(
-                stream: _screenStateStream,
-                builder: (context, snapshot) {
-                  ScreenData data = new ScreenData(snapshot);
+              stream: _screenStateStream,
+              builder: (context, snapshot) {
+                ScreenData data = new ScreenData(snapshot);
 
-                  if (!AudioService.running || !AudioService.connected) {
-                    return _refreshView(context);
-                  }
+                if (!AudioService.running || !AudioService.connected) {
+                  return _refreshView(context);
+                }
 
-                  if (data.processingState != AudioProcessingState.ready) {
-                    return _loadingView();
-                  }
+                if (data.processingState != AudioProcessingState.ready) {
+                  return _loadingView();
+                }
 
-                  var isLandscape = constraints.maxWidth > 600;
-                  if (isLandscape) {
-                    return Container(
-                      padding: EdgeInsets.only(bottom: 15, top: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ...[
-                            Container(
-                              padding: EdgeInsets.only(bottom: 30),
-                              child: _titleWidget(data.playerItem),
-                            ),
-                            buttons(data, context),
-                          ],
+                var isLandscape = constraints.maxWidth > 600;
+                if (isLandscape) {
+                  return Container(
+                    padding: EdgeInsets.only(bottom: 15, top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ...[
+                          Container(
+                              width: constraints.maxWidth / 2,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    child: Container(
+                                        child: Align(
+                                      alignment: FractionalOffset.topCenter,
+                                      child: _titleWidget(data.playerItem),
+                                    )),
+                                  ),
+                                  Positioned(
+                                    child: Container(
+                                        child: Align(
+                                      alignment: FractionalOffset.bottomCenter,
+                                      child: _statusIndicator(data.playing),
+                                    )),
+                                  ),
+                                ],
+                              )),
+                          Container(
+                              width: constraints.maxWidth / 2,
+                              child: buttons(data, context)),
                         ],
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      padding: EdgeInsets.only(bottom: 15, top: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ...[
-                            _titleWidget(data.playerItem),
-                            _statusIndicator(data.playing),
-                            buttons(data, context),
-                          ],
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container(
+                    child: Stack(
+                      children: [
+                        ...[
+                          Positioned(
+                            child: Container(
+                                padding: EdgeInsets.only(bottom: 20, top: 60),
+                                child: Align(
+                                  alignment: FractionalOffset.topCenter,
+                                  child: _titleWidget(data.playerItem),
+                                )),
+                          ),
+                          Positioned(
+                            child: Container(
+                                padding: EdgeInsets.only(bottom: 20, top: 20),
+                                child: Align(
+                                  alignment: FractionalOffset.center,
+                                  child: _statusIndicator(data.playing),
+                                )),
+                          ),
+                          Positioned(
+                            child: Container(
+                                padding: EdgeInsets.only(bottom: 50, top: 20),
+                                child: Align(
+                                  alignment: FractionalOffset.bottomCenter,
+                                  child: buttons(data, context),
+                                )),
+                          )
                         ],
-                      ),
-                    );
-                  }
-                },
-              ),
-
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
           );
         }),
       ),
@@ -116,7 +152,6 @@ class PlayerScreen extends StatelessWidget {
     }
 
     return Container(
-//      width: 350,
       child: Text(
         playerItem.title,
         style: TextStyle(
