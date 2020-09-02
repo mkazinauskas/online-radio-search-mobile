@@ -4,6 +4,21 @@ import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
+
+  ThemeData appBarTheme(BuildContext context) {
+    assert(context != null);
+    final ThemeData theme = Theme.of(context);
+    assert(theme != null);
+    return theme.copyWith(
+//      backgroundColor: Colors.blue,
+      scaffoldBackgroundColor: Colors.blue,
+//      primaryColor: Colors.blue,
+//      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.white),
+//      primaryColorBrightness: Brightness.light,
+//      primaryTextTheme: theme.textTheme,
+    );
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -45,7 +60,7 @@ class CustomSearchDelegate extends SearchDelegate {
             return error();
           }
 
-          List<ListTile> result = (builder.data.stations as List<Station>)
+          List<Widget> result = (builder.data.stations as List<Station>)
               .map(
                   (station) => StationsListCreator.createTile(station, context))
               .toList();

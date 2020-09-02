@@ -28,7 +28,7 @@ class FavouritesScreen extends StatelessWidget {
               return noResults();
             }
 
-            List<ListTile> result = (builder.data as List<FavouriteStation>)
+            List<Widget> result = (builder.data as List<FavouriteStation>)
                 .map(
                   (e) => Station(
                     int.parse(e.radioStationId),

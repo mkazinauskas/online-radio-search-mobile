@@ -19,7 +19,8 @@ class OnlineRadioSearchApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Online Radio Search',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+          primarySwatch: Colors.blue, scaffoldBackgroundColor: Colors.blue),
       initialRoute: Routes.SEARCH,
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.

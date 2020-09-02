@@ -21,7 +21,6 @@ class PlayerScreen extends StatelessWidget {
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: Colors.blue,
       body: SafeArea(
         child: LayoutBuilder(builder: (builder, constraints) {
           return Center(
@@ -155,10 +154,7 @@ class PlayerScreen extends StatelessWidget {
       child: Text(
         playerItem.title,
         style: TextStyle(
-          fontSize: 24.0,
-          color: Colors.white,
-          fontWeight: FontWeight.bold
-        ),
+            fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
     );
@@ -249,14 +245,16 @@ class _FavouriteButtonState extends State<FavouriteButton> {
   }
 
   void _findFavouriteId(FavouriteButton widget) {
-    FavouritesRepository.findOne(widget.playerItem.id).then((value) => {
-          if (value.isPresent)
-            {
-              this.setState(() {
-                _favouriteStationId = value.value.id;
-              })
-            }
-        });
+    FavouritesRepository.findOne(widget.playerItem.id).then(
+      (value) => {
+        if (value.isPresent)
+          {
+            this.setState(() {
+              _favouriteStationId = value.value.id;
+            })
+          }
+      },
+    );
   }
 
   bool _isFavourite() {
