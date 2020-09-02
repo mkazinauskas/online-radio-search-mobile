@@ -157,6 +157,7 @@ class PlayerScreen extends StatelessWidget {
         style: TextStyle(
           fontSize: 24.0,
           color: Colors.white,
+          fontWeight: FontWeight.bold
         ),
         textAlign: TextAlign.center,
       ),
