@@ -77,8 +77,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       ));
     }
 
+    final dynamic backAction = () {
+      setState(() {});
+    };
+
     var stationsList = _radioStations
-        .map((station) => StationsListCreator.createTile(station, context))
+        .map((station) =>
+            StationsListCreator.createTile(station, context, backAction))
         .toList();
 
     return new Container(

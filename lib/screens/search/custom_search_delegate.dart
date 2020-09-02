@@ -60,7 +60,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
           List<Widget> result = (builder.data.stations as List<Station>)
               .map(
-                  (station) => StationsListCreator.createTile(station, context))
+                  (station) => StationsListCreator.createTile(station, context, (){}))
               .toList();
 
           return new Container(

@@ -24,7 +24,7 @@ class FavouritesScreen extends StatelessWidget {
               return error();
             }
 
-            if(builder.data.isEmpty){
+            if (builder.data.isEmpty) {
               return noResults();
             }
 
@@ -39,7 +39,9 @@ class FavouritesScreen extends StatelessWidget {
                   ),
                 )
                 .map((station) =>
-                    StationsListCreator.createTile(station, context))
+                    StationsListCreator.createTile(station, context, () {
+
+                    }))
                 .toList();
 
             return new Container(
@@ -85,13 +87,13 @@ class FavouritesScreen extends StatelessWidget {
   Widget noResults() {
     return Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              "No results, please add Radio Stations",
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ));
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        new Text(
+          "No results, please add Radio Stations",
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ));
   }
 }
