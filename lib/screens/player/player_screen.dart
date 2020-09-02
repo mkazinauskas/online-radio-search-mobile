@@ -21,33 +21,61 @@ class PlayerScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.blue,
-      body: Center(
-        child: StreamBuilder<ScreenState>(
-          stream: _screenStateStream,
-          builder: (context, snapshot) {
-            ScreenData data = new ScreenData(snapshot);
+      body: SafeArea(
+        child: LayoutBuilder(builder: (builder, constraints) {
+          return Center(
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: StreamBuilder<ScreenState>(
+                stream: _screenStateStream,
+                builder: (context, snapshot) {
+                  ScreenData data = new ScreenData(snapshot);
 
-            if (!AudioService.running || !AudioService.connected) {
-              return _refreshView(context);
-            }
+                  if (!AudioService.running || !AudioService.connected) {
+                    return _refreshView(context);
+                  }
 
-            if (data.processingState != AudioProcessingState.ready) {
-              return _loadingView();
-            }
+                  if (data.processingState != AudioProcessingState.ready) {
+                    return _loadingView();
+                  }
 
-            return Container(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ...[
-                  _titleWidget(data.playerItem),
-                  _statusIndicator(data.playing),
-                  buttons(data, context),
-                ],
-              ],
-            ));
-          },
-        ),
+                  var isLandscape = constraints.maxWidth > 600;
+                  if (isLandscape) {
+                    return Container(
+                      padding: EdgeInsets.only(bottom: 15, top: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ...[
+                            Container(
+                              padding: EdgeInsets.only(bottom: 10),
+                              child: _titleWidget(data.playerItem),
+                            ),
+                            buttons(data, context),
+                          ],
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      padding: EdgeInsets.only(bottom: 15, top: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ...[
+                            _titleWidget(data.playerItem),
+                            _statusIndicator(data.playing),
+                            buttons(data, context),
+                          ],
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          );
+        }),
       ),
       bottomNavigationBar:
           AppBottomNavigationBar(context, PlayerNavigationBarItem()),
@@ -68,14 +96,18 @@ class PlayerScreen extends StatelessWidget {
 
   Widget _statusIndicator(bool playing) {
     if (!playing) {
-      return Image.asset(
-        'assets/visualizer-stopped.png',
-        fit: BoxFit.scaleDown,
+      return FittedBox(
+        child: Image.asset(
+          'assets/visualizer-stopped.png',
+          fit: BoxFit.fill,
+        ),
       );
     }
-    return Image.asset(
-      'assets/visualizer.gif',
-      fit: BoxFit.scaleDown,
+    return FittedBox(
+      child: Image.asset(
+        'assets/visualizer.gif',
+        fit: BoxFit.fill,
+      ),
     );
   }
 
