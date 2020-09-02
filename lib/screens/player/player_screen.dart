@@ -25,21 +25,13 @@ class PlayerScreen extends StatelessWidget {
         child: StreamBuilder<ScreenState>(
           stream: _screenStateStream,
           builder: (context, snapshot) {
-            final screenState = snapshot.data;
-            final mediaItem = screenState?.mediaItem;
-            final playerItem = mediaItem == null
-                ? null
-                : PlayerItem.fromJson(mediaItem.extras['radioStation']);
-            final state = screenState?.playbackState;
-            final processingState =
-                state?.processingState ?? AudioProcessingState.none;
-            final playing = state?.playing ?? false;
+            ScreenData data = new ScreenData(snapshot);
 
             if (!AudioService.running || !AudioService.connected) {
               return _goToSearch(context);
             }
 
-            if (processingState != AudioProcessingState.ready) {
+            if (data.processingState != AudioProcessingState.ready) {
               return _loadingView();
             }
 
@@ -48,14 +40,14 @@ class PlayerScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ...[
-                  _titleWidget(playerItem),
-                  _statusIndicator(playing),
+                  _titleWidget(data.playerItem),
+                  _statusIndicator(data.playing),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (playerItem != null)
-                        FavouriteButton(playerItem: playerItem),
-                      if (playing) pauseButton() else playButton(),
+                      if (data.playerItem != null)
+                        FavouriteButton(playerItem: data.playerItem),
+                      if (data.playing) pauseButton() else playButton(),
                       stopButton(context),
                     ],
                   ),
@@ -72,10 +64,9 @@ class PlayerScreen extends StatelessWidget {
 
   Widget _statusIndicator(bool playing) {
     if (!playing) {
-      return
-        Image.asset(
-              'assets/visualizer-stopped.png',
-              fit: BoxFit.scaleDown,
+      return Image.asset(
+        'assets/visualizer-stopped.png',
+        fit: BoxFit.scaleDown,
       );
     }
     return Image.asset(
@@ -144,6 +135,27 @@ class PlayerScreen extends StatelessWidget {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.SEARCH, (route) => false);
       }, Icons.stop, Colors.blue);
+}
+
+class ScreenData {
+  final ScreenState screenState;
+  final MediaItem mediaItem;
+  final PlayerItem playerItem;
+  final PlaybackState playbackState;
+  final AudioProcessingState processingState;
+  final bool playing;
+
+  ScreenData(AsyncSnapshot<ScreenState> snapshot)
+      : screenState = snapshot.data,
+        mediaItem = snapshot.data?.mediaItem,
+        playerItem = snapshot.data?.mediaItem == null
+            ? null
+            : PlayerItem.fromJson(
+                snapshot.data?.mediaItem?.extras['radioStation']),
+        playbackState = snapshot.data?.playbackState,
+        processingState = snapshot.data?.playbackState?.processingState ??
+            AudioProcessingState.none,
+        playing = snapshot.data?.playbackState?.playing ?? false;
 }
 
 class FavouriteButton extends StatefulWidget {
