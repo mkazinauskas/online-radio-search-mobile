@@ -4,7 +4,14 @@ import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
 
-class FavouritesScreen extends StatelessWidget {
+class FavouritesScreen extends StatefulWidget {
+  FavouritesScreen({Key key}) : super(key: key);
+
+  @override
+  _FavouritesState createState() => _FavouritesState();
+}
+
+class _FavouritesState extends State<FavouritesScreen> {
   @override
   Widget build(BuildContext context) {
     Future<List<FavouriteStation>> allFavourites =
@@ -40,7 +47,7 @@ class FavouritesScreen extends StatelessWidget {
                 )
                 .map((station) =>
                     StationsListCreator.createTile(station, context, () {
-
+                      setState(() {});
                     }))
                 .toList();
 
