@@ -30,7 +30,6 @@ dependencies:
   audio_service: ^0.14.1
   provider: ^4.3.2+1
   optional: ^5.0.0
-  fluttertoast: ^7.0.2
   flutter_launcher_icons: ^0.7.5
   audio_session: ^0.0.3
   sqflite:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlineradiosearchmobile/main.dart';
+import 'package:onlineradiosearchmobile/screens/alert.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/api/streams_client.dart';
@@ -44,11 +44,7 @@ class StationsListCreator {
             if (state == ApiState.COMPLETE) {
               response.retainWhere((element) => element.working);
               if (response.isEmpty) {
-                Fluttertoast.showToast(
-                  msg: 'No working stream found.',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                );
+                Alert.show(context, 'No working stream found.');
                 return;
               }
               List<String> genres = station.genres.length > 0
@@ -65,11 +61,7 @@ class StationsListCreator {
               AudioServiceController.changeStation(item);
               Navigator.pushNamed(context, Routes.PLAYER);
             } else {
-              Fluttertoast.showToast(
-                msg: 'Failed to load data.',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              );
+              Alert.show(context, 'Failed to load data.');
             }
           }).load(station.id);
         },
