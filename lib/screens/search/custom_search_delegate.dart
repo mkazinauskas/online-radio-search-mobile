@@ -10,12 +10,10 @@ class CustomSearchDelegate extends SearchDelegate {
     final ThemeData theme = Theme.of(context);
     assert(theme != null);
     return theme.copyWith(
-//      backgroundColor: Colors.blue,
-      scaffoldBackgroundColor: Colors.blue,
-//      primaryColor: Colors.blue,
-//      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.white),
-//      primaryColorBrightness: Brightness.light,
-//      primaryTextTheme: theme.textTheme,
+      textTheme: theme.textTheme.copyWith(
+        headline6: theme.textTheme.headline6.copyWith(color: Colors.white),
+        overline: theme.textTheme.headline6.copyWith(color: Colors.white),
+      ),
     );
   }
 
