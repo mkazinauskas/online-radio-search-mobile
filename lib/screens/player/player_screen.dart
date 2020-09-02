@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
@@ -24,9 +25,7 @@ class PlayerScreen extends StatelessWidget {
       body: SafeArea(
         child: LayoutBuilder(builder: (builder, constraints) {
           return Center(
-            child: FittedBox(
-              fit: BoxFit.fitWidth,
-              child: StreamBuilder<ScreenState>(
+            child: StreamBuilder<ScreenState>(
                 stream: _screenStateStream,
                 builder: (context, snapshot) {
                   ScreenData data = new ScreenData(snapshot);
@@ -48,7 +47,7 @@ class PlayerScreen extends StatelessWidget {
                         children: [
                           ...[
                             Container(
-                              padding: EdgeInsets.only(bottom: 10),
+                              padding: EdgeInsets.only(bottom: 30),
                               child: _titleWidget(data.playerItem),
                             ),
                             buttons(data, context),
@@ -73,7 +72,7 @@ class PlayerScreen extends StatelessWidget {
                   }
                 },
               ),
-            ),
+
           );
         }),
       ),
@@ -96,17 +95,17 @@ class PlayerScreen extends StatelessWidget {
 
   Widget _statusIndicator(bool playing) {
     if (!playing) {
-      return FittedBox(
+      return Container(
+          padding: EdgeInsets.only(top: 30, bottom: 30),
+          child: SizedBox.shrink());
+    }
+    return Container(
+      padding: EdgeInsets.all(50),
+      child: FittedBox(
         child: Image.asset(
-          'assets/visualizer-stopped.png',
+          'assets/visualizer.gif',
           fit: BoxFit.fill,
         ),
-      );
-    }
-    return FittedBox(
-      child: Image.asset(
-        'assets/visualizer.gif',
-        fit: BoxFit.fill,
       ),
     );
   }
@@ -116,13 +115,16 @@ class PlayerScreen extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return Text(
-      playerItem.title,
-      style: TextStyle(
-        fontSize: 24.0,
-        color: Colors.white,
+    return Container(
+//      width: 350,
+      child: Text(
+        playerItem.title,
+        style: TextStyle(
+          fontSize: 24.0,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
       ),
-      textAlign: TextAlign.center,
     );
   }
 
