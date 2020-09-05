@@ -52,7 +52,7 @@ class PlayerScreen extends StatelessWidget {
           return _refreshView(context);
         }
 
-        if (!AudioService.running  && AudioService.playbackState == null) {
+        if (!AudioService.running && AudioService.playbackState == null) {
           return _refreshView(context);
         }
 
@@ -162,11 +162,9 @@ class PlayerScreen extends StatelessWidget {
     }
     return Container(
       padding: EdgeInsets.all(50),
-      child: FittedBox(
-        child: Image.asset(
-          'assets/visualizer.gif',
-          fit: BoxFit.fill,
-        ),
+      child: Image.asset(
+        'assets/visualizer.gif',
+        fit: BoxFit.fill,
       ),
     );
   }
