@@ -24,7 +24,15 @@ class PlayerScreen extends StatelessWidget {
       body: SafeArea(
         child: LayoutBuilder(builder: (builder, constraints) {
           return Center(
-            child: resolveViewByScreenState(constraints),
+            child: FutureBuilder(
+              future: AudioService.connect(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return _loadingView();
+                }
+                return resolveViewByScreenState(constraints);
+              },
+            ),
           );
         }),
       ),
@@ -33,28 +41,33 @@ class PlayerScreen extends StatelessWidget {
     );
   }
 
-  StreamBuilder<ScreenState> resolveViewByScreenState(BoxConstraints constraints) {
+  StreamBuilder<ScreenState> resolveViewByScreenState(
+      BoxConstraints constraints) {
     return StreamBuilder<ScreenState>(
-            stream: _screenStateStream,
-            builder: (context, snapshot) {
-              ScreenData data = new ScreenData(snapshot);
+      stream: _screenStateStream,
+      builder: (context, snapshot) {
+        ScreenData data = new ScreenData(snapshot);
 
-              if (!AudioService.running || !AudioService.connected) {
-                return _refreshView(context);
-              }
+        if (!AudioService.connected) {
+          return _refreshView(context);
+        }
 
-              if (data.processingState != AudioProcessingState.ready) {
-                return _loadingView();
-              }
+        if (!AudioService.running  && AudioService.playbackState == null) {
+          return _refreshView(context);
+        }
 
-              var isLandscape = constraints.maxWidth > 600;
-              if (isLandscape) {
-                return landscapeView(constraints, data, context);
-              } else {
-                return portraitView(data, context);
-              }
-            },
-          );
+        if (data.processingState != AudioProcessingState.ready) {
+          return _loadingView();
+        }
+
+        var isLandscape = constraints.maxWidth > 600;
+        if (isLandscape) {
+          return landscapeView(constraints, data, context);
+        } else {
+          return portraitView(data, context);
+        }
+      },
+    );
   }
 
   Container portraitView(ScreenData data, BuildContext context) {
@@ -65,6 +78,7 @@ class PlayerScreen extends StatelessWidget {
             Positioned(
               child: Container(
                   padding: EdgeInsets.only(bottom: 20, top: 60),
+                  margin: EdgeInsets.only(left: 5.0, right: 5.0),
                   child: Align(
                     alignment: FractionalOffset.topCenter,
                     child: _titleWidget(data.playerItem),
