@@ -70,10 +70,6 @@ class _FavouritesState extends State<FavouritesScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         new CircularProgressIndicator(),
-        new Text(
-          "  Loading...",
-          textAlign: TextAlign.center,
-        )
       ],
     ));
   }
@@ -84,7 +80,8 @@ class _FavouritesState extends State<FavouritesScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         new Text(
-          "Failed to load favourite stations.",
+          'Failed to load favourite stations.',
+          style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
         ),
       ],
@@ -97,7 +94,8 @@ class _FavouritesState extends State<FavouritesScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         new Text(
-          "No results, please add Radio Stations",
+          'No results, please add Radio Stations',
+          style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
         ),
       ],
