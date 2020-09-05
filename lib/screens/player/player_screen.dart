@@ -39,72 +39,9 @@ class PlayerScreen extends StatelessWidget {
 
                 var isLandscape = constraints.maxWidth > 600;
                 if (isLandscape) {
-                  return Container(
-                    padding: EdgeInsets.only(bottom: 15, top: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...[
-                          Container(
-                              width: constraints.maxWidth / 2,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    child: Container(
-                                        child: Align(
-                                      alignment: FractionalOffset.topCenter,
-                                      child: _titleWidget(data.playerItem),
-                                    )),
-                                  ),
-                                  Positioned(
-                                    child: Container(
-                                        child: Align(
-                                      alignment: FractionalOffset.bottomCenter,
-                                      child: _statusIndicator(data.playing),
-                                    )),
-                                  ),
-                                ],
-                              )),
-                          Container(
-                              width: constraints.maxWidth / 2,
-                              child: buttons(data, context)),
-                        ],
-                      ],
-                    ),
-                  );
+                  return landscapeView(constraints, data, context);
                 } else {
-                  return Container(
-                    child: Stack(
-                      children: [
-                        ...[
-                          Positioned(
-                            child: Container(
-                                padding: EdgeInsets.only(bottom: 20, top: 60),
-                                child: Align(
-                                  alignment: FractionalOffset.topCenter,
-                                  child: _titleWidget(data.playerItem),
-                                )),
-                          ),
-                          Positioned(
-                            child: Container(
-                                padding: EdgeInsets.only(bottom: 20, top: 20),
-                                child: Align(
-                                  alignment: FractionalOffset.center,
-                                  child: _statusIndicator(data.playing),
-                                )),
-                          ),
-                          Positioned(
-                            child: Container(
-                                padding: EdgeInsets.only(bottom: 50, top: 20),
-                                child: Align(
-                                  alignment: FractionalOffset.bottomCenter,
-                                  child: buttons(data, context),
-                                )),
-                          )
-                        ],
-                      ],
-                    ),
-                  );
+                  return portraitView(data, context);
                 }
               },
             ),
@@ -113,6 +50,77 @@ class PlayerScreen extends StatelessWidget {
       ),
       bottomNavigationBar:
           AppBottomNavigationBar(context, PlayerNavigationBarItem()),
+    );
+  }
+
+  Container portraitView(ScreenData data, BuildContext context) {
+    return Container(
+      child: Stack(
+        children: [
+          ...[
+            Positioned(
+              child: Container(
+                  padding: EdgeInsets.only(bottom: 20, top: 60),
+                  child: Align(
+                    alignment: FractionalOffset.topCenter,
+                    child: _titleWidget(data.playerItem),
+                  )),
+            ),
+            Positioned(
+              child: Container(
+                  padding: EdgeInsets.only(bottom: 20, top: 20),
+                  child: Align(
+                    alignment: FractionalOffset.center,
+                    child: _statusIndicator(data.playing),
+                  )),
+            ),
+            Positioned(
+              child: Container(
+                  padding: EdgeInsets.only(bottom: 50, top: 20),
+                  child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: buttons(data, context),
+                  )),
+            )
+          ],
+        ],
+      ),
+    );
+  }
+
+  Container landscapeView(
+      BoxConstraints constraints, ScreenData data, BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(bottom: 15, top: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ...[
+            Container(
+                width: constraints.maxWidth / 2,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      child: Container(
+                          child: Align(
+                        alignment: FractionalOffset.topCenter,
+                        child: _titleWidget(data.playerItem),
+                      )),
+                    ),
+                    Positioned(
+                      child: Container(
+                          child: Align(
+                        alignment: FractionalOffset.bottomCenter,
+                        child: _statusIndicator(data.playing),
+                      )),
+                    ),
+                  ],
+                )),
+            Container(
+                width: constraints.maxWidth / 2, child: buttons(data, context)),
+          ],
+        ],
+      ),
     );
   }
 
