@@ -60,45 +60,43 @@ class PlayerScreen extends StatelessWidget {
           return _loadingView();
         }
 
-        var isLandscape = constraints.maxWidth > 600;
+        var isLandscape = constraints.maxWidth > constraints.maxHeight;
         if (isLandscape) {
           return landscapeView(constraints, data, context);
         } else {
-          return portraitView(data, context);
+          return portraitView(data, context, constraints);
         }
       },
     );
   }
 
-  Container portraitView(ScreenData data, BuildContext context) {
+  Container portraitView(
+      ScreenData data, BuildContext context, BoxConstraints constraints) {
+    var itemSize = constraints.maxHeight / 3;
     return Container(
-      child: Stack(
+      child: Column(
         children: [
           ...[
-            Positioned(
-              child: Container(
-                  padding: EdgeInsets.only(bottom: 20, top: 60),
-                  margin: EdgeInsets.only(left: 5.0, right: 5.0),
-                  child: Align(
-                    alignment: FractionalOffset.topCenter,
-                    child: _titleWidget(data.playerItem),
-                  )),
+            Container(
+              height: itemSize,
+              padding: EdgeInsets.all(20),
+              child: Center(
+                child: _titleWidget(data.playerItem),
+              ),
             ),
-            Positioned(
-              child: Container(
-                  padding: EdgeInsets.only(bottom: 20, top: 20),
-                  child: Align(
-                    alignment: FractionalOffset.center,
-                    child: _statusIndicator(data.playing),
-                  )),
+            Container(
+              height: itemSize,
+              padding: EdgeInsets.all(20),
+              child: Center(
+                child: _statusIndicator(data.playing),
+              ),
             ),
-            Positioned(
-              child: Container(
-                  padding: EdgeInsets.only(bottom: 50, top: 20),
-                  child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: buttons(data, context),
-                  )),
+            Container(
+              height: itemSize,
+              padding: EdgeInsets.only(bottom: 50, top: 20),
+              child: Center(
+                child: buttons(data, context),
+              ),
             )
           ],
         ],
