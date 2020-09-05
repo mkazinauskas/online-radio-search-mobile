@@ -164,6 +164,7 @@ class PlayerScreen extends StatelessWidget {
       padding: EdgeInsets.all(50),
       child: Image.asset(
         'assets/visualizer.gif',
+        color: Colors.white70,
         fit: BoxFit.fill,
       ),
     );
