@@ -24,33 +24,37 @@ class PlayerScreen extends StatelessWidget {
       body: SafeArea(
         child: LayoutBuilder(builder: (builder, constraints) {
           return Center(
-            child: StreamBuilder<ScreenState>(
-              stream: _screenStateStream,
-              builder: (context, snapshot) {
-                ScreenData data = new ScreenData(snapshot);
-
-                if (!AudioService.running || !AudioService.connected) {
-                  return _refreshView(context);
-                }
-
-                if (data.processingState != AudioProcessingState.ready) {
-                  return _loadingView();
-                }
-
-                var isLandscape = constraints.maxWidth > 600;
-                if (isLandscape) {
-                  return landscapeView(constraints, data, context);
-                } else {
-                  return portraitView(data, context);
-                }
-              },
-            ),
+            child: resolveViewByScreenState(constraints),
           );
         }),
       ),
       bottomNavigationBar:
           AppBottomNavigationBar(context, PlayerNavigationBarItem()),
     );
+  }
+
+  StreamBuilder<ScreenState> resolveViewByScreenState(BoxConstraints constraints) {
+    return StreamBuilder<ScreenState>(
+            stream: _screenStateStream,
+            builder: (context, snapshot) {
+              ScreenData data = new ScreenData(snapshot);
+
+              if (!AudioService.running || !AudioService.connected) {
+                return _refreshView(context);
+              }
+
+              if (data.processingState != AudioProcessingState.ready) {
+                return _loadingView();
+              }
+
+              var isLandscape = constraints.maxWidth > 600;
+              if (isLandscape) {
+                return landscapeView(constraints, data, context);
+              } else {
+                return portraitView(data, context);
+              }
+            },
+          );
   }
 
   Container portraitView(ScreenData data, BuildContext context) {
