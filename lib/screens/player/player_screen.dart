@@ -93,7 +93,7 @@ class PlayerScreen extends StatelessWidget {
             ),
             Container(
               height: itemSize,
-              padding: EdgeInsets.only(bottom: 50, top: 20),
+              padding: EdgeInsets.all(20),
               child: Center(
                 child: buttons(data, context),
               ),
