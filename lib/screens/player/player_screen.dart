@@ -70,73 +70,70 @@ class PlayerScreen extends StatelessWidget {
     );
   }
 
-  Container portraitView(
+  Widget portraitView(
       ScreenData data, BuildContext context, BoxConstraints constraints) {
     var itemSize = constraints.maxHeight / 3;
-    return Container(
-      child: Column(
-        children: [
-          ...[
-            Container(
-              height: itemSize,
-              padding: EdgeInsets.all(20),
-              child: Center(
-                child: _titleWidget(data.playerItem),
-              ),
+    return Column(
+      children: [
+        ...[
+          Container(
+            height: itemSize,
+            padding: EdgeInsets.all(20),
+            child: Center(
+              child: _titleWidget(data.playerItem),
             ),
-            Container(
-              height: itemSize,
-              padding: EdgeInsets.all(20),
-              child: Center(
-                child: _statusIndicator(data.playing),
-              ),
+          ),
+          Container(
+            height: itemSize,
+            padding: EdgeInsets.all(20),
+            child: Center(
+              child: _statusIndicator(data.playing),
             ),
-            Container(
-              height: itemSize,
-              padding: EdgeInsets.all(20),
-              child: Center(
-                child: buttons(data, context),
-              ),
-            )
-          ],
+          ),
+          Container(
+            height: itemSize,
+            padding: EdgeInsets.all(20),
+            child: Center(
+              child: buttons(data, context),
+            ),
+          )
         ],
-      ),
+      ],
     );
   }
 
-  Container landscapeView(
+  Widget landscapeView(
       BoxConstraints constraints, ScreenData data, BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: 15, top: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ...[
-            Container(
-                width: constraints.maxWidth / 2,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      child: Container(
-                          child: Align(
-                        alignment: FractionalOffset.topCenter,
-                        child: _titleWidget(data.playerItem),
-                      )),
+    var halfOfWidth = constraints.maxWidth / 2;
+    var halfOfHeight = constraints.maxHeight / 2;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ...[
+          Container(
+              width: halfOfWidth,
+              child: Column(
+                children: [
+                  Container(
+                    height: halfOfHeight,
+                    child: Center(
+                      child: _titleWidget(data.playerItem),
                     ),
-                    Positioned(
-                      child: Container(
-                          child: Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: _statusIndicator(data.playing),
-                      )),
+                  ),
+                  Container(
+                    height: halfOfHeight,
+                    child: Center(
+                      child: _statusIndicator(data.playing),
                     ),
-                  ],
-                )),
-            Container(
-                width: constraints.maxWidth / 2, child: buttons(data, context)),
-          ],
+                  ),
+                ],
+              )),
+          Container(
+            width: halfOfWidth,
+            child: buttons(data, context),
+          ),
         ],
-      ),
+      ],
     );
   }
 
