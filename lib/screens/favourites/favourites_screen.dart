@@ -25,7 +25,6 @@ class _FavouritesState extends State<FavouritesScreen> {
         } else if (event == MobileAdEvent.closed) {
           _myInterstitial = buildInterstitialAd()..load();
         }
-        print(event);
       },
     );
   }
