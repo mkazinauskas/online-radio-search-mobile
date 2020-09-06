@@ -1,9 +1,27 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/screens/admob/AdsConfiguration.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
+  InterstitialAd _myInterstitial;
+
+  bool _adShown = false;
+
+  InterstitialAd buildInterstitialAd() {
+    return InterstitialAd(
+      adUnitId: adUnitId,
+      listener: (MobileAdEvent event) {
+        if (event == MobileAdEvent.failedToLoad) {
+          _myInterstitial..load();
+        } else if (event == MobileAdEvent.closed) {
+          _myInterstitial = buildInterstitialAd()..load();
+        }
+      },
+    );
+  }
 
   ThemeData appBarTheme(BuildContext context) {
     assert(context != null);
@@ -57,10 +75,16 @@ class CustomSearchDelegate extends SearchDelegate {
               builder.data.stations == null) {
             return error();
           }
+          if (!this._adShown) {
+            this._adShown = true;
+            _myInterstitial = buildInterstitialAd()
+              ..load()
+              ..show();
+          }
 
           List<Widget> result = (builder.data.stations as List<Station>)
-              .map(
-                  (station) => StationsListCreator.createTile(station, context, (){}))
+              .map((station) =>
+                  StationsListCreator.createTile(station, context, () {}))
               .toList();
 
           return new Container(
@@ -74,8 +98,7 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 
   Widget emptyQueryMessage() {
-    return Column(
-    );
+    return Column();
   }
 
   @override
