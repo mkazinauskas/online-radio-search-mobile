@@ -1,4 +1,6 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:onlineradiosearchmobile/screens/admob/AdsConfiguration.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
@@ -12,6 +14,38 @@ class FavouritesScreen extends StatefulWidget {
 }
 
 class _FavouritesState extends State<FavouritesScreen> {
+  InterstitialAd _myInterstitial;
+
+  InterstitialAd buildInterstitialAd() {
+    return InterstitialAd(
+      adUnitId: adUnitId,
+      listener: (MobileAdEvent event) {
+        if (event == MobileAdEvent.failedToLoad) {
+          _myInterstitial..load();
+        } else if (event == MobileAdEvent.closed) {
+          _myInterstitial = buildInterstitialAd()..load();
+        }
+        print(event);
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _myInterstitial = buildInterstitialAd()
+      ..load()
+      ..show();
+  }
+
+  @override
+  void dispose() {
+    _myInterstitial.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<List<FavouriteStation>> allFavourites =
