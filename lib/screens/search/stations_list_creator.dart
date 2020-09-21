@@ -16,11 +16,11 @@ class StationsListCreator {
     }
 
     var currentItem = AudioService.currentMediaItem;
-    bool enabled = true;
+    bool currentStation = true;
     if (currentItem != null) {
       var playerItem = PlayerItem.fromJson(currentItem.extras['radioStation']);
       if (playerItem.id == station.id.toString()) {
-        enabled = false;
+        currentStation = false;
       }
     }
 
@@ -42,9 +42,9 @@ class StationsListCreator {
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         decoration:
-            BoxDecoration(color: enabled ? Colors.blue : Colors.lightBlue),
+            BoxDecoration(color: currentStation ? Colors.blue : Colors.lightBlue),
         child: ListTile(
-          enabled: enabled,
+          enabled: !AudioService.playbackState.playing,
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
 //          leading: Column(
