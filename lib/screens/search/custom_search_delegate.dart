@@ -66,7 +66,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     if (query.length < 1) {
-      return emptyQueryMessage();
+      return noSearchResults();
     }
 
     var result = StationsClient(() {}).search(query);
@@ -93,23 +93,20 @@ class CustomSearchDelegate extends SearchDelegate {
                   StationsListCreator.createTile(station, context, () {}))
               .toList();
 
-          if (result.isNotEmpty) {
-            QueriesRepository.insert(
-                Query(uniqueId: Uuid().v4(), query: query));
+          if (result.isEmpty) {
+            return noSearchResults();
           }
 
-          return new Container(
-            child: new SingleChildScrollView(
+          QueriesRepository.insert(Query(uniqueId: Uuid().v4(), query: query));
+
+          return Container(
+            child: SingleChildScrollView(
               child: Column(
                 children: result,
               ),
             ),
           );
         });
-  }
-
-  Widget emptyQueryMessage() {
-    return Column();
   }
 
   @override
@@ -131,7 +128,7 @@ class CustomSearchDelegate extends SearchDelegate {
         }
 
         if (builder.data == null) {
-          return emptyQueryMessage();
+          return emptySuggestions();
         }
 
         List<Widget> result = (builder.data as List<Query>)
@@ -146,9 +143,13 @@ class CustomSearchDelegate extends SearchDelegate {
               ),
             )
             .toList();
+        
+        if(result.isEmpty){
+          return emptySuggestions();
+        }
 
-        return new Container(
-          child: new SingleChildScrollView(
+        return Container(
+          child: SingleChildScrollView(
             child: Column(
               children: result,
             ),
@@ -163,21 +164,37 @@ class CustomSearchDelegate extends SearchDelegate {
         child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        new CircularProgressIndicator(),
+        CircularProgressIndicator(),
       ],
     ));
   }
 
-  Widget error() {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        new Text(
-          'Search failed... Please try again.',
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ));
+  Widget emptySuggestions() {
+    return message('No history, try to click search button');
   }
+
+  Widget noSearchResults() {
+    return message('Nothing found. Please refine your search');
+  }
+
+  Widget error() {
+    return message('Search failed... Please try again');
+  }
+
+  Widget message(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 }

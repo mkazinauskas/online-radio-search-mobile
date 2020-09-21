@@ -10,8 +10,7 @@ class QueriesRepository {
             Tables.queries,
             limit: limit,
             orderBy: 'id desc',
-            where: "query like '%?%'",
-            whereArgs: [query],
+            where: "query like '%$query%'",
           ),
         )
         .then((value) => value.map(Query._fromMap).toList());
