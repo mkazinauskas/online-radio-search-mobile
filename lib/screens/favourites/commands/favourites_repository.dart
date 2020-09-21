@@ -15,7 +15,7 @@ class FavouritesRepository {
     }
 
     try {
-      String _path = await getDatabasesPath() + 'favourites';
+      String _path = await getDatabasesPath() + 'ors';
       _db = await openDatabase(_path, version: _version, onCreate: _onCreate);
     } catch (ex) {
       print(ex);
