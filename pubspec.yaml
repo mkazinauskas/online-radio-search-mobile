@@ -33,6 +33,7 @@ dependencies:
   optional: ^5.0.0
   flutter_launcher_icons: ^0.7.5
   audio_session: ^0.0.3
+  uuid: ^2.2.2
   sqflite:
   path:
   # The following adds the Cupertino Icons font to your application.

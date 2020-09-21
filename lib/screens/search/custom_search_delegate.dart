@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:onlineradiosearchmobile/screens/admob/AdsConfiguration.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
+import 'package:onlineradiosearchmobile/screens/search/commands/queries_repository.dart';
+import 'package:onlineradiosearchmobile/screens/search/queriesList.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
+import 'package:uuid/uuid.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   InterstitialAd _myInterstitial;
@@ -28,6 +31,9 @@ class CustomSearchDelegate extends SearchDelegate {
     final ThemeData theme = Theme.of(context);
     assert(theme != null);
     return theme.copyWith(
+      inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+        hintStyle: TextStyle(color: Colors.white70),
+      ),
       textTheme: theme.textTheme.copyWith(
         headline6: theme.textTheme.headline6.copyWith(color: Colors.white),
         overline: theme.textTheme.headline6.copyWith(color: Colors.white),
@@ -87,6 +93,11 @@ class CustomSearchDelegate extends SearchDelegate {
                   StationsListCreator.createTile(station, context, () {}))
               .toList();
 
+          if (result.isNotEmpty) {
+            QueriesRepository.insert(
+                Query(uniqueId: Uuid().v4(), query: query));
+          }
+
           return new Container(
             child: new SingleChildScrollView(
               child: Column(
@@ -103,7 +114,48 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildResults(context);
+    if (query.length < 1) {
+      return _buildSuggestions(QueriesRepository.findAll(20), context);
+    }
+
+    return _buildSuggestions(
+        QueriesRepository.findAllByQuery(query, 20), context);
+  }
+
+  Widget _buildSuggestions(Future<List<Query>> future, BuildContext context) {
+    return FutureBuilder(
+      future: future,
+      builder: (_, builder) {
+        if (builder.connectionState == ConnectionState.waiting) {
+          return loading();
+        }
+
+        if (builder.data == null) {
+          return emptyQueryMessage();
+        }
+
+        List<Widget> result = (builder.data as List<Query>)
+            .map(
+              (singleQuery) => QueriesList.createTile(
+                singleQuery,
+                context,
+                () {
+                  query = singleQuery.query;
+                  showResults(context);
+                },
+              ),
+            )
+            .toList();
+
+        return new Container(
+          child: new SingleChildScrollView(
+            child: Column(
+              children: result,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget loading() {
@@ -122,7 +174,7 @@ class CustomSearchDelegate extends SearchDelegate {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         new Text(
-          "Search failed... Please try again.",
+          'Search failed... Please try again.',
           textAlign: TextAlign.center,
         ),
       ],

@@ -9,18 +9,19 @@ import 'package:onlineradiosearchmobile/screens/player/audio_service_controller.
 import 'package:onlineradiosearchmobile/screens/player/player_item.dart';
 
 class StationsListCreator {
-  static Card createTile(Station station, BuildContext context, dynamic backAction) {
+  static Card createTile(
+      Station station, BuildContext context, dynamic backAction) {
     var genres = '';
     if (station.genres.isNotEmpty) {
       genres = ' - ' + station.genres.map((genre) => genre.title).join(', ');
     }
 
     var currentItem = AudioService.currentMediaItem;
-    bool currentStation = true;
+    bool currentStation = false;
     if (currentItem != null) {
       var playerItem = PlayerItem.fromJson(currentItem.extras['radioStation']);
       if (playerItem.id == station.id.toString()) {
-        currentStation = false;
+        currentStation = true;
       }
     }
 
@@ -41,10 +42,11 @@ class StationsListCreator {
       elevation: 10.0,
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
-        decoration:
-            BoxDecoration(color: currentStation ? Colors.blue : Colors.lightBlue),
+        decoration: BoxDecoration(
+            color: currentStation ? Colors.lightBlue : Colors.blue),
         child: ListTile(
-          enabled: !AudioService.playbackState.playing,
+          enabled: !currentStation ||
+              currentStation && !AudioService.playbackState.playing,
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
 //          leading: Column(
@@ -89,7 +91,7 @@ class StationsListCreator {
                 );
                 AudioServiceController.changeStation(item);
                 Navigator.pushNamed(context, Routes.PLAYER)
-                .then((value) => backAction());
+                    .then((value) => backAction());
               } else {
                 Alert.show(context, 'Failed to load data.');
               }
