@@ -31,6 +31,8 @@ jobs:
       with:
         flutter-version: '1.22.0'
     - run: cp ${{ steps.write_key_jks.outputs.filePath }} signing.jks
+    - run: ls
+    - run: tail -1 signing.jks
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
