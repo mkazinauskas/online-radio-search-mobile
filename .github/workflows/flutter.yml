@@ -26,5 +26,5 @@ jobs:
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
-    - run: base64 --decode ${{ secrets.KEY_JKS }} > key.jks
+    - run: base64 --decode ${{ secrets.KEY_JKS }} > "key.jks"
     - run: flutter build apk
