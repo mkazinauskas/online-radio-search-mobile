@@ -23,13 +23,14 @@ jobs:
       with:
         java-version: '12.x'
     - uses: timheuer/base64-to-file@v1.0.3
+      id: write_key_jks
       with:
         fileName: 'signing.jks'
         encodedString: $KEY_JKS
     - uses: subosito/flutter-action@v1.3.2
       with:
         flutter-version: '1.22.0'
-    - run: ls
+    - run: cp ${{ steps.write_key_jks.outputs.filePath }} signing.jks
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
