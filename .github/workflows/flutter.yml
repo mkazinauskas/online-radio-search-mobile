@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      KEY_JKS: ${{ secrets.KEY_JKS }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -23,7 +24,7 @@ jobs:
     - uses: subosito/flutter-action@v1.3.2
       with:
         flutter-version: '1.22.0'
-    - run: base64 --decode ${{ secrets.KEY_JKS }} > "signing.jks"
+    - run: base64 --decode $KEY_JKS > "signing.jks"
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
