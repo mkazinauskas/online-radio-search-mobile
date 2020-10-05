@@ -20,6 +20,7 @@ jobs:
 
       with:
         flutter-version: '1.22.0'
+    - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
     - run: flutter build apk
