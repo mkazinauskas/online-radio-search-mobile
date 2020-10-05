@@ -24,7 +24,8 @@ jobs:
         KEY_JKS: ${{ secrets.KEY_JKS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         ALIAS_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-        run: echo $KEY_JKS > key.jks
+        run: pwd && echo $KEY_JKS > key.jks && ls
+    - run: pwd
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
