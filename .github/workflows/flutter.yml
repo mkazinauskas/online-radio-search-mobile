@@ -11,6 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
@@ -22,11 +26,5 @@ jobs:
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
-    - uses: subosito/flutter-action@v1.3.2
-      with:
-        flutter-version: '1.22.0'
-      env:
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        run: base64 --decode ${{ secrets.KEY_JKS }} > key.jks && flutter build apk
+    - run: base64 --decode ${{ secrets.KEY_JKS }} > key.jks
+    - run: flutter build apk
