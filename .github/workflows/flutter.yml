@@ -23,9 +23,11 @@ jobs:
       env:
         KEY_JKS: ${{ secrets.KEY_JKS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        ALIAS_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       - run: base64 --decode ${{ secrets.KEY_JKS }} > key.jks
       - run: cat key.jks
+      - run: echo $KEY_ALIAS
       - run: flutter doctor
       - run: flutter pub get
       - run: flutter test
