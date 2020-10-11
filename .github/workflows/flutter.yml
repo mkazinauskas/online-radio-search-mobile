@@ -26,7 +26,7 @@ jobs:
         flutter-version: '1.22.0'
     - run: 'echo "$KEY_JKS" > signing_encrypted.jks'
     - run: tail -4 signing_encrypted.jks
-    - run: 'base64 --decrypt signing_encrypted.jks > signing.jks'
+    - run: 'base64 --decode signing_encrypted.jks > signing.jks'
     - run: tail -4 signing.jks
     - run: flutter doctor
     - run: flutter pub get
