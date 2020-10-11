@@ -24,9 +24,9 @@ jobs:
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    - run: 'echo "$KEY_JKS" > signing.jks'
+    - run: 't'
     - run: ls
-    - run: tail -1 signing.jks
+    - run: tail -4 signing.jks
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter test
