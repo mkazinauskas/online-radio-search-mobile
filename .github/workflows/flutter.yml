@@ -28,5 +28,4 @@ jobs:
     - run: 'base64 --decode signing_encoded.jks > signing.jks'
     - run: flutter doctor
     - run: flutter pub get
-    - run: flutter test
     - run: flutter build apk
