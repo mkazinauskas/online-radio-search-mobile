@@ -1,7 +1,7 @@
 # Online Radio Search Mobile
 
 ## How to try app
-Visit (https://play.google.com/store/apps/details?id=com.modakoda.onlineradiosearchmobile)[https://play.google.com/store/apps/details?id=com.modakoda.onlineradiosearchmobile]
+Visit [https://play.google.com/store/apps/details?id=com.modakoda.onlineradiosearchmobile](https://play.google.com/store/apps/details?id=com.modakoda.onlineradiosearchmobile)
 
 ## How to generate signing key
 * `flutter doctor -v`
