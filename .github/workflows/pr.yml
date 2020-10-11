@@ -28,3 +28,8 @@ jobs:
     - run: flutter doctor
     - run: flutter pub get
     - run: flutter build apk
+    - name: Create a Release APK
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "build/app/outputs/bundle/release/*.aab"
+        token: ${{ secrets.TOKEN }}
