@@ -40,7 +40,11 @@ jobs:
           prerelease: false
 
       - run: ls
-      - run: ls build/app/outputs/bundle/release/app-release
+      - run: ls build
+      - run: ls build/app
+      - run: ls build/app/outputs
+      - run: ls build/app/outputs/bundle
+      - run: ls build/app/outputs/bundle/release
 
       - name: Upload Release Asset
         id: upload-release-asset
