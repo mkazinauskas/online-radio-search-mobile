@@ -1,4 +1,4 @@
-name: Flutter CI
+name: Build flutter app
 
 on:
   push:
@@ -28,43 +28,3 @@ jobs:
       - run: flutter pub get
       - run: flutter build appbundle
       - run: flutter build apk
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Some New release ${{ github.ref }}
-          draft: true
-          prerelease: false
-
-      - run: ls
-      - run: ls build
-      - run: ls build/app
-      - run: ls build/app/outputs
-      - run: ls build/app/outputs/bundle
-      - run: ls build/app/outputs/bundle/release
-
-      - name: Upload App Bundle
-        id: upload-release-bundle
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/app/outputs/bundle/release/app-release.aab
-          asset_name: app-release.aab
-          asset_content_type: application/zip
-
-      - name: Upload App Apk
-        id: upload-release-apk
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/app/outputs/flutter-apk/app-release.apk
-          asset_name: app-release.apk
-          asset_content_type: application/zip
