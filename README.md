@@ -1,5 +1,7 @@
 # Online Radio Search Mobile
 
+![Build flutter app](https://github.com/mkazinauskas/online-radio-search-mobile/workflows/Build%20flutter%20app/badge.svg?branch=master)
+
 ## How to try app
 Visit [https://play.google.com/store/apps/details?id=com.modakoda.onlineradiosearchmobile](https://play.google.com/store/apps/details?id=com.modakoda.onlineradiosearchmobile)
 
