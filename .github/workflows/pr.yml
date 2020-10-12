@@ -35,8 +35,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
+          release_name: Some New release ${{ github.ref }}
+          draft: true
           prerelease: false
 
       - name: Upload Release Asset
