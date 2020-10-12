@@ -26,6 +26,7 @@ jobs:
       - run: 'echo "$KEY_JKS" | base64 --decode > signing.jks'
       - run: flutter doctor
       - run: flutter pub get
+      - run: flutter build appbundle
       - run: flutter build apk
 
       - name: Create Release
