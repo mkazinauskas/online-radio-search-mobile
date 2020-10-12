@@ -37,7 +37,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: App release ${{ github.ref }}
-          draft: true
+          draft: false
           prerelease: false
 
       - name: Upload App Bundle
