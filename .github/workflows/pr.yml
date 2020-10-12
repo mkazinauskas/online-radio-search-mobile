@@ -47,13 +47,24 @@ jobs:
       - run: ls build/app/outputs/bundle
       - run: ls build/app/outputs/bundle/release
 
-      - name: Upload Release Asset
-        id: upload-release-asset
+      - name: Upload App Bundle
+        id: upload-release-bundle
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/app/outputs/bundle/release/app-release.aab
+          asset_path: build/app/outputs/bundle/release/app-release.aab
           asset_name: app-release.aab
+          asset_content_type: application/zip
+
+      - name: Upload App Apk
+        id: upload-release-apk
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-release.apk
+          asset_name: app-release.apk
           asset_content_type: application/zip
