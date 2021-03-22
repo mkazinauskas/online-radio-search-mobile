@@ -22,7 +22,7 @@ jobs:
 
       - uses: subosito/flutter-action@v1.3.2
         with:
-          flutter-version: '1.22.0'
+          flutter-version: '2.1.0'
       - run: 'echo "$KEY_JKS" | base64 --decode > signing.jks'
       - run: flutter doctor
       - run: flutter pub get

@@ -13,7 +13,9 @@ class AudioPlayerTask extends BackgroundAudioTask {
   StreamSubscription<PlaybackEvent> _eventSubscription;
 
   List<MediaItem> get queue => _mediaLibrary.items;
+
   int get index => _player.currentIndex;
+
   MediaItem get mediaItem => index == null ? null : queue[index];
 
   @override
@@ -40,12 +42,12 @@ class AudioPlayerTask extends BackgroundAudioTask {
     _player.processingStateStream.listen((state) {
       switch (state) {
         case ProcessingState.completed:
-        // In this example, the service stops when reaching the end.
+          // In this example, the service stops when reaching the end.
           onStop();
           break;
         case ProcessingState.ready:
-        // If we just came from skipping between tracks, clear the skip
-        // state now that we're ready to play.
+          // If we just came from skipping between tracks, clear the skip
+          // state now that we're ready to play.
           _skipState = null;
           break;
         default:
@@ -56,11 +58,11 @@ class AudioPlayerTask extends BackgroundAudioTask {
     // Load and broadcast the queue
     AudioServiceBackground.setQueue(queue);
     try {
-      await _player.load(ConcatenatingAudioSource(
+      await _player.setAudioSource(ConcatenatingAudioSource(
         children:
-        queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
+            queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
       ));
-      // In this example, we automatically start playing on start.
+      await _player.load();
       onPlay();
     } catch (e) {
       print("Error: $e");
@@ -150,8 +152,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
         if (_player.playing) MediaControl.pause else MediaControl.play,
         MediaControl.stop,
       ],
-      systemActions: [
-      ],
+      systemActions: [],
       processingState: _getProcessingState(),
       playing: _player.playing,
       position: _player.position,
@@ -165,7 +166,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
   AudioProcessingState _getProcessingState() {
     if (_skipState != null) return _skipState;
     switch (_player.processingState) {
-      case ProcessingState.none:
+      case ProcessingState.idle:
         return AudioProcessingState.stopped;
       case ProcessingState.loading:
         return AudioProcessingState.connecting;
@@ -179,12 +180,10 @@ class AudioPlayerTask extends BackgroundAudioTask {
         throw Exception("Invalid state: ${_player.processingState}");
     }
   }
-
 }
 
 class MediaLibrary {
-  final _items = <MediaItem>[
-  ];
+  final _items = <MediaItem>[];
 
   List<MediaItem> get items => _items;
 }
@@ -197,11 +196,11 @@ class Seeker {
   bool _running = false;
 
   Seeker(
-      this.player,
-      this.positionInterval,
-      this.stepInterval,
-      this.mediaItem,
-      );
+    this.player,
+    this.positionInterval,
+    this.stepInterval,
+    this.mediaItem,
+  );
 
   start() async {
     _running = true;
