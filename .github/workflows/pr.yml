@@ -20,7 +20,7 @@ jobs:
         with:
           java-version: '11.x'
 
-      - uses: subosito/flutter-action@v1.3.2
+      - uses: subosito/flutter-action@v1.4.0
         with:
           flutter-version: '2.0.3'
       - run: 'echo "$KEY_JKS" | base64 --decode > signing.jks'
