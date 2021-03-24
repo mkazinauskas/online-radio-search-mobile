@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 
 class StationsClient {
-  static const _url =
-      "https://api.onlineradiosearch.com/radio-stations?sort=id%2Cdesc&page=0&size=20&enabled=true";
+  static final Uri _url = Uri.parse(
+      "https://api.onlineradiosearch.com/radio-stations?sort=id%2Cdesc&page=0&size=20&enabled=true");
 
-  static const _search_url =
+  static final String _search_url =
       "https://api.onlineradiosearch.com/search/radio-station?title={title}&page=0&size=20&enabled=true";
 
   final dynamic _onComplete;
@@ -28,7 +28,7 @@ class StationsClient {
   }
 
   Future<Result> search(String title) {
-    var url = _search_url.replaceAll('{title}', title);
+    var url = Uri.parse(_search_url.replaceAll('{title}', title));
     return http
         .get(url)
         .then(
