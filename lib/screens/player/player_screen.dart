@@ -4,6 +4,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:onlineradiosearchmobile/ads/banner_ad_widget.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/add_to_favourites_command.dart';
@@ -72,7 +74,7 @@ class PlayerScreen extends StatelessWidget {
 
   Widget portraitView(
       ScreenData data, BuildContext context, BoxConstraints constraints) {
-    var itemSize = constraints.maxHeight / 3;
+    var itemSize = constraints.maxHeight / 5;
     return Column(
       children: [
         ...[
@@ -84,8 +86,8 @@ class PlayerScreen extends StatelessWidget {
             ),
           ),
           Container(
-            height: itemSize,
-            padding: EdgeInsets.all(20),
+            height: itemSize * 3,
+            padding: EdgeInsets.only(left: 20, right: 20),
             child: Center(
               child: _statusIndicator(data.playing),
             ),
@@ -152,8 +154,9 @@ class PlayerScreen extends StatelessWidget {
   Widget _statusIndicator(bool playing) {
     if (!playing) {
       return Container(
-          padding: EdgeInsets.only(top: 30, bottom: 30),
-          child: SizedBox.shrink());
+        // padding: EdgeInsets.only(top: 30, bottom: 30),
+        child: adMiddle(),
+      );
     }
     return Container(
       padding: EdgeInsets.all(50),
@@ -162,6 +165,13 @@ class PlayerScreen extends StatelessWidget {
         color: Colors.white70,
         fit: BoxFit.fill,
       ),
+    );
+  }
+
+  Widget adMiddle() {
+    return Card(
+      margin: EdgeInsets.only(bottom: 5.0),
+      child: BannerAdWidget(AdSize.mediumRectangle),
     );
   }
 

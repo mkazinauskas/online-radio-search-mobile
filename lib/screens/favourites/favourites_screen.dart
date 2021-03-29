@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:onlineradiosearchmobile/ad_units.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
 import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dart';
+
+import '../../ads/banner_ad_widget.dart';
 
 class FavouritesScreen extends StatefulWidget {
   FavouritesScreen({Key key}) : super(key: key);
@@ -12,6 +17,12 @@ class FavouritesScreen extends StatefulWidget {
 }
 
 class _FavouritesState extends State<FavouritesScreen> {
+  final BannerAd myBanner = BannerAd(
+    adUnitId: AdUnits.FavouritesBannerAd,
+    size: AdSize.banner,
+    request: AdRequest(),
+    listener: AdListener(),
+  );
 
   @override
   void initState() {
@@ -65,13 +76,38 @@ class _FavouritesState extends State<FavouritesScreen> {
             return new Container(
               child: new SingleChildScrollView(
                 child: Column(
-                  children: result,
+                  children: [
+                    adTop(result.length),
+                    ...result,
+                    adBottom(result.length)
+                  ],
                 ),
               ),
             );
           }),
       bottomNavigationBar:
           AppBottomNavigationBar(context, FavouritesNavigationBarItem()),
+    );
+  }
+
+  Widget adTop(int lengthOfItems) {
+    if (lengthOfItems == 0) {
+      return SizedBox.shrink();
+    }
+    return Card(
+      margin: EdgeInsets.only(bottom: 5.0),
+      child: BannerAdWidget(AdSize.fullBanner),
+    );
+  }
+
+  Widget adBottom(int lengthOfItems) {
+    if (lengthOfItems == 0) {
+      return SizedBox.shrink();
+    }
+
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 15.0),
+        child: BannerAdWidget(AdSize.mediumRectangle),
     );
   }
 

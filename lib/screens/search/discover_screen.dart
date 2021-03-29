@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:onlineradiosearchmobile/ads/banner_ad_widget.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
@@ -89,7 +91,31 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return new Container(
         child: new SingleChildScrollView(
             child: Column(
-      children: stationsList,
+      children: [
+        adTop(stationsList.length),
+        ...stationsList,
+        adBottom(stationsList.length),
+      ],
     )));
+  }
+
+  Widget adTop(int lengthOfItems) {
+    if (lengthOfItems == 0) {
+      return SizedBox.shrink();
+    }
+    return Card(
+      margin: EdgeInsets.only(bottom: 5.0),
+      child: BannerAdWidget(AdSize.fullBanner),
+    );
+  }
+
+  Widget adBottom(int lengthOfItems) {
+    if (lengthOfItems == 0) {
+      return SizedBox.shrink();
+    }
+    return Card(
+      margin: EdgeInsets.only(top: 5.0),
+      child: BannerAdWidget(AdSize.fullBanner),
+    );
   }
 }
