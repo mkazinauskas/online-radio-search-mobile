@@ -78,7 +78,7 @@ class _FavouritesState extends State<FavouritesScreen> {
       return SizedBox.shrink();
     }
     return Card(
-      margin: EdgeInsets.only(bottom: 5.0),
+      margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: BannerAdWidget(
         AdSize.fullBanner,
         AdUnit.favouritesBannerTop,

@@ -74,7 +74,10 @@ class PlayerScreen extends StatelessWidget {
   }
 
   Widget portraitView(
-      ScreenData data, BuildContext context, BoxConstraints constraints) {
+    ScreenData data,
+    BuildContext context,
+    BoxConstraints constraints,
+  ) {
     var itemSize = constraints.maxHeight / 5;
     return Column(
       children: [
@@ -88,7 +91,7 @@ class PlayerScreen extends StatelessWidget {
           ),
           Container(
             height: itemSize * 3,
-            padding: EdgeInsets.only(left: 20, right: 20),
+            padding: EdgeInsets.only(left: 10, right: 10),
             child: Center(
               child: _statusIndicator(data.playing),
             ),
@@ -106,7 +109,10 @@ class PlayerScreen extends StatelessWidget {
   }
 
   Widget landscapeView(
-      BoxConstraints constraints, ScreenData data, BuildContext context) {
+    BoxConstraints constraints,
+    ScreenData data,
+    BuildContext context,
+  ) {
     var halfOfWidth = constraints.maxWidth / 2;
     var halfOfHeight = constraints.maxHeight / 2;
     return Row(
@@ -114,26 +120,29 @@ class PlayerScreen extends StatelessWidget {
       children: [
         ...[
           Container(
-              width: halfOfWidth,
-              child: Column(
-                children: [
-                  Container(
-                    height: halfOfHeight,
-                    child: Center(
-                      child: _titleWidget(data.playerItem),
-                    ),
-                  ),
-                  Container(
-                    height: halfOfHeight,
-                    child: Center(
-                      child: _statusIndicator(data.playing),
-                    ),
-                  ),
-                ],
-              )),
+            width: halfOfWidth,
+            color: Colors.green,
+            child: Center(
+              child: _statusIndicator(data.playing),
+            ),
+          ),
           Container(
             width: halfOfWidth,
-            child: buttons(data, context),
+            color: Colors.red,
+            child: Column(
+              children: [
+                Container(
+                  height: halfOfHeight,
+                  child: Center(
+                    child: _titleWidget(data.playerItem),
+                  ),
+                ),
+                Container(
+                  height: halfOfHeight,
+                  child: buttons(data, context),
+                ),
+              ],
+            ),
           ),
         ],
       ],
@@ -156,7 +165,7 @@ class PlayerScreen extends StatelessWidget {
     if (!playing) {
       return Container(
         // padding: EdgeInsets.only(top: 30, bottom: 30),
-        child: adMiddle(),
+        child: _adMiddle(),
       );
     }
     return Container(
@@ -169,7 +178,7 @@ class PlayerScreen extends StatelessWidget {
     );
   }
 
-  Widget adMiddle() {
+  Widget _adMiddle() {
     return Card(
       margin: EdgeInsets.only(bottom: 5.0),
       child: BannerAdWidget(
