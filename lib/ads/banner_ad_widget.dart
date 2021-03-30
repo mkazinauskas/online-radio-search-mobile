@@ -71,14 +71,18 @@ class BannerAdState extends State<BannerAdWidget> {
           case ConnectionState.none:
           case ConnectionState.waiting:
           case ConnectionState.active:
-            child = Container();
+            print("Ad Mob error: Ad is loading ${BannerAd}");
             break;
           case ConnectionState.done:
             if (snapshot.hasData) {
               child = AdWidget(ad: _bannerAd);
             } else {
-              child = Text('Error loading $BannerAd');
+              print("Ad Mob error: Error loading ${BannerAd}");
             }
+        }
+
+        if (child == null) {
+          return SizedBox.shrink();
         }
 
         return Container(

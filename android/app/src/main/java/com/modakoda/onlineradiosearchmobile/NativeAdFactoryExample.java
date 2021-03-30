@@ -33,7 +33,7 @@ public class NativeAdFactoryExample implements NativeAdFactory {
   public UnifiedNativeAdView createNativeAd(
       UnifiedNativeAd nativeAd, Map<String, Object> customOptions) {
     final UnifiedNativeAdView adView =
-        (UnifiedNativeAdView) layoutInflater.inflate(R.layout.my_native_ad, null);
+        (UnifiedNativeAdView) layoutInflater.inflate(R.layout.admob_ad, null);
     final TextView headlineView = adView.findViewById(R.id.ad_headline);
     final TextView bodyView = adView.findViewById(R.id.ad_body);
 
