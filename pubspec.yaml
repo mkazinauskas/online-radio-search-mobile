@@ -11,22 +11,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: ^1.4.0
+  path_provider: ^2.0.1
   flutter_spinkit: ^5.0.0
-  just_audio: ^0.6.15+1
-  rxdart: ^0.25.0
-  flutter_cache_manager: ">= 1.4.0 < 3.0.0"
-  flutter_isolate: ^1.0.0+14
-  audio_service: ^0.16.2
+  just_audio: ^0.7.2
+  rxdart: ^0.26.0
+  flutter_cache_manager: ^3.0.1
+  flutter_isolate: ^2.0.0
+  audio_service: ^0.17.0
   provider: ^5.0.0
   optional: ^5.0.0+1
-  flutter_launcher_icons: ^0.8.1
-  audio_session: ^0.0.11
+  flutter_launcher_icons: ^0.9.0
+  audio_session: ^0.1.0
   uuid: ">=2.0.0"
   sqflite:
   path:
   cupertino_icons: ^1.0.2
-  google_mobile_ads: ^0.11.0+4
+  google_mobile_ads: ^0.12.0
 
 dev_dependencies:
   flutter_test:
