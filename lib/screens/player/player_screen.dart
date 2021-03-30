@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:onlineradiosearchmobile/ads/ad_unit.dart';
 import 'package:onlineradiosearchmobile/ads/banner_ad_widget.dart';
 import 'package:onlineradiosearchmobile/main.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
@@ -171,7 +172,10 @@ class PlayerScreen extends StatelessWidget {
   Widget adMiddle() {
     return Card(
       margin: EdgeInsets.only(bottom: 5.0),
-      child: BannerAdWidget(AdSize.mediumRectangle),
+      child: BannerAdWidget(
+        AdSize.mediumRectangle,
+        AdUnit.playerScreenMiddle,
+      ),
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:onlineradiosearchmobile/ad_units.dart';
+import 'package:onlineradiosearchmobile/ads/ad_unit.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/app_bottom_navigation_bar.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/commands/favourites_repository.dart';
@@ -17,23 +17,6 @@ class FavouritesScreen extends StatefulWidget {
 }
 
 class _FavouritesState extends State<FavouritesScreen> {
-  final BannerAd myBanner = BannerAd(
-    adUnitId: AdUnits.FavouritesBannerAd,
-    size: AdSize.banner,
-    request: AdRequest(),
-    listener: AdListener(),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     Future<List<FavouriteStation>> allFavourites =
@@ -96,7 +79,10 @@ class _FavouritesState extends State<FavouritesScreen> {
     }
     return Card(
       margin: EdgeInsets.only(bottom: 5.0),
-      child: BannerAdWidget(AdSize.fullBanner),
+      child: BannerAdWidget(
+        AdSize.fullBanner,
+        AdUnit.favouritesBannerTop,
+      ),
     );
   }
 
@@ -107,7 +93,10 @@ class _FavouritesState extends State<FavouritesScreen> {
 
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 15.0),
-        child: BannerAdWidget(AdSize.mediumRectangle),
+      child: BannerAdWidget(
+        AdSize.mediumRectangle,
+        AdUnit.favouritesBannerBottom,
+      ),
     );
   }
 

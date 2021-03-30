@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter/foundation.dart' as Foundation;
+import 'package:onlineradiosearchmobile/ads/ad_unit.dart';
 
 class BannerAdWidget extends StatefulWidget {
-  BannerAdWidget(this.size);
+  BannerAdWidget(this.size, this.adUnit);
 
   final AdSize size;
+
+  final AdUnit adUnit;
 
   @override
   State<StatefulWidget> createState() => BannerAdState();
@@ -15,13 +19,14 @@ class BannerAdWidget extends StatefulWidget {
 
 class BannerAdState extends State<BannerAdWidget> {
   BannerAd _bannerAd;
+
   final Completer<BannerAd> bannerCompleter = Completer<BannerAd>();
 
   @override
   void initState() {
     super.initState();
     _bannerAd = BannerAd(
-      adUnitId: BannerAd.testAdUnitId,
+      adUnitId: _resolveAdUnit(),
       request: AdRequest(),
       size: widget.size,
       listener: AdListener(
@@ -40,6 +45,12 @@ class BannerAdState extends State<BannerAdWidget> {
       ),
     );
     Future<void>.delayed(Duration(seconds: 1), () => _bannerAd?.load());
+  }
+
+  String _resolveAdUnit() {
+    return Foundation.kDebugMode
+        ? BannerAd.testAdUnitId
+        : this.widget.adUnit.id;
   }
 
   @override

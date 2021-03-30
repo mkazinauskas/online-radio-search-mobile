@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:onlineradiosearchmobile/ads/ad_unit.dart';
 import 'package:onlineradiosearchmobile/ads/banner_ad_widget.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
@@ -148,7 +149,10 @@ class CustomSearchDelegate extends SearchDelegate {
     }
     return Card(
       margin: EdgeInsets.only(bottom: 5.0),
-      child: BannerAdWidget(AdSize.fullBanner),
+      child: BannerAdWidget(
+        AdSize.fullBanner,
+        AdUnit.searchScreenTop,
+      ),
     );
   }
 
