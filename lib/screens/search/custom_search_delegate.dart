@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:onlineradiosearchmobile/ads/ad_unit.dart';
+import 'package:onlineradiosearchmobile/ads/banner_ad_widget.dart';
 import 'package:onlineradiosearchmobile/screens/api/api_state.dart';
 import 'package:onlineradiosearchmobile/screens/api/stations_client.dart';
 import 'package:onlineradiosearchmobile/screens/search/commands/queries_repository.dart';
@@ -7,7 +10,6 @@ import 'package:onlineradiosearchmobile/screens/search/stations_list_creator.dar
 import 'package:uuid/uuid.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
-
   ThemeData appBarTheme(BuildContext context) {
     assert(context != null);
     final ThemeData theme = Theme.of(context);
@@ -78,7 +80,10 @@ class CustomSearchDelegate extends SearchDelegate {
           return Container(
             child: SingleChildScrollView(
               child: Column(
-                children: result,
+                children: [
+                  adTop(result.length),
+                  ...result,
+                ],
               ),
             ),
           );
@@ -119,19 +124,35 @@ class CustomSearchDelegate extends SearchDelegate {
               ),
             )
             .toList();
-        
-        if(result.isEmpty){
+
+        if (result.isEmpty) {
           return emptySuggestions();
         }
 
         return Container(
           child: SingleChildScrollView(
             child: Column(
-              children: result,
+              children: [
+                adTop(result.length),
+                ...result,
+              ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget adTop(int lengthOfItems) {
+    if (lengthOfItems == 0) {
+      return SizedBox.shrink();
+    }
+    return Card(
+      margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+      child: BannerAdWidget(
+        AdSize.fullBanner,
+        AdUnit.searchScreenTop,
+      ),
     );
   }
 
@@ -171,5 +192,4 @@ class CustomSearchDelegate extends SearchDelegate {
       ),
     );
   }
-
 }

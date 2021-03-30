@@ -4,11 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:onlineradiosearchmobile/screens/favourites/favourites_screen.dart';
 import 'package:onlineradiosearchmobile/screens/player/player_screen.dart';
 import 'package:onlineradiosearchmobile/screens/search/discover_screen.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.blue, // navigation bar color
   ));
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  MobileAds.instance.initialize();
 
   runApp(AudioServiceWidget(child: new OnlineRadioSearchApp()));
 }
