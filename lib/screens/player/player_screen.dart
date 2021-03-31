@@ -121,14 +121,12 @@ class PlayerScreen extends StatelessWidget {
         ...[
           Container(
             width: halfOfWidth,
-            color: Colors.green,
             child: Center(
               child: _statusIndicator(data.playing),
             ),
           ),
           Container(
             width: halfOfWidth,
-            color: Colors.red,
             child: Column(
               children: [
                 Container(
